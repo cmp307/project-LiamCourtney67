@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "ScottishGlenAssetTracking (Package)": {
+      "commandName": "MsixPackage"
+    },
+    "ScottishGlenAssetTracking (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}
