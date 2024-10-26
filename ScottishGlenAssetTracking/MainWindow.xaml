@@ -31,7 +31,7 @@
                 <NavigationViewItem Content="Employee">
                     <NavigationViewItem.MenuItems>
                         <NavigationViewItem Tag="AddEmployee" Content="Add Employee"/>
-                        <NavigationViewItem Tag="ViewEmployee" Content="View View"/>
+                        <NavigationViewItem Tag="ViewEmployee" Content="View Employee"/>
                     </NavigationViewItem.MenuItems>
                 </NavigationViewItem>
 
