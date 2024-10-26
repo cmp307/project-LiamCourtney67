@@ -15,6 +15,7 @@ namespace ScottishGlenAssetTracking.Services
             using (var context = new ScottishGlenContext())
             {
                 context.Assets.Add(asset);
+                context.Employees.Attach(asset.Employee);
                 context.SaveChanges();
                 return true;
             }
