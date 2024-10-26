@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using ScottishGlenAssetTracking.Models;
 
-namespace TestApp.Data
+namespace ScottishGlenAssetTracking.Data
 {
     public class ScottishGlenContext : DbContext
     {

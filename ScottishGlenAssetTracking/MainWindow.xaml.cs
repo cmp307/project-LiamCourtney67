@@ -5,6 +5,7 @@ using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
+using ScottishGlenAssetTracking.Services;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -30,7 +31,12 @@ namespace ScottishGlenAssetTracking
 
         private void myButton_Click(object sender, RoutedEventArgs e)
         {
-            myButton.Content = "Clicked";
+            var departmentService = new DepartmentService();
+            var departments = departmentService.GetDepartments();
+            foreach (var department in departments)
+            {
+                myTextBlock.Text += department.Name + "\n";
+            }
         }
     }
 }
