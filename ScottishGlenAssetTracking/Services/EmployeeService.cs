@@ -1,4 +1,5 @@
-﻿using ScottishGlenAssetTracking.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using ScottishGlenAssetTracking.Data;
 using ScottishGlenAssetTracking.Models;
 using System;
 using System.Collections.Generic;
@@ -15,6 +16,7 @@ namespace ScottishGlenAssetTracking.Services
             using (var context = new ScottishGlenContext())
             {
                 context.Employees.Add(employee);
+                context.Departments.Attach(employee.Department);
                 context.SaveChanges();
                 return true;
             }
