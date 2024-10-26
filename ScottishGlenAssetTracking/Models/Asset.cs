@@ -14,7 +14,7 @@ namespace ScottishGlenAssetTracking.Models
         private string _manufacturer;
         private string _type;
         private string _ipAddress;
-        private string? _purchaseDate;      // Purchase date can be empty
+        private DateTime? _purchaseDate;      // Purchase date can be empty
         private string? _notes;             // Notes can be empty
         private Employee _employee;
 
@@ -48,7 +48,7 @@ namespace ScottishGlenAssetTracking.Models
             get { return _ipAddress; }
             set { _ipAddress = value; }
         }
-        public string? PurchaseDate
+        public DateTime? PurchaseDate
         {
             get { return _purchaseDate; }
             set { _purchaseDate = value; }
