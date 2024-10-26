@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -29,6 +30,11 @@ namespace ScottishGlenAssetTracking.Models
         {
             get { return _lastName; }
             set { _lastName = value; }
+        }
+        [NotMapped]
+        public string Name
+        {
+            get { return _firstName + " " + _lastName; }
         }
         public string Email
         {
