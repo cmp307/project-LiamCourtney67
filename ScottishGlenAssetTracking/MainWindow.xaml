@@ -7,9 +7,41 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
+    
+    <Grid>
+        <!--Navigation-->
+        <NavigationView x:Name="Navigation"
+            ItemInvoked="Nav_ItemInvoked" PaneDisplayMode="Top"
+            IsBackButtonVisible="Collapsed" IsSettingsVisible="False">
 
-    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-        <Button x:Name="myButton" Click="myButton_Click">Click Me</Button>
-        <TextBlock x:Name="myTextBlock"/>
-    </StackPanel>
+            <NavigationView.MenuItems>
+
+                <!--Title-->
+                <NavigationViewItemHeader Content="Scottish Glen" FontWeight="Bold"/>
+
+                <!--Team-->
+                <NavigationViewItem Content="Asset">
+                    <NavigationViewItem.MenuItems>
+                        <NavigationViewItem Tag="AddAsset" Content="Add Asset"/>
+                        <NavigationViewItem Tag="ViewAsset" Content="View Asset"/>
+                    </NavigationViewItem.MenuItems>
+                </NavigationViewItem>
+
+                <!--Member-->
+                <NavigationViewItem Content="Employee">
+                    <NavigationViewItem.MenuItems>
+                        <NavigationViewItem Tag="AddEmployee" Content="Add Employee"/>
+                        <NavigationViewItem Tag="ViewEmployee" Content="View View"/>
+                    </NavigationViewItem.MenuItems>
+                </NavigationViewItem>
+
+            </NavigationView.MenuItems>
+            
+            <!--Main Frame-->
+            <ScrollViewer>
+                <Frame x:Name="MainFrame"/>
+            </ScrollViewer>
+
+        </NavigationView>
+    </Grid>
 </Window>
