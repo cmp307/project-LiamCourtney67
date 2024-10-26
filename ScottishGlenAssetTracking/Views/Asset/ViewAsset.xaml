@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Page
+    x:Class="ScottishGlenAssetTracking.Views.Asset.ViewAsset"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:ScottishGlenAssetTracking.Views.Asset"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <Grid>
+        <StackPanel>
+            <TextBlock x:Name="ViewAssetHeader" Text="View Asset" FontSize="24" Margin="10"/>
+            <ComboBox x:Name="DepartmentSelect" Header="Department" HorizontalAlignment="Stretch" PlaceholderText="Select Department" Margin="10" ItemsSource="{Binding}" DisplayMemberPath="Name" SelectionChanged="DepartmentSelect_SelectionChanged"/>
+            <ComboBox x:Name="EmployeeSelect" Header="Employee" HorizontalAlignment="Stretch" PlaceholderText="Select Employee" Margin="10" ItemsSource="{Binding}" DisplayMemberPath="Name" SelectionChanged="EmployeeSelect_SelectionChanged"/>
+            <ComboBox x:Name="AssetSelect" Header="Asset" HorizontalAlignment="Stretch" PlaceholderText="Select Asset" Margin="10" ItemsSource="{Binding}" DisplayMemberPath="Name" SelectionChanged="AssetSelect_SelectionChanged"/>
+            <TextBlock x:Name="AssetName" Margin="10"/>
+            <TextBlock x:Name="AssetModel" Margin="10"/>
+            <TextBlock x:Name="AssetManufacturer" Margin="10"/>
+            <TextBlock x:Name="AssetType" Margin="10"/>
+            <TextBlock x:Name="AssetIpAddress" Margin="10"/>
+            <TextBlock x:Name="AssetPurchaseDate" Margin="10"/>
+            <TextBlock x:Name="AssetNotes" Margin="10"/>
+            <!--<Button x:Name="AddEmployeeButton" Content="Add Employee" Click="AddEmployeeButton_Click" Margin="10"/>
+            <TextBlock x:Name="AddEmployeeStatus" Text="" Margin="10"/>-->
+        </StackPanel>
+    </Grid>
+</Page>

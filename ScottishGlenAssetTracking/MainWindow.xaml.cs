@@ -6,6 +6,8 @@ using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
 using ScottishGlenAssetTracking.Services;
+using ScottishGlenAssetTracking.Views.Asset;
+using ScottishGlenAssetTracking.Views.Employee;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -29,13 +31,48 @@ namespace ScottishGlenAssetTracking
             this.InitializeComponent();
         }
 
-        private void myButton_Click(object sender, RoutedEventArgs e)
+        /// <summary>
+        /// Event handler for the item invoked event of the navigation view.
+        /// </summary>
+        /// <param name="sender">The control that triggered the event.</param>
+        /// <param name="e">Event data that provides information about the item invoked event.</param>
+        private void Nav_ItemInvoked(NavigationView sender, NavigationViewItemInvokedEventArgs args)
         {
-            var departmentService = new DepartmentService();
-            var departments = departmentService.GetDepartments();
-            foreach (var department in departments)
+            if (args.InvokedItemContainer.Tag is not null)
             {
-                myTextBlock.Text += department.Name + "\n";
+                var itemTag = args.InvokedItemContainer.Tag.ToString();
+                NavigateToPage(itemTag);
+            }
+        }
+
+        /// <summary>
+        /// Navigates to the selected page.
+        /// </summary>
+        /// <param name="pageTag">Tag for the invoked item.</param>
+        private void NavigateToPage(string pageTag)
+        {
+            switch (pageTag)
+            {
+                // Asset
+                case "AddAsset":
+                    MainFrame.Navigate(typeof(AddAsset));
+                    break;
+
+                case "ViewAsset":
+                    MainFrame.Navigate(typeof(ViewAsset));
+                    break;
+
+                // Employee
+                case "AddEmployee":
+                    MainFrame.Navigate(typeof(AddEmployee));
+                    break;
+
+                case "ViewEmployee":
+                    MainFrame.Navigate(typeof(ViewEmployee));
+                    break;
+
+                default:
+                    break;
             }
         }
     }
