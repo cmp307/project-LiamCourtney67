@@ -51,7 +51,18 @@ namespace ScottishGlenAssetTracking.Services
         {
             using (var context = new ScottishGlenContext())
             {
-                var employee = context.Employees.Find(employeeId);
+                var employee = context.Employees.Include(e => e.Assets).FirstOrDefault(e => e.Id == employeeId);
+
+                // Reassign assets to the employee for assets without an employee
+                var assetEmployee = context.Employees.Find(1);
+                foreach (var asset in employee.Assets)
+                {
+                    asset.Employee = assetEmployee;
+                    context.Assets.Update(asset);
+                }
+                employee.Assets.Clear();
+
+                // Remove the employee
                 context.Employees.Remove(employee);
                 context.SaveChanges();
                 return true;
