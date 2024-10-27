@@ -25,6 +25,8 @@ namespace ScottishGlenAssetTracking.Views.Employee
     /// </summary>
     public sealed partial class ViewEmployee : Page
     {
+        private Models.Employee _selectedEmployee;
+
         public ViewEmployee()
         {
             this.InitializeComponent();
@@ -51,12 +53,29 @@ namespace ScottishGlenAssetTracking.Views.Employee
                 EmployeeFirstName.Text = employee.FirstName;
                 EmployeeLastName.Text = employee.LastName;
                 EmployeeEmail.Text = employee.Email;
+                _selectedEmployee = employee;
             }
             else
             {
-                EmployeeFirstName.Text = "";
-                EmployeeLastName.Text = "";
-                EmployeeEmail.Text = "";
+                EmployeeFirstName.Text = string.Empty;
+                EmployeeLastName.Text = string.Empty;
+                EmployeeEmail.Text = string.Empty;
+                _selectedEmployee = null;
+            }
+        }
+
+        private void DeleteEmployeeButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (_selectedEmployee != null)
+            {
+                new EmployeeService().DeleteEmployee(_selectedEmployee.Id);
+                DeleteEmployeeStatus.Text = "Employee Deleted";
+                PopulateEmployeeDetails();
+                EmployeeSelect.ItemsSource = new EmployeeService().GetEmployees(((Department)DepartmentSelect.SelectedItem).Id);
+            }
+            else
+            {
+                DeleteEmployeeStatus.Text = "No Employee Selected";
             }
         }
     }

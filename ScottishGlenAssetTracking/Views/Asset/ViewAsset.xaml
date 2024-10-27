@@ -22,8 +22,8 @@
             <TextBlock x:Name="AssetIpAddress" Margin="10"/>
             <TextBlock x:Name="AssetPurchaseDate" Margin="10"/>
             <TextBlock x:Name="AssetNotes" Margin="10"/>
-            <!--<Button x:Name="AddEmployeeButton" Content="Add Employee" Click="AddEmployeeButton_Click" Margin="10"/>
-            <TextBlock x:Name="AddEmployeeStatus" Text="" Margin="10"/>-->
+            <Button x:Name="DeleteAssetButton" Content="Delete Asset" Click="DeleteAssetButton_Click" Margin="10"/>
+            <TextBlock x:Name="DeleteAssetStatus" Margin="10"/>
         </StackPanel>
     </Grid>
 </Page>
