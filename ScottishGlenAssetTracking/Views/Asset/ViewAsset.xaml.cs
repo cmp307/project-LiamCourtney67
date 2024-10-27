@@ -25,6 +25,8 @@ namespace ScottishGlenAssetTracking.Views.Asset
     /// </summary>
     public sealed partial class ViewAsset : Page
     {
+        private Models.Asset _selectedAsset;
+
         public ViewAsset()
         {
             this.InitializeComponent();
@@ -63,16 +65,33 @@ namespace ScottishGlenAssetTracking.Views.Asset
                 AssetIpAddress.Text = asset.IpAddress;
                 AssetPurchaseDate.Text = asset.PurchaseDate.ToString();
                 AssetNotes.Text = asset.Notes;
+                _selectedAsset = asset;
             }
             else
             {
-                AssetName.Text = "";
-                AssetModel.Text = "";
-                AssetManufacturer.Text = "";
-                AssetType.Text = "";
-                AssetIpAddress.Text = "";
-                AssetPurchaseDate.Text = "";
-                AssetNotes.Text = "";
+                AssetName.Text = string.Empty;
+                AssetModel.Text = string.Empty;
+                AssetManufacturer.Text = string.Empty;
+                AssetType.Text = string.Empty;
+                AssetIpAddress.Text = string.Empty;
+                AssetPurchaseDate.Text = string.Empty;
+                AssetNotes.Text = string.Empty;
+                _selectedAsset = null;
+            }
+        }
+
+        private void DeleteAssetButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (_selectedAsset != null)
+            {
+                new AssetService().DeleteAsset(_selectedAsset.Id);
+                DeleteAssetStatus.Text = "Asset Deleted";
+                PopulateAssetDetails();
+                AssetSelect.ItemsSource = new AssetService().GetAssets(((Models.Employee)EmployeeSelect.SelectedItem).Id);
+            }
+            else
+            {
+                DeleteAssetStatus.Text = "No Asset Selected";
             }
         }
     }
