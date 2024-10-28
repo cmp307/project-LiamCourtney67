@@ -47,38 +47,12 @@ namespace ScottishGlenAssetTracking.Views.Asset
 
         private void CreateAsset()
         {
-            string name = Environment.MachineName;
-            string manufacturer = "Unknown";
-            string model = "Unknown";
-            string type = "Unknown";
-
-            using (var searcher = new ManagementObjectSearcher("SELECT * FROM Win32_ComputerSystem"))
-            {
-                foreach (ManagementObject obj in searcher.Get())
-                {
-                    manufacturer = obj["Manufacturer"]?.ToString() ?? "Unknown";
-                    model = obj["Model"]?.ToString() ?? "Unknown";
-                    type = obj["SystemType"]?.ToString() ?? "Unknown";
-                }
-            }
-
-            string ipAddress = Dns.GetHostEntry(Dns.GetHostName())
-               .AddressList
-               .FirstOrDefault(ip => ip.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork)
-               ?.ToString() ?? "No IP Found";
-
-            var asset = new Models.Asset
-            {
-                Name = name,
-                Model = model,
-                Manufacturer = manufacturer,
-                Type = type,
-                IpAddress = ipAddress,
-                PurchaseDate = AssetPurchaseDate.Date.Date,
-                Notes = AssetNotes.Text,
-                Employee = (Models.Employee)EmployeeSelect.SelectedItem
-            };
-            new AssetService().AddAsset(asset);
+            AssetService assetService = new AssetService();
+            Models.Asset asset = assetService.GetAssetWithSystemInfo();
+            asset.PurchaseDate = AssetPurchaseDate.Date.Date;
+            asset.Notes = AssetNotes.Text;
+            asset.Employee = (Models.Employee)EmployeeSelect.SelectedItem;
+            assetService.AddAsset(asset);
         }
     }
 }
