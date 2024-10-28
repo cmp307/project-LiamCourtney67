@@ -19,6 +19,8 @@
                 <TextBlock x:Name="EmployeeFirstName" Text="First Name: " Margin="10"/>
                 <TextBlock x:Name="EmployeeLastName" Text="Last Name: " Margin="10"/>
                 <TextBlock x:Name="EmployeeEmail" Text="Email: " Margin="10"/>
+                <TextBlock x:Name="EmployeeDepartment" Text="Department: " Margin="10"/>
+                <ListView x:Name="EmployeeAssets" Header="Assets: " ItemsSource="{Binding}" DisplayMemberPath="Name" Margin="10"/>
                 <Button x:Name="EditEmployeeButton" Content="Edit Employee" Click="EditEmployeeButton_Click" Margin="10"/>
                 <Button x:Name="DeleteEmployeeButton" Content="Delete Employee" Click="DeleteEmployeeButton_Click" Margin="10"/>
                 <TextBlock x:Name="Status" Margin="10"/>
@@ -28,6 +30,7 @@
                 <TextBox x:Name="EmployeeFirstNameInput" Header="First Name" Margin="10"/>
                 <TextBox x:Name="EmployeeLastNameInput" Header="Last Name" Margin="10"/>
                 <TextBox x:Name="EmployeeEmailInput" Header="Email" Margin="10"/>
+                <ComboBox x:Name="EmployeeDepartmentSelect" Header="Department" HorizontalAlignment="Stretch" PlaceholderText="Select Department" Margin="10" ItemsSource="{Binding}" DisplayMemberPath="Name" SelectionChanged="EmployeeDepartmentSelect_SelectionChanged"/>
                 <Button x:Name="CancelButton" Content="Cancel" Click="CancelButton_Click" Margin="10"/>
                 <Button x:Name="UpdateEmployeeButton" Content="Update Employee" Click="UpdateEmployeeButton_Click" Margin="10"/>
             </StackPanel>

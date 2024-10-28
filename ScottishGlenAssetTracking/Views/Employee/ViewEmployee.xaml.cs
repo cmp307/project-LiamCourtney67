@@ -30,7 +30,9 @@ namespace ScottishGlenAssetTracking.Views.Employee
         public ViewEmployee()
         {
             this.InitializeComponent();
-            DepartmentSelect.ItemsSource = new DepartmentService().GetDepartments();
+            List<Department> departments = new DepartmentService().GetDepartments();
+            DepartmentSelect.ItemsSource = departments;
+            EmployeeDepartmentSelect.ItemsSource = departments;
         }
         private void DepartmentSelect_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
@@ -53,6 +55,8 @@ namespace ScottishGlenAssetTracking.Views.Employee
                 EmployeeFirstName.Text = $"First Name: {employee.FirstName}";
                 EmployeeLastName.Text = $"Last Name: {employee.LastName}";
                 EmployeeEmail.Text = $"Email: {employee.Email}";
+                EmployeeDepartment.Text = $"Department: {employee.Department.Name}";
+
                 _selectedEmployee = employee;
             }
             else
@@ -60,6 +64,8 @@ namespace ScottishGlenAssetTracking.Views.Employee
                 EmployeeFirstName.Text = "First Name: ";
                 EmployeeLastName.Text = "Last Name: ";
                 EmployeeEmail.Text = "Email: ";
+                EmployeeDepartment.Text = "Department: ";
+
                 _selectedEmployee = null;
             }
             PopulateEmployeeInputs(employee);
@@ -71,12 +77,18 @@ namespace ScottishGlenAssetTracking.Views.Employee
                 EmployeeFirstNameInput.Text = _selectedEmployee.FirstName;
                 EmployeeLastNameInput.Text = _selectedEmployee.LastName;
                 EmployeeEmailInput.Text = _selectedEmployee.Email;
+                EmployeeAssets.ItemsSource = _selectedEmployee.Assets;
+
+                // Set the employee department in the dropdown.
+                EmployeeDepartmentSelect.SelectedItem = ((List<Department>)EmployeeDepartmentSelect.ItemsSource)
+                    .FirstOrDefault(d => d.Id == employee.Department.Id);
             }
             else
             {
                 EmployeeFirstNameInput.Text = string.Empty;
                 EmployeeLastNameInput.Text = string.Empty;
                 EmployeeEmailInput.Text = string.Empty;
+                EmployeeDepartmentSelect.SelectedItem = null;
             }
         }
 
@@ -110,12 +122,18 @@ namespace ScottishGlenAssetTracking.Views.Employee
             _selectedEmployee.FirstName = EmployeeFirstNameInput.Text;
             _selectedEmployee.LastName = EmployeeLastNameInput.Text;
             _selectedEmployee.Email = EmployeeEmailInput.Text;
+            _selectedEmployee.Department = (Department)EmployeeDepartmentSelect.SelectedItem;
             new EmployeeService().UpdateEmployee(_selectedEmployee);
             Status.Text = "Employee Updated";
             PopulateEmployeeDetails();
             EditEmployeeView.Visibility = Visibility.Collapsed;
             ViewEmployeeView.Visibility = Visibility.Visible;
             PopulateEmployeeInputs(_selectedEmployee);
+        }
+
+        private void EmployeeDepartmentSelect_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+
         }
     }
 }
