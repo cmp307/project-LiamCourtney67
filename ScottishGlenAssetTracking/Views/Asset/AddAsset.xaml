@@ -9,20 +9,20 @@
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
-    <Grid>
+    <Grid Background="#5C5C5C">
         <StackPanel>
             <TextBlock x:Name="AddAssetHeader" Text="Add Asset" FontSize="24" Margin="10"/>
             <ComboBox x:Name="DepartmentSelect" Header="Department" HorizontalAlignment="Stretch" PlaceholderText="Select Department" Margin="10" ItemsSource="{Binding}" DisplayMemberPath="Name" SelectionChanged="DepartmentSelect_SelectionChanged"/>
             <ComboBox x:Name="EmployeeSelect" Header="Employee" HorizontalAlignment="Stretch" PlaceholderText="Select Employee" Margin="10" ItemsSource="{Binding}" DisplayMemberPath="Name"/>
-            <TextBox x:Name="AssetName" Header="Name" PlaceholderText="Enter Name" Margin="10"/>
+            <!--<TextBox x:Name="AssetName" Header="Name" PlaceholderText="Enter Name" Margin="10"/>
             <TextBox x:Name="AssetModel" Header="Model" PlaceholderText="Enter Model" Margin="10"/>
             <TextBox x:Name="AssetManufacturer" Header="Manufacturer" PlaceholderText="Enter Manufacturer" Margin="10"/>
             <TextBox x:Name="AssetType" Header="Type" PlaceholderText="Enter Type" Margin="10"/>
-            <TextBox x:Name="AssetIpAddress" Header="IP Address" PlaceholderText="Enter IP Address" Margin="10"/>
+            <TextBox x:Name="AssetIpAddress" Header="IP Address" PlaceholderText="Enter IP Address" Margin="10"/>-->
             <DatePicker x:Name="AssetPurchaseDate" Header="Purchase Date" Margin="10"/>
             <TextBox x:Name="AssetNotes" Header="Notes" PlaceholderText="Enter Notes" Margin="10"/>
-            <Button x:Name="AddAssetButton" Content="Add Asset" Click="AddAssetButton_Click" Margin="10"/>
-            <TextBlock x:Name="AddAssetStatus" Text="" Margin="10"/>
+            <Button x:Name="AddAssetButton" Content="Add Asset" Click="AddAssetButton_Click" Margin="10" Background="Green" Foreground="White" HorizontalAlignment="Right"/>
+            <TextBlock x:Name="AddAssetStatus" Margin="10" HorizontalAlignment="Center"/>
         </StackPanel>
     </Grid>
 </Page>
