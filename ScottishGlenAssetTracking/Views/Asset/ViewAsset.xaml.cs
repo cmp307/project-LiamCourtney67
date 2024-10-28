@@ -58,25 +58,52 @@ namespace ScottishGlenAssetTracking.Views.Asset
             var asset = (Models.Asset)AssetSelect.SelectedItem;
             if (asset != null)
             {
-                AssetName.Text = asset.Name;
-                AssetModel.Text = asset.Model;
-                AssetManufacturer.Text = asset.Manufacturer;
-                AssetType.Text = asset.Type;
-                AssetIpAddress.Text = asset.IpAddress;
-                AssetPurchaseDate.Text = asset.PurchaseDate.ToString();
-                AssetNotes.Text = asset.Notes;
+                AssetName.Text = $"Name: {asset.Name}";
+                AssetModel.Text = $"Model: {asset.Model}";
+                AssetManufacturer.Text = $"Manufacturer: {asset.Manufacturer}";
+                AssetType.Text = $"Type: {asset.Type}";
+                AssetIpAddress.Text = $"IP Address: {asset.IpAddress}";
+                AssetPurchaseDate.Text = $"Purchase Date: {asset.PurchaseDate}";
+                AssetNotes.Text = $"Notes: {asset.Notes}";
+
                 _selectedAsset = asset;
             }
             else
             {
-                AssetName.Text = string.Empty;
-                AssetModel.Text = string.Empty;
-                AssetManufacturer.Text = string.Empty;
-                AssetType.Text = string.Empty;
-                AssetIpAddress.Text = string.Empty;
-                AssetPurchaseDate.Text = string.Empty;
-                AssetNotes.Text = string.Empty;
+                AssetName.Text = "Name: ";
+                AssetModel.Text = "Model: ";
+                AssetManufacturer.Text = "Manufacturer: ";
+                AssetType.Text = "Type: ";
+                AssetIpAddress.Text = "IP Address: ";
+                AssetPurchaseDate.Text = "Purchase Date: ";
+                AssetNotes.Text = "Notes: ";
+
                 _selectedAsset = null;
+            }
+            PopulateInputDetails(asset);
+        }
+
+        private void PopulateInputDetails(Models.Asset asset)
+        {
+            if (asset != null)
+            {
+                AssetNameInput.Text = asset.Name;
+                AssetModelInput.Text = asset.Model;
+                AssetManufacturerInput.Text = asset.Manufacturer;
+                AssetTypeInput.Text = asset.Type;
+                AssetIpAddressInput.Text = asset.IpAddress;
+                AssetPurchaseDateInput.Date = (DateTime)asset.PurchaseDate;
+                AssetNotesInput.Text = asset.Notes;
+            }
+            else
+            {
+                AssetNameInput.Text = string.Empty;
+                AssetModelInput.Text = string.Empty;
+                AssetManufacturerInput.Text = string.Empty;
+                AssetTypeInput.Text = string.Empty;
+                AssetIpAddressInput.Text = string.Empty;
+                AssetPurchaseDateInput.Date = DateTime.Now;
+                AssetNotesInput.Text = string.Empty;
             }
         }
 
@@ -85,14 +112,43 @@ namespace ScottishGlenAssetTracking.Views.Asset
             if (_selectedAsset != null)
             {
                 new AssetService().DeleteAsset(_selectedAsset.Id);
-                DeleteAssetStatus.Text = "Asset Deleted";
+                Status.Text = "Asset Deleted";
                 PopulateAssetDetails();
                 AssetSelect.ItemsSource = new AssetService().GetAssets(((Models.Employee)EmployeeSelect.SelectedItem).Id);
             }
             else
             {
-                DeleteAssetStatus.Text = "No Asset Selected";
+                Status.Text = "No Asset Selected";
             }
+        }
+
+        private void EditAssetButton_Click(object sender, RoutedEventArgs e)
+        {
+            ViewAssetView.Visibility = Visibility.Collapsed;
+            EditAssetView.Visibility = Visibility.Visible;
+        }
+
+        private void CancelButton_Click(object sender, RoutedEventArgs e)
+        {
+            EditAssetView.Visibility = Visibility.Collapsed;
+            ViewAssetView.Visibility = Visibility.Visible;
+        }
+
+        private void UpdateAssetButton_Click(object sender, RoutedEventArgs e)
+        {
+            _selectedAsset.Name = AssetNameInput.Text;
+            _selectedAsset.Model = AssetModelInput.Text;
+            _selectedAsset.Manufacturer = AssetManufacturerInput.Text;
+            _selectedAsset.Type = AssetTypeInput.Text;
+            _selectedAsset.IpAddress = AssetIpAddressInput.Text;
+            _selectedAsset.PurchaseDate = AssetPurchaseDateInput.Date.Date;
+            _selectedAsset.Notes = AssetNotesInput.Text;
+            new AssetService().UpdateAsset(_selectedAsset);
+            Status.Text = "Asset Updated";
+            PopulateAssetDetails();
+            EditAssetView.Visibility = Visibility.Collapsed;
+            ViewAssetView.Visibility = Visibility.Visible;
+            PopulateInputDetails(_selectedAsset);
         }
     }
 }

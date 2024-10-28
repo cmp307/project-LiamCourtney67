@@ -50,17 +50,33 @@ namespace ScottishGlenAssetTracking.Views.Employee
             var employee = (Models.Employee)EmployeeSelect.SelectedItem;
             if (employee != null)
             {
-                EmployeeFirstName.Text = employee.FirstName;
-                EmployeeLastName.Text = employee.LastName;
-                EmployeeEmail.Text = employee.Email;
+                EmployeeFirstName.Text = $"First Name: {employee.FirstName}";
+                EmployeeLastName.Text = $"Last Name: {employee.LastName}";
+                EmployeeEmail.Text = $"Email: {employee.Email}";
                 _selectedEmployee = employee;
             }
             else
             {
-                EmployeeFirstName.Text = string.Empty;
-                EmployeeLastName.Text = string.Empty;
-                EmployeeEmail.Text = string.Empty;
+                EmployeeFirstName.Text = "First Name: ";
+                EmployeeLastName.Text = "Last Name: ";
+                EmployeeEmail.Text = "Email: ";
                 _selectedEmployee = null;
+            }
+            PopulateEmployeeInputs(employee);
+        }
+
+        private void PopulateEmployeeInputs(Models.Employee employee)
+        {
+            if (employee != null) {
+                EmployeeFirstNameInput.Text = _selectedEmployee.FirstName;
+                EmployeeLastNameInput.Text = _selectedEmployee.LastName;
+                EmployeeEmailInput.Text = _selectedEmployee.Email;
+            }
+            else
+            {
+                EmployeeFirstNameInput.Text = string.Empty;
+                EmployeeLastNameInput.Text = string.Empty;
+                EmployeeEmailInput.Text = string.Empty;
             }
         }
 
@@ -69,14 +85,37 @@ namespace ScottishGlenAssetTracking.Views.Employee
             if (_selectedEmployee != null)
             {
                 new EmployeeService().DeleteEmployee(_selectedEmployee.Id);
-                DeleteEmployeeStatus.Text = "Employee Deleted";
+                Status.Text = "Employee Deleted";
                 PopulateEmployeeDetails();
                 EmployeeSelect.ItemsSource = new EmployeeService().GetEmployees(((Department)DepartmentSelect.SelectedItem).Id);
             }
             else
             {
-                DeleteEmployeeStatus.Text = "No Employee Selected";
+                Status.Text = "No Employee Selected";
             }
+        }
+
+        private void CancelButton_Click(object sender, RoutedEventArgs e)
+        {
+            EditEmployeeView.Visibility = Visibility.Collapsed;
+            ViewEmployeeView.Visibility = Visibility.Visible;
+        }
+        private void EditEmployeeButton_Click(object sender, RoutedEventArgs e)
+        {
+            ViewEmployeeView.Visibility = Visibility.Collapsed;
+            EditEmployeeView.Visibility = Visibility.Visible;
+        }
+        private void UpdateEmployeeButton_Click(object sender, RoutedEventArgs e)
+        {
+            _selectedEmployee.FirstName = EmployeeFirstNameInput.Text;
+            _selectedEmployee.LastName = EmployeeLastNameInput.Text;
+            _selectedEmployee.Email = EmployeeEmailInput.Text;
+            new EmployeeService().UpdateEmployee(_selectedEmployee);
+            Status.Text = "Employee Updated";
+            PopulateEmployeeDetails();
+            EditEmployeeView.Visibility = Visibility.Collapsed;
+            ViewEmployeeView.Visibility = Visibility.Visible;
+            PopulateEmployeeInputs(_selectedEmployee);
         }
     }
 }
