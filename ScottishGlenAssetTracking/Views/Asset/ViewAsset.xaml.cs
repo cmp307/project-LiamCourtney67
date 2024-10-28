@@ -30,13 +30,17 @@ namespace ScottishGlenAssetTracking.Views.Asset
         public ViewAsset()
         {
             this.InitializeComponent();
-            DepartmentSelect.ItemsSource = new DepartmentService().GetDepartments();
+            List<Department> departments = new DepartmentService().GetDepartments();
+            DepartmentSelect.ItemsSource = departments;
+            AssetDepartmentSelect.ItemsSource = departments;
         }
         private void DepartmentSelect_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (DepartmentSelect.SelectedItem != null)
             {
-                EmployeeSelect.ItemsSource = new EmployeeService().GetEmployees(((Department)DepartmentSelect.SelectedItem).Id);
+                List<Models.Employee> employees = new EmployeeService().GetEmployees(((Department)DepartmentSelect.SelectedItem).Id);
+                EmployeeSelect.ItemsSource = employees;
+                AssetEmployeeSelect.ItemsSource = employees;
             }
         }
 
@@ -65,6 +69,8 @@ namespace ScottishGlenAssetTracking.Views.Asset
                 AssetIpAddress.Text = $"IP Address: {asset.IpAddress}";
                 AssetPurchaseDate.Text = $"Purchase Date: {asset.PurchaseDate}";
                 AssetNotes.Text = $"Notes: {asset.Notes}";
+                AssetDepartment.Text = $"Department: {asset.Employee.Department.Name}";
+                AssetEmployee.Text = $"Employee: {asset.Employee.FirstName} {asset.Employee.LastName}";
 
                 _selectedAsset = asset;
             }
@@ -77,6 +83,8 @@ namespace ScottishGlenAssetTracking.Views.Asset
                 AssetIpAddress.Text = "IP Address: ";
                 AssetPurchaseDate.Text = "Purchase Date: ";
                 AssetNotes.Text = "Notes: ";
+                AssetDepartment.Text = "Department: ";
+                AssetEmployee.Text = "Employee: ";
 
                 _selectedAsset = null;
             }
@@ -94,6 +102,14 @@ namespace ScottishGlenAssetTracking.Views.Asset
                 AssetIpAddressInput.Text = asset.IpAddress;
                 AssetPurchaseDateInput.Date = (DateTime)asset.PurchaseDate;
                 AssetNotesInput.Text = asset.Notes;
+
+                // Set the asset department in the dropdown.
+                AssetDepartmentSelect.SelectedItem = ((List<Department>)AssetDepartmentSelect.ItemsSource)
+                    .FirstOrDefault(d => d.Id == asset.Employee.Department.Id);
+
+                // Set the asset employee in the dropdown.
+                AssetEmployeeSelect.SelectedItem = ((List<Models.Employee>)AssetEmployeeSelect.ItemsSource)
+                    .FirstOrDefault(e => e.Id == asset.Employee.Id);
             }
             else
             {
@@ -104,6 +120,8 @@ namespace ScottishGlenAssetTracking.Views.Asset
                 AssetIpAddressInput.Text = string.Empty;
                 AssetPurchaseDateInput.Date = DateTime.Now;
                 AssetNotesInput.Text = string.Empty;
+                AssetDepartmentSelect.SelectedItem = null;
+                AssetEmployeeSelect.SelectedItem = null;
             }
         }
 
@@ -143,12 +161,26 @@ namespace ScottishGlenAssetTracking.Views.Asset
             _selectedAsset.IpAddress = AssetIpAddressInput.Text;
             _selectedAsset.PurchaseDate = AssetPurchaseDateInput.Date.Date;
             _selectedAsset.Notes = AssetNotesInput.Text;
+            _selectedAsset.Employee = (Models.Employee)AssetEmployeeSelect.SelectedItem;
             new AssetService().UpdateAsset(_selectedAsset);
             Status.Text = "Asset Updated";
             PopulateAssetDetails();
             EditAssetView.Visibility = Visibility.Collapsed;
             ViewAssetView.Visibility = Visibility.Visible;
             PopulateInputDetails(_selectedAsset);
+        }
+
+        private void AssetDepartmentSelect_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (AssetDepartmentSelect.SelectedItem != null)
+            {
+                AssetEmployeeSelect.ItemsSource = new EmployeeService().GetEmployees(((Department)AssetDepartmentSelect.SelectedItem).Id);
+            }
+        }
+
+        private void AssetEmployeeSelect_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+
         }
     }
 }

@@ -24,6 +24,8 @@
                 <TextBlock x:Name="AssetIpAddress" Text="IP Address: " Margin="10"/>
                 <TextBlock x:Name="AssetPurchaseDate" Text="Purchase Date: " Margin="10"/>
                 <TextBlock x:Name="AssetNotes" Text="Notes: " Margin="10"/>
+                <TextBlock x:Name="AssetDepartment" Text="Department: " Margin="10"/>
+                <TextBlock x:Name="AssetEmployee" Text="Employee: " Margin="10"/>
                 <Button x:Name="EditAssetButton" Content="Edit Asset" Click="EditAssetButton_Click" Margin="10"/>
                 <Button x:Name="DeleteAssetButton" Content="Delete Asset" Click="DeleteAssetButton_Click" Margin="10"/>
                 <TextBlock x:Name="Status" Margin="10"/>
@@ -37,6 +39,8 @@
                 <TextBox x:Name="AssetIpAddressInput" Header="IP Address" Margin="10"/>
                 <DatePicker x:Name="AssetPurchaseDateInput" Header="Purchase Date" Margin="10"/>
                 <TextBox x:Name="AssetNotesInput" Header="Notes" Margin="10"/>
+                <ComboBox x:Name="AssetDepartmentSelect" Header="Department" HorizontalAlignment="Stretch" PlaceholderText="Select Department" Margin="10" ItemsSource="{Binding}" DisplayMemberPath="Name" SelectionChanged="AssetDepartmentSelect_SelectionChanged"/>
+                <ComboBox x:Name="AssetEmployeeSelect" Header="Employee" HorizontalAlignment="Stretch" PlaceholderText="Select Employee" Margin="10" ItemsSource="{Binding}" DisplayMemberPath="Name" SelectionChanged="AssetEmployeeSelect_SelectionChanged"/>
                 <Button x:Name="CancelButton" Content="Cancel" Click="CancelButton_Click" Margin="10"/>
                 <Button x:Name="UpdateAssetButton" Content="Update Asset" Click="UpdateAssetButton_Click" Margin="10"/>
             </StackPanel>

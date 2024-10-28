@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using ScottishGlenAssetTracking.Data;
 using System.Management;
 using System.Net;
+using Microsoft.EntityFrameworkCore;
 
 namespace ScottishGlenAssetTracking.Services
 {
@@ -27,7 +28,7 @@ namespace ScottishGlenAssetTracking.Services
         {
             using (var context = new ScottishGlenContext())
             {
-                return context.Assets.Find(assetId);
+                return context.Assets.Include(a => a.Employee).ThenInclude(e => e.Department).FirstOrDefault(a => a.Id == assetId);
             }
         }
 
@@ -35,7 +36,7 @@ namespace ScottishGlenAssetTracking.Services
         {
             using (var context = new ScottishGlenContext())
             {
-                return context.Assets.Where(a => a.Employee.Id == employeeId).ToList();
+                return context.Assets.Include(a => a.Employee).ThenInclude(e => e.Department).Where(a => a.Employee.Id == employeeId).ToList();
             }
         }
 
