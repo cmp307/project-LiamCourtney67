@@ -9,14 +9,14 @@
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
-    <Grid>
+    <Grid Background="#5C5C5C">
         <StackPanel>
             <TextBlock x:Name="ViewAssetHeader" Text="View Asset" FontSize="24" Margin="10"/>
             <ComboBox x:Name="DepartmentSelect" Header="Department" HorizontalAlignment="Stretch" PlaceholderText="Select Department" Margin="10" ItemsSource="{Binding}" DisplayMemberPath="Name" SelectionChanged="DepartmentSelect_SelectionChanged"/>
             <ComboBox x:Name="EmployeeSelect" Header="Employee" HorizontalAlignment="Stretch" PlaceholderText="Select Employee" Margin="10" ItemsSource="{Binding}" DisplayMemberPath="Name" SelectionChanged="EmployeeSelect_SelectionChanged"/>
             <ComboBox x:Name="AssetSelect" Header="Asset" HorizontalAlignment="Stretch" PlaceholderText="Select Asset" Margin="10" ItemsSource="{Binding}" DisplayMemberPath="Name" SelectionChanged="AssetSelect_SelectionChanged"/>
-            
-            <StackPanel x:Name="ViewAssetView">
+
+            <StackPanel x:Name="ViewAssetView" Visibility="Collapsed">
                 <TextBlock x:Name="AssetName" Text="Name: " Margin="10"/>
                 <TextBlock x:Name="AssetModel" Text="Model: " Margin="10"/>
                 <TextBlock x:Name="AssetManufacturer" Text="Manufacturer: " Margin="10"/>
@@ -26,9 +26,11 @@
                 <TextBlock x:Name="AssetNotes" Text="Notes: " Margin="10"/>
                 <TextBlock x:Name="AssetDepartment" Text="Department: " Margin="10"/>
                 <TextBlock x:Name="AssetEmployee" Text="Employee: " Margin="10"/>
-                <Button x:Name="EditAssetButton" Content="Edit Asset" Click="EditAssetButton_Click" Margin="10"/>
-                <Button x:Name="DeleteAssetButton" Content="Delete Asset" Click="DeleteAssetButton_Click" Margin="10"/>
-                <TextBlock x:Name="Status" Margin="10"/>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                    <Button x:Name="EditAssetButton" Content="Edit Asset" Click="EditAssetButton_Click" Margin="10" Background="Blue" Foreground="White"/>
+                    <Button x:Name="DeleteAssetButton" Content="Delete Asset" Click="DeleteAssetButton_Click" Margin="10" Background="Red" Foreground="White"/>
+                </StackPanel>
+                <TextBlock x:Name="Status" Margin="10" HorizontalAlignment="Center"/>
             </StackPanel>
 
             <StackPanel x:Name="EditAssetView" Visibility="Collapsed">
@@ -41,8 +43,10 @@
                 <TextBox x:Name="AssetNotesInput" Header="Notes" Margin="10"/>
                 <ComboBox x:Name="AssetDepartmentSelect" Header="Department" HorizontalAlignment="Stretch" PlaceholderText="Select Department" Margin="10" ItemsSource="{Binding}" DisplayMemberPath="Name" SelectionChanged="AssetDepartmentSelect_SelectionChanged"/>
                 <ComboBox x:Name="AssetEmployeeSelect" Header="Employee" HorizontalAlignment="Stretch" PlaceholderText="Select Employee" Margin="10" ItemsSource="{Binding}" DisplayMemberPath="Name" SelectionChanged="AssetEmployeeSelect_SelectionChanged"/>
-                <Button x:Name="CancelButton" Content="Cancel" Click="CancelButton_Click" Margin="10"/>
-                <Button x:Name="UpdateAssetButton" Content="Update Asset" Click="UpdateAssetButton_Click" Margin="10"/>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                    <Button x:Name="CancelButton" Content="Cancel" Click="CancelButton_Click" Margin="10" Background="Red" Foreground="White"/>
+                    <Button x:Name="UpdateAssetButton" Content="Update Asset" Click="UpdateAssetButton_Click" Margin="10" Background="Green" Foreground="White"/>
+                </StackPanel>
             </StackPanel>
         </StackPanel>
     </Grid>

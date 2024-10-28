@@ -55,6 +55,7 @@ namespace ScottishGlenAssetTracking.Views.Asset
         private void AssetSelect_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             PopulateAssetDetails();
+            ViewAssetView.Visibility = Visibility.Visible;
         }
 
         private void PopulateAssetDetails()
