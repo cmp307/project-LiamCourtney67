@@ -25,7 +25,7 @@ namespace ScottishGlenAssetTracking.Services
         {
             using (var context = new ScottishGlenContext())
             {
-                return context.Employees.Find(employeeId);
+                return context.Employees.Include(e => e.Department).FirstOrDefault(e => e.Id == employeeId);
             }
         }
 
@@ -33,7 +33,7 @@ namespace ScottishGlenAssetTracking.Services
         {
             using (var context = new ScottishGlenContext())
             {
-                return context.Employees.Where(e => e.Department.Id == departmentId).ToList();
+                return context.Employees.Include(e => e.Assets).Include(e => e.Department).Where(e => e.Department.Id == departmentId).ToList();
             }
         }
 
