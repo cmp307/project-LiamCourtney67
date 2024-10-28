@@ -30,10 +30,17 @@ namespace ScottishGlenAssetTracking.Views.Asset
         public ViewAsset()
         {
             this.InitializeComponent();
+
             List<Department> departments = new DepartmentService().GetDepartments();
+
             DepartmentSelect.ItemsSource = departments;
-            AssetDepartmentSelect.ItemsSource = departments;
+
+            List<Department> departmentsWithoutTemp = new List<Department>(departments);
+            departmentsWithoutTemp.Remove(departmentsWithoutTemp.Find(d => d.Name == "Assets without Employee"));
+
+            AssetDepartmentSelect.ItemsSource = departmentsWithoutTemp;
         }
+
         private void DepartmentSelect_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (DepartmentSelect.SelectedItem != null)
