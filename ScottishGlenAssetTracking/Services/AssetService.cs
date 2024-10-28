@@ -44,6 +44,7 @@ namespace ScottishGlenAssetTracking.Services
         {
             using (var context = new ScottishGlenContext())
             {
+                context.Entry(asset.Employee).State = EntityState.Unchanged;
                 context.Assets.Update(asset);
                 context.SaveChanges();
                 return true;
@@ -61,7 +62,7 @@ namespace ScottishGlenAssetTracking.Services
             }
         }
 
-        public Asset GetAssetWithSystemInfo ()
+        public Asset GetAssetWithSystemInfo()
         {
             string name = Environment.MachineName;
             string manufacturer = "Unknown";
