@@ -9,15 +9,15 @@
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
-    <Grid>
+    <Grid Background="#5C5C5C">
         <StackPanel>
             <TextBlock x:Name="AddEmployeeHeader" Text="Add Employee" FontSize="24" Margin="10"/>
             <ComboBox x:Name="DepartmentSelect" Header="Department" HorizontalAlignment="Stretch" PlaceholderText="Select Department" Margin="10" ItemsSource="{Binding}" DisplayMemberPath="Name"/>
             <TextBox x:Name="EmployeeFirstName" Header="First Name" PlaceholderText="Enter First Name" Margin="10"/>
             <TextBox x:Name="EmployeeLastName" Header="Last Name" PlaceholderText="Enter Last Name" Margin="10"/>
             <TextBox x:Name="EmployeeEmail" Header="Email" PlaceholderText="Enter Email" Margin="10"/>
-            <Button x:Name="AddEmployeeButton" Content="Add Employee" Click="AddEmployeeButton_Click" Margin="10"/>
-            <TextBlock x:Name="AddEmployeeStatus" Text="" Margin="10"/>
+            <Button x:Name="AddEmployeeButton" Content="Add Employee" Click="AddEmployeeButton_Click" Margin="10" Background="Green" Foreground="White" HorizontalAlignment="Right"/>
+            <TextBlock x:Name="AddEmployeeStatus" Margin="10" Visibility="Collapsed" HorizontalAlignment="Center"/>
         </StackPanel>
     </Grid>
 </Page>

@@ -35,8 +35,8 @@ namespace ScottishGlenAssetTracking.Views.Employee
         private void AddEmployeeButton_Click(object sender, RoutedEventArgs e)
         {
             CreateEmployee();
+            AddEmployeeStatus.Visibility = Visibility.Visible;
             AddEmployeeStatus.Text = "Employee Added";
-            AddEmployeeStatus.Text = new EmployeeService().GetEmployees(((Department)DepartmentSelect.SelectedItem).Id).Count.ToString();
         }
 
         private void CreateEmployee()
