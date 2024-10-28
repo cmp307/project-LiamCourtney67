@@ -45,6 +45,7 @@ namespace ScottishGlenAssetTracking.Views.Employee
         private void EmployeeSelect_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             PopulateEmployeeDetails();
+            ViewEmployeeView.Visibility = Visibility.Visible;
         }
 
         private void PopulateEmployeeDetails()
