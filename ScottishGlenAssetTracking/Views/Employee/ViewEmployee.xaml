@@ -14,11 +14,23 @@
             <TextBlock x:Name="ViewEmployeeHeader" Text="View Employee" FontSize="24" Margin="10"/>
             <ComboBox x:Name="DepartmentSelect" Header="Department" HorizontalAlignment="Stretch" PlaceholderText="Select Department" Margin="10" ItemsSource="{Binding}" DisplayMemberPath="Name" SelectionChanged="DepartmentSelect_SelectionChanged"/>
             <ComboBox x:Name="EmployeeSelect" Header="Employee" HorizontalAlignment="Stretch" PlaceholderText="Select Employee" Margin="10" ItemsSource="{Binding}" DisplayMemberPath="Name" SelectionChanged="EmployeeSelect_SelectionChanged"/>
-            <TextBlock x:Name="EmployeeFirstName" Margin="10"/>
-            <TextBlock x:Name="EmployeeLastName" Margin="10"/>
-            <TextBlock x:Name="EmployeeEmail" Margin="10"/>
-            <Button x:Name="DeleteEmployeeButton" Content="Delete Employee" Click="DeleteEmployeeButton_Click" Margin="10"/>
-            <TextBlock x:Name="DeleteEmployeeStatus" Margin="10"/>
+            
+            <StackPanel x:Name="ViewEmployeeView">
+                <TextBlock x:Name="EmployeeFirstName" Text="First Name: " Margin="10"/>
+                <TextBlock x:Name="EmployeeLastName" Text="Last Name: " Margin="10"/>
+                <TextBlock x:Name="EmployeeEmail" Text="Email: " Margin="10"/>
+                <Button x:Name="EditEmployeeButton" Content="Edit Employee" Click="EditEmployeeButton_Click" Margin="10"/>
+                <Button x:Name="DeleteEmployeeButton" Content="Delete Employee" Click="DeleteEmployeeButton_Click" Margin="10"/>
+                <TextBlock x:Name="Status" Margin="10"/>
+            </StackPanel>
+
+            <StackPanel x:Name="EditEmployeeView" Visibility="Collapsed">
+                <TextBox x:Name="EmployeeFirstNameInput" Header="First Name" Margin="10"/>
+                <TextBox x:Name="EmployeeLastNameInput" Header="Last Name" Margin="10"/>
+                <TextBox x:Name="EmployeeEmailInput" Header="Email" Margin="10"/>
+                <Button x:Name="CancelButton" Content="Cancel" Click="CancelButton_Click" Margin="10"/>
+                <Button x:Name="UpdateEmployeeButton" Content="Update Employee" Click="UpdateEmployeeButton_Click" Margin="10"/>
+            </StackPanel>
         </StackPanel>
     </Grid>
 </Page>
