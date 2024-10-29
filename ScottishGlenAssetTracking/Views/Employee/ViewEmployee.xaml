@@ -6,37 +6,60 @@
     xmlns:local="using:ScottishGlenAssetTracking.Views.Employee"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:vm="using:ScottishGlenAssetTracking.ViewModels"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
+    <Page.DataContext>
+        <vm:ViewEmployeeViewModel />
+    </Page.DataContext>
+
     <Grid Background="#5C5C5C">
         <StackPanel>
+            <!--Header-->
             <TextBlock x:Name="ViewEmployeeHeader" Text="View Employee" FontSize="24" Margin="10"/>
-            <ComboBox x:Name="DepartmentSelect" Header="Department" HorizontalAlignment="Stretch" PlaceholderText="Select Department" Margin="10" ItemsSource="{Binding}" DisplayMemberPath="Name" SelectionChanged="DepartmentSelect_SelectionChanged"/>
-            <ComboBox x:Name="EmployeeSelect" Header="Employee" HorizontalAlignment="Stretch" PlaceholderText="Select Employee" Margin="10" ItemsSource="{Binding}" DisplayMemberPath="Name" SelectionChanged="EmployeeSelect_SelectionChanged"/>
             
-            <StackPanel x:Name="ViewEmployeeView" Visibility="Collapsed">
-                <TextBlock x:Name="EmployeeFirstName" Text="First Name: " Margin="10"/>
-                <TextBlock x:Name="EmployeeLastName" Text="Last Name: " Margin="10"/>
-                <TextBlock x:Name="EmployeeEmail" Text="Email: " Margin="10"/>
-                <TextBlock x:Name="EmployeeDepartment" Text="Department: " Margin="10"/>
-                <ListView x:Name="EmployeeAssets" Header="Assets: " ItemsSource="{Binding}" DisplayMemberPath="Name" Margin="10"/>
+            <!--Department Select-->
+            <ComboBox x:Name="DepartmentSelect" Header="Department" HorizontalAlignment="Stretch" PlaceholderText="Select Department" Margin="10" 
+                      ItemsSource="{Binding Departments}" SelectedItem="{Binding SelectedDepartment, Mode=TwoWay}" DisplayMemberPath="Name" SelectionChanged="DepartmentSelect_SelectionChanged"/>
+            
+            <!--Employee Select-->
+            <ComboBox x:Name="EmployeeSelect" Header="Employee" HorizontalAlignment="Stretch" PlaceholderText="Select Employee" Margin="10" 
+                      ItemsSource="{Binding Employees}" SelectedItem="{Binding SelectedEmployee, Mode=TwoWay}" DisplayMemberPath="Name" SelectionChanged="EmployeeSelect_SelectionChanged"/>
+            
+            <!--View Employee View-->
+            <StackPanel x:Name="ViewEmployeeView" Visibility="{Binding ViewEmployeeViewVisibility}">
+                
+                <TextBlock Text="{Binding SelectedEmployee.FirstName}" Margin="10"/>
+                <TextBlock Text="{Binding SelectedEmployee.LastName}" Margin="10"/>
+                <TextBlock Text="{Binding SelectedEmployee.Email}" Margin="10"/>
+                <TextBlock Text="{Binding SelectedEmployee.Department.Name}" Margin="10"/>
+                
+                <ListView x:Name="EmployeeAssets" Header="Assets: " ItemsSource="{Binding SelectedEmployee.Assets}" DisplayMemberPath="Name" Margin="10"/>
+                
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                    <Button x:Name="EditEmployeeButton" Content="Edit Employee" Click="EditEmployeeButton_Click" Margin="10" Background="Blue" Foreground="White"/>
-                    <Button x:Name="DeleteEmployeeButton" Content="Delete Employee" Click="DeleteEmployeeButton_Click" Margin="10" Background="Red" Foreground="White"/>
+                    <Button x:Name="EditEmployeeButton" Content="Edit Employee" Command="{Binding ChangeViewToEditCommand}" Margin="10" Background="Blue" Foreground="White"/>
+                    <Button x:Name="DeleteEmployeeButton" Content="Delete Employee" Command="{Binding DeleteEmployeeCommand}" Margin="10" Background="Red" Foreground="White"/>
                 </StackPanel>
-                <TextBlock x:Name="Status" Margin="10" HorizontalAlignment="Center"/>
+
+                <TextBlock x:Name="Status" Text="{Binding StatusMessage}" Visibility="{Binding StatusVisibility}" Margin="10" HorizontalAlignment="Center"/>
             </StackPanel>
 
-            <StackPanel x:Name="EditEmployeeView" Visibility="Collapsed">
-                <TextBox x:Name="EmployeeFirstNameInput" Header="First Name" Margin="10"/>
-                <TextBox x:Name="EmployeeLastNameInput" Header="Last Name" Margin="10"/>
-                <TextBox x:Name="EmployeeEmailInput" Header="Email" Margin="10"/>
-                <ComboBox x:Name="EmployeeDepartmentSelect" Header="Department" HorizontalAlignment="Stretch" PlaceholderText="Select Department" Margin="10" ItemsSource="{Binding}" DisplayMemberPath="Name" SelectionChanged="EmployeeDepartmentSelect_SelectionChanged"/>
+            <!--Edit Employee View-->
+            <StackPanel x:Name="EditEmployeeView" Visibility="{Binding EditEmployeeViewVisibility}">
+
+                <TextBox Header="First Name" Text="{Binding SelectedEmployee.FirstName, Mode=TwoWay}" Margin="10"/>
+                <TextBox Header="Last Name" Text="{Binding SelectedEmployee.LastName, Mode=TwoWay}" Margin="10"/>
+                <TextBox Header="Email" Text="{Binding SelectedEmployee.Email, Mode=TwoWay}" Margin="10"/>
+
+                <ComboBox x:Name="EmployeeDepartmentSelect" Header="Department" HorizontalAlignment="Stretch" PlaceholderText="Select Department" Margin="10" 
+                          ItemsSource="{Binding Departments}" SelectedItem="{Binding SelectedDepartment, Mode=TwoWay}" DisplayMemberPath="Name"/>
+                
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                    <Button x:Name="CancelButton" Content="Cancel" Click="CancelButton_Click" Margin="10" Background="Red" Foreground="White"/>
-                    <Button x:Name="UpdateEmployeeButton" Content="Update Employee" Click="UpdateEmployeeButton_Click" Margin="10" Background="Green" Foreground="White"/>
+                    <Button x:Name="CancelButton" Content="Cancel" Command="{Binding ChangeViewToViewCommand}" Margin="10" Background="Red" Foreground="White"/>
+                    <Button x:Name="UpdateEmployeeButton" Content="Update Employee" Command="{Binding UpdateEmployeeCommand}" Margin="10" Background="Green" Foreground="White"/>
                 </StackPanel>
+            
             </StackPanel>
         </StackPanel>
     </Grid>
