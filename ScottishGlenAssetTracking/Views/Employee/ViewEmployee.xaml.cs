@@ -25,10 +25,18 @@ namespace ScottishGlenAssetTracking.Views.Employee
     /// </summary>
     public sealed partial class ViewEmployee : Page
     {
+        private Models.Employee _selectedEmployee;
+
         public ViewEmployee()
         {
             this.InitializeComponent();
-            DepartmentSelect.ItemsSource = new DepartmentService().GetDepartments();
+
+            List<Department> departments = new DepartmentService().GetDepartments();
+
+            departments.Remove(departments.Find(d => d.Name == "Assets without Employee"));
+
+            EmployeeDepartmentSelect.ItemsSource = departments;
+            DepartmentSelect.ItemsSource = departments;
         }
         private void DepartmentSelect_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
@@ -41,6 +49,7 @@ namespace ScottishGlenAssetTracking.Views.Employee
         private void EmployeeSelect_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             PopulateEmployeeDetails();
+            ViewEmployeeView.Visibility = Visibility.Visible;
         }
 
         private void PopulateEmployeeDetails()
@@ -48,16 +57,88 @@ namespace ScottishGlenAssetTracking.Views.Employee
             var employee = (Models.Employee)EmployeeSelect.SelectedItem;
             if (employee != null)
             {
-                EmployeeFirstName.Text = employee.FirstName;
-                EmployeeLastName.Text = employee.LastName;
-                EmployeeEmail.Text = employee.Email;
+                EmployeeFirstName.Text = $"First Name: {employee.FirstName}";
+                EmployeeLastName.Text = $"Last Name: {employee.LastName}";
+                EmployeeEmail.Text = $"Email: {employee.Email}";
+                EmployeeDepartment.Text = $"Department: {employee.Department.Name}";
+
+                _selectedEmployee = employee;
             }
             else
             {
-                EmployeeFirstName.Text = "";
-                EmployeeLastName.Text = "";
-                EmployeeEmail.Text = "";
+                EmployeeFirstName.Text = "First Name: ";
+                EmployeeLastName.Text = "Last Name: ";
+                EmployeeEmail.Text = "Email: ";
+                EmployeeDepartment.Text = "Department: ";
+
+                _selectedEmployee = null;
             }
+            PopulateEmployeeInputs(employee);
+        }
+
+        private void PopulateEmployeeInputs(Models.Employee employee)
+        {
+            if (employee != null) {
+                EmployeeFirstNameInput.Text = _selectedEmployee.FirstName;
+                EmployeeLastNameInput.Text = _selectedEmployee.LastName;
+                EmployeeEmailInput.Text = _selectedEmployee.Email;
+                EmployeeAssets.ItemsSource = _selectedEmployee.Assets;
+
+                // Set the employee department in the dropdown.
+                EmployeeDepartmentSelect.SelectedItem = ((List<Department>)EmployeeDepartmentSelect.ItemsSource)
+                    .FirstOrDefault(d => d.Id == employee.Department.Id);
+            }
+            else
+            {
+                EmployeeFirstNameInput.Text = string.Empty;
+                EmployeeLastNameInput.Text = string.Empty;
+                EmployeeEmailInput.Text = string.Empty;
+                EmployeeDepartmentSelect.SelectedItem = null;
+            }
+        }
+
+        private void DeleteEmployeeButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (_selectedEmployee != null)
+            {
+                new EmployeeService().DeleteEmployee(_selectedEmployee.Id);
+                Status.Text = "Employee Deleted";
+                PopulateEmployeeDetails();
+                EmployeeSelect.ItemsSource = new EmployeeService().GetEmployees(((Department)DepartmentSelect.SelectedItem).Id);
+            }
+            else
+            {
+                Status.Text = "No Employee Selected";
+            }
+        }
+
+        private void CancelButton_Click(object sender, RoutedEventArgs e)
+        {
+            EditEmployeeView.Visibility = Visibility.Collapsed;
+            ViewEmployeeView.Visibility = Visibility.Visible;
+        }
+        private void EditEmployeeButton_Click(object sender, RoutedEventArgs e)
+        {
+            ViewEmployeeView.Visibility = Visibility.Collapsed;
+            EditEmployeeView.Visibility = Visibility.Visible;
+        }
+        private void UpdateEmployeeButton_Click(object sender, RoutedEventArgs e)
+        {
+            _selectedEmployee.FirstName = EmployeeFirstNameInput.Text;
+            _selectedEmployee.LastName = EmployeeLastNameInput.Text;
+            _selectedEmployee.Email = EmployeeEmailInput.Text;
+            _selectedEmployee.Department = (Department)EmployeeDepartmentSelect.SelectedItem;
+            new EmployeeService().UpdateEmployee(_selectedEmployee);
+            Status.Text = "Employee Updated";
+            PopulateEmployeeDetails();
+            EditEmployeeView.Visibility = Visibility.Collapsed;
+            ViewEmployeeView.Visibility = Visibility.Visible;
+            PopulateEmployeeInputs(_selectedEmployee);
+        }
+
+        private void EmployeeDepartmentSelect_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+
         }
     }
 }

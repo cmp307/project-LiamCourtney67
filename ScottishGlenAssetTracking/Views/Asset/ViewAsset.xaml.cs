@@ -25,16 +25,29 @@ namespace ScottishGlenAssetTracking.Views.Asset
     /// </summary>
     public sealed partial class ViewAsset : Page
     {
+        private Models.Asset _selectedAsset;
+
         public ViewAsset()
         {
             this.InitializeComponent();
-            DepartmentSelect.ItemsSource = new DepartmentService().GetDepartments();
+
+            List<Department> departments = new DepartmentService().GetDepartments();
+
+            DepartmentSelect.ItemsSource = departments;
+
+            List<Department> departmentsWithoutTemp = new List<Department>(departments);
+            departmentsWithoutTemp.Remove(departmentsWithoutTemp.Find(d => d.Name == "Assets without Employee"));
+
+            AssetDepartmentSelect.ItemsSource = departmentsWithoutTemp;
         }
+
         private void DepartmentSelect_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (DepartmentSelect.SelectedItem != null)
             {
-                EmployeeSelect.ItemsSource = new EmployeeService().GetEmployees(((Department)DepartmentSelect.SelectedItem).Id);
+                List<Models.Employee> employees = new EmployeeService().GetEmployees(((Department)DepartmentSelect.SelectedItem).Id);
+                EmployeeSelect.ItemsSource = employees;
+                AssetEmployeeSelect.ItemsSource = employees;
             }
         }
 
@@ -49,6 +62,7 @@ namespace ScottishGlenAssetTracking.Views.Asset
         private void AssetSelect_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             PopulateAssetDetails();
+            ViewAssetView.Visibility = Visibility.Visible;
         }
 
         private void PopulateAssetDetails()
@@ -56,24 +70,125 @@ namespace ScottishGlenAssetTracking.Views.Asset
             var asset = (Models.Asset)AssetSelect.SelectedItem;
             if (asset != null)
             {
-                AssetName.Text = asset.Name;
-                AssetModel.Text = asset.Model;
-                AssetManufacturer.Text = asset.Manufacturer;
-                AssetType.Text = asset.Type;
-                AssetIpAddress.Text = asset.IpAddress;
-                AssetPurchaseDate.Text = asset.PurchaseDate.ToString();
-                AssetNotes.Text = asset.Notes;
+                AssetName.Text = $"Name: {asset.Name}";
+                AssetModel.Text = $"Model: {asset.Model}";
+                AssetManufacturer.Text = $"Manufacturer: {asset.Manufacturer}";
+                AssetType.Text = $"Type: {asset.Type}";
+                AssetIpAddress.Text = $"IP Address: {asset.IpAddress}";
+                AssetPurchaseDate.Text = $"Purchase Date: {asset.PurchaseDate}";
+                AssetNotes.Text = $"Notes: {asset.Notes}";
+                AssetDepartment.Text = $"Department: {asset.Employee.Department.Name}";
+                AssetEmployee.Text = $"Employee: {asset.Employee.FirstName} {asset.Employee.LastName}";
+
+                _selectedAsset = asset;
             }
             else
             {
-                AssetName.Text = "";
-                AssetModel.Text = "";
-                AssetManufacturer.Text = "";
-                AssetType.Text = "";
-                AssetIpAddress.Text = "";
-                AssetPurchaseDate.Text = "";
-                AssetNotes.Text = "";
+                AssetName.Text = "Name: ";
+                AssetModel.Text = "Model: ";
+                AssetManufacturer.Text = "Manufacturer: ";
+                AssetType.Text = "Type: ";
+                AssetIpAddress.Text = "IP Address: ";
+                AssetPurchaseDate.Text = "Purchase Date: ";
+                AssetNotes.Text = "Notes: ";
+                AssetDepartment.Text = "Department: ";
+                AssetEmployee.Text = "Employee: ";
+
+                _selectedAsset = null;
             }
+            PopulateInputDetails(asset);
+        }
+
+        private void PopulateInputDetails(Models.Asset asset)
+        {
+            if (asset != null)
+            {
+                AssetNameInput.Text = asset.Name;
+                AssetModelInput.Text = asset.Model;
+                AssetManufacturerInput.Text = asset.Manufacturer;
+                AssetTypeInput.Text = asset.Type;
+                AssetIpAddressInput.Text = asset.IpAddress;
+                AssetPurchaseDateInput.Date = (DateTime)asset.PurchaseDate;
+                AssetNotesInput.Text = asset.Notes;
+
+                // Set the asset department in the dropdown.
+                AssetDepartmentSelect.SelectedItem = ((List<Department>)AssetDepartmentSelect.ItemsSource)
+                    .FirstOrDefault(d => d.Id == asset.Employee.Department.Id);
+
+                // Set the asset employee in the dropdown.
+                AssetEmployeeSelect.SelectedItem = ((List<Models.Employee>)AssetEmployeeSelect.ItemsSource)
+                    .FirstOrDefault(e => e.Id == asset.Employee.Id);
+            }
+            else
+            {
+                AssetNameInput.Text = string.Empty;
+                AssetModelInput.Text = string.Empty;
+                AssetManufacturerInput.Text = string.Empty;
+                AssetTypeInput.Text = string.Empty;
+                AssetIpAddressInput.Text = string.Empty;
+                AssetPurchaseDateInput.Date = DateTime.Now;
+                AssetNotesInput.Text = string.Empty;
+                AssetDepartmentSelect.SelectedItem = null;
+                AssetEmployeeSelect.SelectedItem = null;
+            }
+        }
+
+        private void DeleteAssetButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (_selectedAsset != null)
+            {
+                new AssetService().DeleteAsset(_selectedAsset.Id);
+                Status.Text = "Asset Deleted";
+                PopulateAssetDetails();
+                AssetSelect.ItemsSource = new AssetService().GetAssets(((Models.Employee)EmployeeSelect.SelectedItem).Id);
+            }
+            else
+            {
+                Status.Text = "No Asset Selected";
+            }
+        }
+
+        private void EditAssetButton_Click(object sender, RoutedEventArgs e)
+        {
+            ViewAssetView.Visibility = Visibility.Collapsed;
+            EditAssetView.Visibility = Visibility.Visible;
+        }
+
+        private void CancelButton_Click(object sender, RoutedEventArgs e)
+        {
+            EditAssetView.Visibility = Visibility.Collapsed;
+            ViewAssetView.Visibility = Visibility.Visible;
+        }
+
+        private void UpdateAssetButton_Click(object sender, RoutedEventArgs e)
+        {
+            _selectedAsset.Name = AssetNameInput.Text;
+            _selectedAsset.Model = AssetModelInput.Text;
+            _selectedAsset.Manufacturer = AssetManufacturerInput.Text;
+            _selectedAsset.Type = AssetTypeInput.Text;
+            _selectedAsset.IpAddress = AssetIpAddressInput.Text;
+            _selectedAsset.PurchaseDate = AssetPurchaseDateInput.Date.Date;
+            _selectedAsset.Notes = AssetNotesInput.Text;
+            _selectedAsset.Employee = (Models.Employee)AssetEmployeeSelect.SelectedItem;
+            new AssetService().UpdateAsset(_selectedAsset);
+            Status.Text = "Asset Updated";
+            PopulateAssetDetails();
+            EditAssetView.Visibility = Visibility.Collapsed;
+            ViewAssetView.Visibility = Visibility.Visible;
+            PopulateInputDetails(_selectedAsset);
+        }
+
+        private void AssetDepartmentSelect_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (AssetDepartmentSelect.SelectedItem != null)
+            {
+                AssetEmployeeSelect.ItemsSource = new EmployeeService().GetEmployees(((Department)AssetDepartmentSelect.SelectedItem).Id);
+            }
+        }
+
+        private void AssetEmployeeSelect_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+
         }
     }
 }
