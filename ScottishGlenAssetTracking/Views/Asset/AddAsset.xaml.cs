@@ -11,9 +11,12 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Management;
+using System.Net;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.Services.Maps;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -28,7 +31,12 @@ namespace ScottishGlenAssetTracking.Views.Asset
         public AddAsset()
         {
             this.InitializeComponent();
-            DepartmentSelect.ItemsSource = new DepartmentService().GetDepartments();
+
+            List<Department> departments = new DepartmentService().GetDepartments();
+
+            departments.Remove(departments.Find(d => d.Name == "Assets without Employee"));
+
+            DepartmentSelect.ItemsSource = departments;
         }
 
         private void DepartmentSelect_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -44,18 +52,12 @@ namespace ScottishGlenAssetTracking.Views.Asset
 
         private void CreateAsset()
         {
-            var asset = new Models.Asset
-            {
-                Name = AssetName.Text,
-                Model = AssetModel.Text,
-                Manufacturer = AssetManufacturer.Text,
-                Type = AssetType.Text,
-                IpAddress = AssetIpAddress.Text,
-                PurchaseDate = AssetPurchaseDate.Date.Date,
-                Notes = AssetNotes.Text,
-                Employee = (Models.Employee)EmployeeSelect.SelectedItem
-            };
-            new AssetService().AddAsset(asset);
+            AssetService assetService = new AssetService();
+            Models.Asset asset = assetService.GetAssetWithSystemInfo();
+            asset.PurchaseDate = AssetPurchaseDate.Date.Date;
+            asset.Notes = AssetNotes.Text;
+            asset.Employee = (Models.Employee)EmployeeSelect.SelectedItem;
+            assetService.AddAsset(asset);
         }
     }
 }
