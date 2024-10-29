@@ -10,38 +10,39 @@ namespace ScottishGlenAssetTracking.ViewModels
 {
     public partial class AddEmployeeViewModel : ObservableObject
     {
+        private readonly DepartmentService _departmentService;
         private readonly EmployeeService _employeeService;
 
         public AddEmployeeViewModel()
         {
-            // Get the departments.
-            DepartmentService departmentService = new DepartmentService();
-            Departments = new ObservableCollection<Department>(departmentService.GetDepartments());
-
-            // Remove the invalid department.
-            Department invalidDepartment = Departments.FirstOrDefault(d => d.Name == "Assets without Employee");
-            if (invalidDepartment != null)
-            {
-                Departments.Remove(invalidDepartment);
-            }
-
-            // Initialize the new employee, employee service, and command.
-            newEmployee = new Employee();
+            // Initialize services
+            _departmentService = new DepartmentService();
             _employeeService = new EmployeeService();
+
+            // Load departments and remove any unwanted items
+            Departments = new ObservableCollection<Department>(_departmentService.GetDepartments()
+                .Where(d => d.Name != "Assets without Employee"));
+
+            // Initialize commands
+            newEmployee = new Employee();
             AddEmployeeCommand = new RelayCommand(AddEmployee);
         }
 
+        // Collections
+        public ObservableCollection<Department> Departments { get; }
+
+        // Properties
         [ObservableProperty]
         private Employee newEmployee;
 
         [ObservableProperty]
         private string statusMessage;
 
+        // Visibility properties
         [ObservableProperty]
         private Visibility statusVisibility = Visibility.Collapsed;
 
-        public ObservableCollection<Department> Departments { get; }
-
+        // Commands
         public RelayCommand AddEmployeeCommand { get; }
 
         private void AddEmployee()
