@@ -15,6 +15,7 @@ using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using ScottishGlenAssetTracking.ViewModels;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -29,31 +30,7 @@ namespace ScottishGlenAssetTracking.Views.Employee
         public AddEmployee()
         {
             this.InitializeComponent();
-
-            List<Department> departments = new DepartmentService().GetDepartments();
-
-            departments.Remove(departments.Find(d => d.Name == "Assets without Employee"));
-
-            DepartmentSelect.ItemsSource = departments;
-        }
-
-        private void AddEmployeeButton_Click(object sender, RoutedEventArgs e)
-        {
-            CreateEmployee();
-            AddEmployeeStatus.Visibility = Visibility.Visible;
-            AddEmployeeStatus.Text = "Employee Added";
-        }
-
-        private void CreateEmployee()
-        {
-            var employee = new Models.Employee
-            {
-                FirstName = EmployeeFirstName.Text,
-                LastName = EmployeeLastName.Text,
-                Email = EmployeeEmail.Text,
-                Department = (Department)DepartmentSelect.SelectedItem
-            };
-            new EmployeeService().AddEmployee(employee);
+            this.DataContext = new AddEmployeeViewModel();
         }
     }
 }
