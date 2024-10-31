@@ -7,6 +7,7 @@ using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
 using ScottishGlenAssetTracking.Models;
 using ScottishGlenAssetTracking.Services;
+using ScottishGlenAssetTracking.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -31,33 +32,15 @@ namespace ScottishGlenAssetTracking.Views.Asset
         public AddAsset()
         {
             this.InitializeComponent();
-
-            List<Department> departments = new DepartmentService().GetDepartments();
-
-            departments.Remove(departments.Find(d => d.Name == "Assets without Employee"));
-
-            DepartmentSelect.ItemsSource = departments;
+            this.DataContext = new AddAssetViewModel();
         }
 
         private void DepartmentSelect_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            EmployeeSelect.ItemsSource = new EmployeeService().GetEmployees(((Department)DepartmentSelect.SelectedItem).Id);
-        }
-
-        private void AddAssetButton_Click(object sender, RoutedEventArgs e)
-        {
-            CreateAsset();
-            AddAssetStatus.Text = "Asset Added";
-        }
-
-        private void CreateAsset()
-        {
-            AssetService assetService = new AssetService();
-            Models.Asset asset = assetService.GetAssetWithSystemInfo();
-            asset.PurchaseDate = AssetPurchaseDate.Date.Date;
-            asset.Notes = AssetNotes.Text;
-            asset.Employee = (Models.Employee)EmployeeSelect.SelectedItem;
-            assetService.AddAsset(asset);
+            if (DataContext is AddAssetViewModel viewModel)
+            {
+                viewModel.SelectDepartmentCommand.Execute(null);
+            }
         }
     }
 }
