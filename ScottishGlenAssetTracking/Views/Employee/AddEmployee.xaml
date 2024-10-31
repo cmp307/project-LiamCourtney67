@@ -32,7 +32,7 @@
             <Button x:Name="AddEmployeeButton" Content="Add Employee" Command="{Binding AddEmployeeCommand}" Margin="10" Background="Green" Foreground="White" HorizontalAlignment="Right"/>
             
             <!--Status Message-->
-            <TextBlock x:Name="AddEmployeeStatus" Text="{Binding StatusMessage}" Visibility="{Binding StatusVisibility}" Margin="10" HorizontalAlignment="Center"/>
+            <TextBlock x:Name="StatusMessage" Text="{Binding StatusMessage}" Visibility="{Binding StatusVisibility}" Margin="10" HorizontalAlignment="Center"/>
         </StackPanel>
     </Grid>
 </Page>
