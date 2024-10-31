@@ -79,7 +79,7 @@ namespace ScottishGlenAssetTracking.ViewModels
             {
                 var employees = _employeeService.GetEmployees(SelectedDepartment.Id);
                 Employees = new ObservableCollection<Employee>(employees);
-                OnPropertyChanged(nameof(Employees)); // Notify the view that the Employees collection has changed
+                OnPropertyChanged(nameof(Employees));
             }
         }
 
@@ -87,6 +87,8 @@ namespace ScottishGlenAssetTracking.ViewModels
         {
             if (SelectedEmployee != null)
             {
+                SelectedEmployee.Department = Departments.FirstOrDefault(d => d.Id == SelectedEmployee.Department.Id);
+                OnPropertyChanged(nameof(SelectedEmployee));
                 StatusVisibility = Visibility.Collapsed;
                 StatusMessage = string.Empty;
                 ChangeViewToView();
@@ -114,10 +116,18 @@ namespace ScottishGlenAssetTracking.ViewModels
             if (SelectedEmployee != null)
             {
                 _employeeService.UpdateEmployee(SelectedEmployee);
+                OnPropertyChanged(nameof(SelectedEmployee));
+
+                int selectedEmployeeId = SelectedEmployee.Id;
+
+                SelectedDepartment = Departments.FirstOrDefault(d => d.Id == SelectedEmployee.Department.Id);
+                LoadEmployees();
+                SelectedEmployee = Employees.FirstOrDefault(e => e.Id == selectedEmployeeId);
+
                 StatusVisibility = Visibility.Visible;
                 StatusMessage = "Employee Updated";
-                ViewEmployeeViewVisibility = Visibility.Visible;
-                EditEmployeeViewVisibility = Visibility.Collapsed;
+
+                ChangeViewToView();
             }
         }
 
