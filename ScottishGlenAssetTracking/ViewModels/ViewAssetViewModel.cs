@@ -105,7 +105,8 @@ namespace ScottishGlenAssetTracking.ViewModels
         {
             if (SelectedAsset != null)
             {
-                selectedAsset.Employee = Employees.FirstOrDefault(e => e.Id == SelectedAsset.Employee.Id);
+                SelectedAsset.Employee = Employees.FirstOrDefault(e => e.Id == SelectedAsset.Employee.Id);
+                SelectedAsset.Employee.Department = Departments.FirstOrDefault(d => d.Id == SelectedAsset.Employee.Department.Id);
                 OnPropertyChanged(nameof(SelectedAsset));
                 StatusVisibility = Visibility.Collapsed;
                 StatusMessage = string.Empty;
