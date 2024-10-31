@@ -41,6 +41,7 @@ namespace ScottishGlenAssetTracking.Services
         {
             using (var context = new ScottishGlenContext())
             {
+                context.Entry(employee.Department).State = EntityState.Unchanged;
                 context.Employees.Update(employee);
                 context.SaveChanges();
                 return true;
