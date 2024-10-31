@@ -27,6 +27,7 @@ namespace ScottishGlenAssetTracking.ViewModels
             Departments = new ObservableCollection<Department>(_departmentService.GetDepartments()
                 .Where(d => d.Name != "Assets without Employee"));
 
+            // Initialize collections
             Employees = new ObservableCollection<Employee>();
 
             // Initialize commands
