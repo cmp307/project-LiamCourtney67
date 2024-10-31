@@ -6,46 +6,155 @@
     xmlns:local="using:ScottishGlenAssetTracking.Views.Asset"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:vm="using:ScottishGlenAssetTracking.ViewModels"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
+    <Page.DataContext>
+        <vm:ViewAssetViewModel />
+    </Page.DataContext>
+
     <Grid Background="#5C5C5C">
         <StackPanel>
+            <!--Header-->
             <TextBlock x:Name="ViewAssetHeader" Text="View Asset" FontSize="24" Margin="10"/>
-            <ComboBox x:Name="DepartmentSelect" Header="Department" HorizontalAlignment="Stretch" PlaceholderText="Select Department" Margin="10" ItemsSource="{Binding}" DisplayMemberPath="Name" SelectionChanged="DepartmentSelect_SelectionChanged"/>
-            <ComboBox x:Name="EmployeeSelect" Header="Employee" HorizontalAlignment="Stretch" PlaceholderText="Select Employee" Margin="10" ItemsSource="{Binding}" DisplayMemberPath="Name" SelectionChanged="EmployeeSelect_SelectionChanged"/>
-            <ComboBox x:Name="AssetSelect" Header="Asset" HorizontalAlignment="Stretch" PlaceholderText="Select Asset" Margin="10" ItemsSource="{Binding}" DisplayMemberPath="Name" SelectionChanged="AssetSelect_SelectionChanged"/>
+            
+            <!--Selects-->
+            <ComboBox x:Name="DepartmentSelect" Header="Department" HorizontalAlignment="Stretch" PlaceholderText="Select Department" Margin="10" 
+                      ItemsSource="{Binding Departments}" SelectedItem="{Binding SelectedDepartment, Mode=TwoWay}" DisplayMemberPath="Name" SelectionChanged="DepartmentSelect_SelectionChanged"/>
+            
+            <ComboBox x:Name="EmployeeSelect" Header="Employee" HorizontalAlignment="Stretch" PlaceholderText="Select Employee" Margin="10" 
+                      ItemsSource="{Binding Employees}" SelectedItem="{Binding SelectedEmployee, Mode=TwoWay}" DisplayMemberPath="Name" SelectionChanged="EmployeeSelect_SelectionChanged"/>
+            
+            <ComboBox x:Name="AssetSelect" Header="Asset" HorizontalAlignment="Stretch" PlaceholderText="Select Asset" Margin="10" 
+                      ItemsSource="{Binding Assets}" SelectedItem="{Binding SelectedAsset, Mode=TwoWay}" DisplayMemberPath="Name" SelectionChanged="AssetSelect_SelectionChanged"/>
 
-            <StackPanel x:Name="ViewAssetView" Visibility="Collapsed">
-                <TextBlock x:Name="AssetName" Text="Name: " Margin="10"/>
-                <TextBlock x:Name="AssetModel" Text="Model: " Margin="10"/>
-                <TextBlock x:Name="AssetManufacturer" Text="Manufacturer: " Margin="10"/>
-                <TextBlock x:Name="AssetType" Text="Type: " Margin="10"/>
-                <TextBlock x:Name="AssetIpAddress" Text="IP Address: " Margin="10"/>
-                <TextBlock x:Name="AssetPurchaseDate" Text="Purchase Date: " Margin="10"/>
-                <TextBlock x:Name="AssetNotes" Text="Notes: " Margin="10"/>
-                <TextBlock x:Name="AssetDepartment" Text="Department: " Margin="10"/>
-                <TextBlock x:Name="AssetEmployee" Text="Employee: " Margin="10"/>
+            <!--View Asset View-->
+            <StackPanel x:Name="ViewAssetView" Visibility="{Binding ViewAssetViewVisibility}">
+
+                <!--Asset Data Grid-->
+                <Grid x:Name="ViewAssetData" Margin="10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="3*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- Asset Name -->
+                    <Border BorderBrush="LightGray" Background="Gray" BorderThickness="1" Grid.Row="0" Grid.Column="0">
+                        <TextBlock Text="Name" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Center" TextWrapping="Wrap" FontSize="20"/>
+                    </Border>
+                    <Border BorderBrush="LightGray" Background="DarkGray" BorderThickness="1" Grid.Row="0" Grid.Column="1">
+                        <TextBlock Text="{Binding SelectedAsset.Name, Mode=TwoWay}" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Center" TextWrapping="Wrap" FontSize="20"/>
+                    </Border>
+
+                    <!-- Asset Model -->
+                    <Border BorderBrush="LightGray" Background="Gray" BorderThickness="1" Grid.Row="1" Grid.Column="0">
+                        <TextBlock Text="Model" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Center" TextWrapping="Wrap" FontSize="20"/>
+                    </Border>
+                    <Border BorderBrush="LightGray" Background="DarkGray" BorderThickness="1" Grid.Row="1" Grid.Column="1">
+                        <TextBlock Text="{Binding SelectedAsset.Model, Mode=TwoWay}" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Center" TextWrapping="Wrap" FontSize="20"/>
+                    </Border>
+
+                    <!-- Asset Manufacturer -->
+                    <Border BorderBrush="LightGray" Background="Gray" BorderThickness="1" Grid.Row="2" Grid.Column="0">
+                        <TextBlock Text="Manufacturer" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Center" TextWrapping="Wrap" FontSize="20"/>
+                    </Border>
+                    <Border BorderBrush="LightGray" Background="DarkGray" BorderThickness="1" Grid.Row="2" Grid.Column="1">
+                        <TextBlock Text="{Binding SelectedAsset.Manufacturer, Mode=TwoWay}" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Center" TextWrapping="Wrap" FontSize="20"/>
+                    </Border>
+
+                    <!-- Asset Type -->
+                    <Border BorderBrush="LightGray" Background="Gray" BorderThickness="1" Grid.Row="3" Grid.Column="0">
+                        <TextBlock Text="Type" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Center" TextWrapping="Wrap" FontSize="20"/>
+                    </Border>
+                    <Border BorderBrush="LightGray" Background="DarkGray" BorderThickness="1" Grid.Row="3" Grid.Column="1">
+                        <TextBlock Text="{Binding SelectedAsset.Type, Mode=TwoWay}" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Center" TextWrapping="Wrap" FontSize="20"/>
+                    </Border>
+
+                    <!-- Asset IP Address -->
+                    <Border BorderBrush="LightGray" Background="Gray" BorderThickness="1" Grid.Row="4" Grid.Column="0">
+                        <TextBlock Text="IP Address" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Center" TextWrapping="Wrap" FontSize="20"/>
+                    </Border>
+                    <Border BorderBrush="LightGray" Background="DarkGray" BorderThickness="1" Grid.Row="4" Grid.Column="1">
+                        <TextBlock Text="{Binding SelectedAsset.IpAddress, Mode=TwoWay}" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Center" TextWrapping="Wrap" FontSize="20"/>
+                    </Border>
+
+                    <!-- Asset Purchase Date -->
+                    <Border BorderBrush="LightGray" Background="Gray" BorderThickness="1" Grid.Row="5" Grid.Column="0">
+                        <TextBlock Text="Purchase Date" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Center" TextWrapping="Wrap" FontSize="20"/>
+                    </Border>
+                    <Border BorderBrush="LightGray" Background="DarkGray" BorderThickness="1" Grid.Row="5" Grid.Column="1">
+                        <TextBlock Text="{Binding SelectedAsset.PurchaseDate, Mode=TwoWay}" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Center" TextWrapping="Wrap" FontSize="20"/>
+                    </Border>
+
+                    <!-- Asset Notes -->
+                    <Border BorderBrush="LightGray" Background="Gray" BorderThickness="1" Grid.Row="6" Grid.Column="0">
+                        <TextBlock Text="Notes" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Center" TextWrapping="Wrap" FontSize="20"/>
+                    </Border>
+                    <Border BorderBrush="LightGray" Background="DarkGray" BorderThickness="1" Grid.Row="6" Grid.Column="1">
+                        <TextBlock Text="{Binding SelectedAsset.Notes, Mode=TwoWay}" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Center" TextWrapping="Wrap" FontSize="20"/>
+                    </Border>
+
+                    <!-- Asset Department -->
+                    <Border BorderBrush="LightGray" Background="Gray" BorderThickness="1" Grid.Row="7" Grid.Column="0">
+                        <TextBlock Text="Department" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Center" TextWrapping="Wrap" FontSize="20"/>
+                    </Border>
+                    <Border BorderBrush="LightGray" Background="DarkGray" BorderThickness="1" Grid.Row="7" Grid.Column="1">
+                        <TextBlock Text="{Binding SelectedAsset.Employee.Department.Name, Mode=TwoWay}" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Center" TextWrapping="Wrap" FontSize="20"/>
+                    </Border>
+
+                    <!-- Asset Employee -->
+                    <Border BorderBrush="LightGray" Background="Gray" BorderThickness="1" Grid.Row="8" Grid.Column="0">
+                        <TextBlock Text="Employee" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Center" TextWrapping="Wrap" FontSize="20"/>
+                    </Border>
+                    <Border BorderBrush="LightGray" Background="DarkGray" BorderThickness="1" Grid.Row="8" Grid.Column="1">
+                        <TextBlock Text="{Binding SelectedAsset.Employee.Name, Mode=TwoWay}" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Center" TextWrapping="Wrap" FontSize="20"/>
+                    </Border>
+                </Grid>
+
+                <!--Buttons-->
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                    <Button x:Name="EditAssetButton" Content="Edit Asset" Click="EditAssetButton_Click" Margin="10" Background="Blue" Foreground="White"/>
-                    <Button x:Name="DeleteAssetButton" Content="Delete Asset" Click="DeleteAssetButton_Click" Margin="10" Background="Red" Foreground="White"/>
+                    <Button x:Name="EditAssetButton" Content="Edit Asset" Command="{Binding ChangeViewToEditCommand}" Margin="10" Background="Blue" Foreground="White"/>
+                    <Button x:Name="DeleteAssetButton" Content="Delete Asset" Command="{Binding DeleteAssetCommand}" Margin="10" Background="Red" Foreground="White"/>
                 </StackPanel>
-                <TextBlock x:Name="Status" Margin="10" HorizontalAlignment="Center"/>
+                
+                <!--Status Message-->
+                <TextBlock x:Name="StatusMessage" Text="{Binding StatusMessage}" Visibility="{Binding StatusVisibility}" Margin="10" HorizontalAlignment="Center"/>
             </StackPanel>
 
-            <StackPanel x:Name="EditAssetView" Visibility="Collapsed">
-                <TextBox x:Name="AssetNameInput" Header="Name" Margin="10"/>
-                <TextBox x:Name="AssetModelInput" Header="Model" Margin="10"/>
-                <TextBox x:Name="AssetManufacturerInput" Header="Manufacturer" Margin="10"/>
-                <TextBox x:Name="AssetTypeInput" Header="Type" Margin="10"/>
-                <TextBox x:Name="AssetIpAddressInput" Header="IP Address" Margin="10"/>
-                <DatePicker x:Name="AssetPurchaseDateInput" Header="Purchase Date" Margin="10"/>
-                <TextBox x:Name="AssetNotesInput" Header="Notes" Margin="10"/>
-                <ComboBox x:Name="AssetDepartmentSelect" Header="Department" HorizontalAlignment="Stretch" PlaceholderText="Select Department" Margin="10" ItemsSource="{Binding}" DisplayMemberPath="Name" SelectionChanged="AssetDepartmentSelect_SelectionChanged"/>
-                <ComboBox x:Name="AssetEmployeeSelect" Header="Employee" HorizontalAlignment="Stretch" PlaceholderText="Select Employee" Margin="10" ItemsSource="{Binding}" DisplayMemberPath="Name" SelectionChanged="AssetEmployeeSelect_SelectionChanged"/>
+            <!--Edit Asset View-->
+            <StackPanel x:Name="EditAssetView" Visibility="{Binding EditAssetViewVisibility}">
+
+                <!--Asset Details-->
+                <TextBox x:Name="AssetNameInput" Header="Name" Text="{Binding SelectedAsset.Name, Mode=TwoWay}" Margin="10"/>
+                <TextBox x:Name="AssetModelInput" Header="Model" Text="{Binding SelectedAsset.Model, Mode=TwoWay}" Margin="10"/>
+                <TextBox x:Name="AssetManufacturerInput" Header="Manufacturer" Text="{Binding SelectedAsset.Manufacturer, Mode=TwoWay}" Margin="10"/>
+                <TextBox x:Name="AssetTypeInput" Header="Type" Text="{Binding SelectedAsset.Type, Mode=TwoWay}" Margin="10"/>
+                <TextBox x:Name="AssetIpAddressInput" Header="IP Address" Text="{Binding SelectedAsset.IpAddress, Mode=TwoWay}" Margin="10"/>
+                <DatePicker x:Name="AssetPurchaseDateInput" Header="Purchase Date" Date="{Binding SelectedAsset.PurchaseDate, Mode=TwoWay}" Margin="10"/>
+                <TextBox x:Name="AssetNotesInput" Header="Notes" Text="{Binding SelectedAsset.Notes, Mode=TwoWay}" Margin="10"/>
+                
+                <!--Department and Employee Selects-->
+                <ComboBox x:Name="AssetDepartmentSelect" Header="Department" HorizontalAlignment="Stretch" PlaceholderText="Select Department" Margin="10" 
+                          ItemsSource="{Binding Departments}" SelectedItem="{Binding SelectedDepartment, Mode=TwoWay}" DisplayMemberPath="Name" SelectionChanged="AssetDepartmentSelect_SelectionChanged"/>
+                <ComboBox x:Name="AssetEmployeeSelect" Header="Employee" HorizontalAlignment="Stretch" PlaceholderText="Select Employee" Margin="10" 
+                          ItemsSource="{Binding Employees}" SelectedItem="{Binding SelectedAsset.Employee, Mode=TwoWay}" DisplayMemberPath="Name" SelectionChanged="AssetEmployeeSelect_SelectionChanged"/>
+                
+                <!--Buttons-->
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                    <Button x:Name="CancelButton" Content="Cancel" Click="CancelButton_Click" Margin="10" Background="Red" Foreground="White"/>
-                    <Button x:Name="UpdateAssetButton" Content="Update Asset" Click="UpdateAssetButton_Click" Margin="10" Background="Green" Foreground="White"/>
+                    <Button x:Name="CancelButton" Content="Cancel" Command="{Binding ChangeViewToViewCommand}" Margin="10" Background="Red" Foreground="White"/>
+                    <Button x:Name="UpdateAssetButton" Content="Update Asset" Command="{Binding UpdateAssetCommand}" Margin="10" Background="Green" Foreground="White"/>
                 </StackPanel>
             </StackPanel>
         </StackPanel>
