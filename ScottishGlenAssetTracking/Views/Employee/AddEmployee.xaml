@@ -5,19 +5,34 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:ScottishGlenAssetTracking.Views.Employee"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    xmlns:vm="using:ScottishGlenAssetTracking.ViewModels"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
+    <Page.DataContext>
+        <vm:AddEmployeeViewModel />
+    </Page.DataContext>
+
     <Grid Background="#5C5C5C">
         <StackPanel>
+            <!--Header-->
             <TextBlock x:Name="AddEmployeeHeader" Text="Add Employee" FontSize="24" Margin="10"/>
-            <ComboBox x:Name="DepartmentSelect" Header="Department" HorizontalAlignment="Stretch" PlaceholderText="Select Department" Margin="10" ItemsSource="{Binding}" DisplayMemberPath="Name"/>
-            <TextBox x:Name="EmployeeFirstName" Header="First Name" PlaceholderText="Enter First Name" Margin="10"/>
-            <TextBox x:Name="EmployeeLastName" Header="Last Name" PlaceholderText="Enter Last Name" Margin="10"/>
-            <TextBox x:Name="EmployeeEmail" Header="Email" PlaceholderText="Enter Email" Margin="10"/>
-            <Button x:Name="AddEmployeeButton" Content="Add Employee" Click="AddEmployeeButton_Click" Margin="10" Background="Green" Foreground="White" HorizontalAlignment="Right"/>
-            <TextBlock x:Name="AddEmployeeStatus" Margin="10" Visibility="Collapsed" HorizontalAlignment="Center"/>
+            
+            <!--Department Select-->
+            <ComboBox x:Name="DepartmentSelect" Header="Department" HorizontalAlignment="Stretch" PlaceholderText="Select Department" Margin="10" 
+                      ItemsSource="{Binding Departments}" SelectedItem="{Binding NewEmployee.Department, Mode=TwoWay}" DisplayMemberPath="Name"/>
+            
+            <!--Employee Details-->
+            <TextBox x:Name="EmployeeFirstName" Header="First Name" PlaceholderText="Enter First Name" Margin="10" Text="{Binding NewEmployee.FirstName, Mode=TwoWay}"/>
+            <TextBox x:Name="EmployeeLastName" Header="Last Name" PlaceholderText="Enter Last Name" Margin="10" Text="{Binding NewEmployee.LastName, Mode=TwoWay}"/>
+            <TextBox x:Name="EmployeeEmail" Header="Email" PlaceholderText="Enter Email" Margin="10" Text="{Binding NewEmployee.Email, Mode=TwoWay}"/>
+            
+            <!--Add Employee Button-->
+            <Button x:Name="AddEmployeeButton" Content="Add Employee" Command="{Binding AddEmployeeCommand}" Margin="10" Background="Green" Foreground="White" HorizontalAlignment="Right"/>
+            
+            <!--Status Message-->
+            <TextBlock x:Name="StatusMessage" Text="{Binding StatusMessage}" Visibility="{Binding StatusVisibility}" Margin="10" HorizontalAlignment="Center"/>
         </StackPanel>
     </Grid>
 </Page>
