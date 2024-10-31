@@ -5,6 +5,7 @@ using ScottishGlenAssetTracking.Models;
 using ScottishGlenAssetTracking.Services;
 using System.Collections.ObjectModel;
 using System.Linq;
+using Windows.ApplicationModel.Store;
 
 namespace ScottishGlenAssetTracking.ViewModels
 {
@@ -23,8 +24,10 @@ namespace ScottishGlenAssetTracking.ViewModels
             Departments = new ObservableCollection<Department>(_departmentService.GetDepartments()
                 .Where(d => d.Name != "Assets without Employee"));
 
-            // Initialize commands
+            // Initialize new employee
             newEmployee = new Employee();
+
+            // Initialize commands
             AddEmployeeCommand = new RelayCommand(AddEmployee);
         }
 
