@@ -50,7 +50,7 @@ namespace ScottishGlenAssetTracking.Data
                 entity.Property(a => a.Manufacturer).HasColumnName("manufacturer").HasMaxLength(64);
                 entity.Property(a => a.Type).HasColumnName("type").HasMaxLength(64);
                 entity.Property(a => a.IpAddress).HasColumnName("ipAddress").HasMaxLength(64);
-                entity.Property(a => a.PurchaseDate).HasColumnName("purchaseDate").HasMaxLength(64).IsRequired(false);
+                entity.Property(a => a.PurchaseDate).HasColumnName("purchaseDate").IsRequired(false);
                 entity.Property(a => a.Notes).HasColumnName("notes").HasMaxLength(64).IsRequired(false);
 
                 entity.HasOne(a => a.Employee)

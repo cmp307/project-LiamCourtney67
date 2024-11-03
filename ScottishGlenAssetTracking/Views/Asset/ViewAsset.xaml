@@ -139,7 +139,7 @@
                 <TextBox x:Name="AssetManufacturerInput" Header="Manufacturer" Text="{Binding SelectedAsset.Manufacturer, Mode=TwoWay}" Margin="10"/>
                 <TextBox x:Name="AssetTypeInput" Header="Type" Text="{Binding SelectedAsset.Type, Mode=TwoWay}" Margin="10"/>
                 <TextBox x:Name="AssetIpAddressInput" Header="IP Address" Text="{Binding SelectedAsset.IpAddress, Mode=TwoWay}" Margin="10"/>
-                <DatePicker x:Name="AssetPurchaseDateInput" Header="Purchase Date" Date="{Binding SelectedAsset.PurchaseDate, Mode=TwoWay}" Margin="10"/>
+                <DatePicker x:Name="AssetPurchaseDateInput" Header="Purchase Date" Date="{Binding PurchaseDate, Mode=TwoWay}" Margin="10"/>
                 <TextBox x:Name="AssetNotesInput" Header="Notes" Text="{Binding SelectedAsset.Notes, Mode=TwoWay}" Margin="10"/>
                 
                 <!--Department and Employee Selects-->
