@@ -18,12 +18,12 @@ namespace ScottishGlenAssetTracking.ViewModels
         private readonly EmployeeService _employeeService;
         private readonly AssetService _assetService;
 
-        public ViewAssetViewModel()
+        public ViewAssetViewModel(DepartmentService departmentService, EmployeeService employeeService, AssetService assetService)
         {
             // Initialize services
-            _departmentService = new DepartmentService();
-            _employeeService = new EmployeeService();
-            _assetService = new AssetService();
+            _departmentService = departmentService;
+            _employeeService = employeeService;
+            _assetService = assetService;
 
             // Load departments
             Departments = new ObservableCollection<Department>(_departmentService.GetDepartments());
@@ -137,14 +137,15 @@ namespace ScottishGlenAssetTracking.ViewModels
                 _assetService.UpdateAsset(SelectedAsset);
                 OnPropertyChanged(nameof(SelectedAsset));
 
-                int selectedEmployeeId = SelectedAsset.Employee.Id;
-                int selectedAssetId = SelectedAsset.Id;
+                //int selectedDepartmentId = SelectedAsset.Employee.Department.Id;
+                //int selectedEmployeeId = SelectedAsset.Employee.Id;
+                //int selectedAssetId = SelectedAsset.Id;
 
-                SelectedDepartment = Departments.FirstOrDefault(d => d.Id == SelectedAsset.Employee.Department.Id);
-                LoadEmployees();
-                SelectedEmployee = Employees.FirstOrDefault(e => e.Id == selectedEmployeeId);
-                LoadAssets();
-                SelectedAsset = Assets.FirstOrDefault(a => a.Id == selectedAssetId);
+                //SelectedDepartment = Departments.FirstOrDefault(d => d.Id == selectedDepartmentId);
+                //LoadEmployees();
+                //SelectedEmployee = Employees.FirstOrDefault(e => e.Id == selectedEmployeeId);
+                //LoadAssets();
+                //SelectedAsset = Assets.FirstOrDefault(a => a.Id == selectedAssetId);
 
                 StatusVisibility = Visibility.Visible;
                 StatusMessage = "Asset Updated";

@@ -14,11 +14,8 @@ namespace ScottishGlenAssetTracking.Data
         public DbSet<Employee> Employees { get; set; }
         public DbSet<Asset> Assets { get; set; }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        public ScottishGlenContext(DbContextOptions<ScottishGlenContext> options) : base(options)
         {
-            var connectionString = "Server=lochnagar.abertay.ac.uk;Database=sql2207057;User=sql2207057;Password=tools-yeah-bureau-quoted;";
-
-            optionsBuilder.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

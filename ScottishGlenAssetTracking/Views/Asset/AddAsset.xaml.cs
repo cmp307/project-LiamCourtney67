@@ -1,3 +1,4 @@
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -32,7 +33,7 @@ namespace ScottishGlenAssetTracking.Views.Asset
         public AddAsset()
         {
             this.InitializeComponent();
-            this.DataContext = new AddAssetViewModel();
+            DataContext = App.AppHost.Services.GetRequiredService<AddAssetViewModel>();
         }
 
         private void DepartmentSelect_SelectionChanged(object sender, SelectionChangedEventArgs e)

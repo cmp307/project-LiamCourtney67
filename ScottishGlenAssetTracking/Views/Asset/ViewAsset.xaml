@@ -10,9 +10,6 @@
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
-    <Page.DataContext>
-        <vm:ViewAssetViewModel />
-    </Page.DataContext>
 
     <Grid Background="#5C5C5C">
         <StackPanel>

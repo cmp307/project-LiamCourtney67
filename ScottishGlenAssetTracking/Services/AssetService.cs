@@ -13,54 +13,46 @@ namespace ScottishGlenAssetTracking.Services
 {
     public class AssetService
     {
+        private readonly ScottishGlenContext _context;
+
+        public AssetService(ScottishGlenContext context)
+        {
+            _context = context;
+        }
+
         public bool AddAsset(Asset asset)
         {
-            using (var context = new ScottishGlenContext())
-            {
-                context.Entry(asset.Employee).State = EntityState.Unchanged;
-                context.Assets.Add(asset);
-                context.Employees.Attach(asset.Employee);
-                context.SaveChanges();
-                return true;
-            }
+            _context.Entry(asset.Employee).State = EntityState.Unchanged;
+            _context.Assets.Add(asset);
+            _context.Employees.Attach(asset.Employee);
+            _context.SaveChanges();
+            return true;
         }
 
         public Asset GetAsset(int assetId)
         {
-            using (var context = new ScottishGlenContext())
-            {
-                return context.Assets.Include(a => a.Employee).ThenInclude(e => e.Department).FirstOrDefault(a => a.Id == assetId);
-            }
+            return _context.Assets.Include(a => a.Employee).ThenInclude(e => e.Department).FirstOrDefault(a => a.Id == assetId);
         }
 
         public List<Asset> GetAssets(int employeeId)
         {
-            using (var context = new ScottishGlenContext())
-            {
-                return context.Assets.Include(a => a.Employee).ThenInclude(e => e.Department).Where(a => a.Employee.Id == employeeId).ToList();
-            }
+            return _context.Assets.Include(a => a.Employee).ThenInclude(e => e.Department).Where(a => a.Employee.Id == employeeId).ToList();
         }
 
         public bool UpdateAsset(Asset asset)
         {
-            using (var context = new ScottishGlenContext())
-            {
-                context.Entry(asset.Employee).State = EntityState.Unchanged;
-                context.Assets.Update(asset);
-                context.SaveChanges();
-                return true;
-            }
+            _context.Entry(asset.Employee).State = EntityState.Unchanged;
+            _context.Assets.Update(asset);
+            _context.SaveChanges();
+            return true;
         }
 
         public bool DeleteAsset(int assetId)
         {
-            using (var context = new ScottishGlenContext())
-            {
-                var asset = context.Assets.Find(assetId);
-                context.Assets.Remove(asset);
-                context.SaveChanges();
-                return true;
-            }
+            var asset = _context.Assets.Find(assetId);
+            _context.Assets.Remove(asset);
+            _context.SaveChanges();
+            return true;
         }
 
         public Asset GetAssetWithSystemInfo()

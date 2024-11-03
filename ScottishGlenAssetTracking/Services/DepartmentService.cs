@@ -10,20 +10,20 @@ namespace ScottishGlenAssetTracking.Services
 {
     public class DepartmentService
     {
+        private readonly ScottishGlenContext _context;
+
+        public DepartmentService(ScottishGlenContext context)
+        {
+            _context = context;
+        }
         public Department GetDepartment(int id)
         {
-            using (var context = new ScottishGlenContext())
-            {
-                return context.Departments.Find(id);
-            }
+            return _context.Departments.Find(id);
         }
 
         public List<Department> GetDepartments()
         {
-            using (var context = new ScottishGlenContext())
-            {
-                return context.Departments.ToList();
-            }
+            return _context.Departments.ToList();
         }
     }
 }

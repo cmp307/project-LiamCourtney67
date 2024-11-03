@@ -17,11 +17,11 @@ namespace ScottishGlenAssetTracking.ViewModels
         private readonly DepartmentService _departmentService;
         private readonly EmployeeService _employeeService;
 
-        public ViewEmployeeViewModel()
+        public ViewEmployeeViewModel(DepartmentService departmentService, EmployeeService employeeService)
         {
             // Initialize services
-            _departmentService = new DepartmentService();
-            _employeeService = new EmployeeService();
+            _departmentService = departmentService;
+            _employeeService = employeeService;
 
             // Load departments and remove any unwanted items
             Departments = new ObservableCollection<Department>(_departmentService.GetDepartments()

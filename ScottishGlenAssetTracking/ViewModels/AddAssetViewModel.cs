@@ -19,12 +19,12 @@ namespace ScottishGlenAssetTracking.ViewModels
         private readonly EmployeeService _employeeService;
         private readonly AssetService _assetService;
 
-        public AddAssetViewModel()
+        public AddAssetViewModel(DepartmentService departmentService, EmployeeService employeeService, AssetService assetService)
         {
             // Initialize services
-            _departmentService = new DepartmentService();
-            _employeeService = new EmployeeService();
-            _assetService = new AssetService();
+            _departmentService = departmentService;
+            _employeeService = employeeService;
+            _assetService = assetService;
 
             // Load departments and remove any unwanted items
             Departments = new ObservableCollection<Department>(_departmentService.GetDepartments()
@@ -72,7 +72,7 @@ namespace ScottishGlenAssetTracking.ViewModels
 
         private void AddAsset()
         {
-            newAsset.PurchaseDate = PurchaseDate.DateTime;
+            NewAsset.PurchaseDate = PurchaseDate.DateTime;
             _assetService.AddAsset(NewAsset);
 
             StatusMessage = "Asset Added";
