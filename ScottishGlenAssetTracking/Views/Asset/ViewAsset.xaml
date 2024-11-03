@@ -15,14 +15,14 @@
         <StackPanel>
             <!--Header-->
             <TextBlock x:Name="ViewAssetHeader" Text="View Asset" FontSize="24" Margin="10"/>
-            
+
             <!--Selects-->
             <ComboBox x:Name="DepartmentSelect" Header="Department" HorizontalAlignment="Stretch" PlaceholderText="Select Department" Margin="10" 
                       ItemsSource="{Binding Departments}" SelectedItem="{Binding SelectedDepartment, Mode=TwoWay}" DisplayMemberPath="Name" SelectionChanged="DepartmentSelect_SelectionChanged"/>
-            
+
             <ComboBox x:Name="EmployeeSelect" Header="Employee" HorizontalAlignment="Stretch" PlaceholderText="Select Employee" Margin="10" 
                       ItemsSource="{Binding Employees}" SelectedItem="{Binding SelectedEmployee, Mode=TwoWay}" DisplayMemberPath="Name" SelectionChanged="EmployeeSelect_SelectionChanged"/>
-            
+
             <ComboBox x:Name="AssetSelect" Header="Asset" HorizontalAlignment="Stretch" PlaceholderText="Select Asset" Margin="10" 
                       ItemsSource="{Binding Assets}" SelectedItem="{Binding SelectedAsset, Mode=TwoWay}" DisplayMemberPath="Name" SelectionChanged="AssetSelect_SelectionChanged"/>
 
@@ -125,7 +125,7 @@
                     <Button x:Name="EditAssetButton" Content="Edit Asset" Command="{Binding ChangeViewToEditCommand}" Margin="10" Background="Blue" Foreground="White"/>
                     <Button x:Name="DeleteAssetButton" Content="Delete Asset" Command="{Binding DeleteAssetCommand}" Margin="10" Background="Red" Foreground="White"/>
                 </StackPanel>
-                
+
                 <!--Status Message-->
                 <TextBlock x:Name="StatusMessage" Text="{Binding StatusMessage}" Visibility="{Binding StatusVisibility}" Margin="10" HorizontalAlignment="Center"/>
             </StackPanel>
@@ -139,15 +139,18 @@
                 <TextBox x:Name="AssetManufacturerInput" Header="Manufacturer" Text="{Binding SelectedAsset.Manufacturer, Mode=TwoWay}" Margin="10"/>
                 <TextBox x:Name="AssetTypeInput" Header="Type" Text="{Binding SelectedAsset.Type, Mode=TwoWay}" Margin="10"/>
                 <TextBox x:Name="AssetIpAddressInput" Header="IP Address" Text="{Binding SelectedAsset.IpAddress, Mode=TwoWay}" Margin="10"/>
-                <DatePicker x:Name="AssetPurchaseDateInput" Header="Purchase Date" Date="{Binding PurchaseDate, Mode=TwoWay}" Margin="10"/>
+                <StackPanel Orientation="Horizontal">
+                    <DatePicker x:Name="AssetPurchaseDateInput" Header="Purchase Date" Date="{Binding PurchaseDate, Mode=TwoWay}" Margin="10"/>
+                    <Button x:Name="ClearPurchaseDateButton" Content="Clear" Command="{Binding ClearPurchaseDateCommand}" Margin="10, 30, 10, 10"/>
+                </StackPanel>
                 <TextBox x:Name="AssetNotesInput" Header="Notes" Text="{Binding SelectedAsset.Notes, Mode=TwoWay}" Margin="10"/>
-                
+
                 <!--Department and Employee Selects-->
                 <ComboBox x:Name="AssetDepartmentSelect" Header="Department" HorizontalAlignment="Stretch" PlaceholderText="Select Department" Margin="10" 
                           ItemsSource="{Binding Departments}" SelectedItem="{Binding SelectedDepartment, Mode=TwoWay}" DisplayMemberPath="Name" SelectionChanged="AssetDepartmentSelect_SelectionChanged"/>
                 <ComboBox x:Name="AssetEmployeeSelect" Header="Employee" HorizontalAlignment="Stretch" PlaceholderText="Select Employee" Margin="10" 
                           ItemsSource="{Binding Employees}" SelectedItem="{Binding SelectedAsset.Employee, Mode=TwoWay}" DisplayMemberPath="Name" SelectionChanged="AssetEmployeeSelect_SelectionChanged"/>
-                
+
                 <!--Buttons-->
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
                     <Button x:Name="CancelButton" Content="Cancel" Command="{Binding ChangeViewToViewCommand}" Margin="10" Background="Red" Foreground="White"/>

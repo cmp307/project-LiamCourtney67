@@ -22,7 +22,11 @@
                       ItemsSource="{Binding Employees}" SelectedItem="{Binding NewAsset.Employee, Mode=TwoWay}" DisplayMemberPath="Name"/>
             
             <!--Asset Details-->
-            <DatePicker x:Name="AssetPurchaseDate" Header="Purchase Date" Margin="10" Date="{Binding PurchaseDate, Mode=TwoWay}"/>
+            <StackPanel Orientation="Horizontal">
+                <DatePicker x:Name="AssetPurchaseDateInput" Header="Purchase Date" Date="{Binding PurchaseDate, Mode=TwoWay}" Margin="10"/>
+                <Button x:Name="ClearPurchaseDateButton" Content="Clear" Command="{Binding ClearPurchaseDateCommand}" Margin="10, 30, 10, 10"/>
+            </StackPanel>
+            
             <TextBox x:Name="AssetNotes" Header="Notes" PlaceholderText="Enter Notes" Margin="10" Text="{Binding NewAsset.Notes, Mode=TwoWay}"/>
             
             <!--Add Asset Button-->
