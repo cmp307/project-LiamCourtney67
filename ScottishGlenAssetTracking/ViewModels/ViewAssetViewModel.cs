@@ -64,6 +64,9 @@ namespace ScottishGlenAssetTracking.ViewModels
         private DateTimeOffset? purchaseDate;
 
         [ObservableProperty]
+        private string purchaseDateFormatted;
+
+        [ObservableProperty]
         private string statusMessage;
 
         // Visibility properties
@@ -113,14 +116,16 @@ namespace ScottishGlenAssetTracking.ViewModels
                 if (SelectedAsset.PurchaseDate != null)
                 {
                     PurchaseDate = (DateTimeOffset)SelectedAsset.PurchaseDate;
+                    PurchaseDateFormatted = PurchaseDate?.ToString("MM/dd/yyyy");
                 }
                 else if (SelectedAsset.PurchaseDate == null)
                 {
                     PurchaseDate = null;
+                    PurchaseDateFormatted = string.Empty;
                 }
 
-                SelectedAsset.Employee = Employees.FirstOrDefault(e => e.Id == SelectedAsset.Employee.Id);
-                SelectedAsset.Employee.Department = Departments.FirstOrDefault(d => d.Id == SelectedAsset.Employee.Department.Id);
+                SelectedAsset.Employee = Employees.FirstOrDefault(e => e.Id == SelectedEmployee.Id);
+                SelectedAsset.Employee.Department = Departments.FirstOrDefault(d => d.Id == SelectedDepartment.Id);
                 OnPropertyChanged(nameof(SelectedAsset));
 
                 StatusVisibility = Visibility.Collapsed;
@@ -153,15 +158,13 @@ namespace ScottishGlenAssetTracking.ViewModels
                 _assetService.UpdateAsset(SelectedAsset);
                 OnPropertyChanged(nameof(SelectedAsset));
 
-                //int selectedDepartmentId = SelectedAsset.Employee.Department.Id;
-                //int selectedEmployeeId = SelectedAsset.Employee.Id;
-                //int selectedAssetId = SelectedAsset.Id;
+                int selectedEmployeeId = SelectedAsset.Employee.Id;
+                int selectedAssetId = SelectedAsset.Id;
 
-                //SelectedDepartment = Departments.FirstOrDefault(d => d.Id == selectedDepartmentId);
-                //LoadEmployees();
-                //SelectedEmployee = Employees.FirstOrDefault(e => e.Id == selectedEmployeeId);
-                //LoadAssets();
-                //SelectedAsset = Assets.FirstOrDefault(a => a.Id == selectedAssetId);
+                LoadEmployees();
+                SelectedEmployee = Employees.FirstOrDefault(e => e.Id == selectedEmployeeId);
+                LoadAssets();
+                SelectedAsset = Assets.FirstOrDefault(a => a.Id == selectedAssetId);
 
                 StatusVisibility = Visibility.Visible;
                 StatusMessage = "Asset Updated";
