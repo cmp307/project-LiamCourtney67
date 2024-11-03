@@ -1,3 +1,4 @@
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -26,12 +27,10 @@ namespace ScottishGlenAssetTracking.Views.Asset
     /// </summary>
     public sealed partial class ViewAsset : Page
     {
-        private Models.Asset _selectedAsset;
-
         public ViewAsset()
         {
             this.InitializeComponent();
-            this.DataContext = new ViewAssetViewModel();
+            DataContext = App.AppHost.Services.GetRequiredService<ViewAssetViewModel>();
         }
 
         private void DepartmentSelect_SelectionChanged(object sender, SelectionChangedEventArgs e)

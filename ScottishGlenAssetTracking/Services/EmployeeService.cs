@@ -11,63 +11,54 @@ namespace ScottishGlenAssetTracking.Services
 {
     public class EmployeeService
     {
+        private readonly ScottishGlenContext _context;
+
+        public EmployeeService(ScottishGlenContext context)
+        {
+            _context = context;
+        }
         public bool AddEmployee(Employee employee)
         {
-            using (var context = new ScottishGlenContext())
-            {
-                context.Employees.Add(employee);
-                context.Departments.Attach(employee.Department);
-                context.SaveChanges();
-                return true;
-            }
+            _context.Employees.Add(employee);
+            _context.Departments.Attach(employee.Department);
+            _context.SaveChanges();
+            return true;
         }
         public Employee GetEmployee(int employeeId)
         {
-            using (var context = new ScottishGlenContext())
-            {
-                return context.Employees.Include(e => e.Department).FirstOrDefault(e => e.Id == employeeId);
-            }
+            return _context.Employees.Include(e => e.Department).FirstOrDefault(e => e.Id == employeeId);
         }
 
         public List<Employee> GetEmployees(int departmentId)
         {
-            using (var context = new ScottishGlenContext())
-            {
-                return context.Employees.Include(e => e.Assets).Include(e => e.Department).Where(e => e.Department.Id == departmentId).ToList();
-            }
+            return _context.Employees.Include(e => e.Assets).Include(e => e.Department).Where(e => e.Department.Id == departmentId).ToList();
         }
 
         public bool UpdateEmployee(Employee employee)
         {
-            using (var context = new ScottishGlenContext())
-            {
-                context.Entry(employee.Department).State = EntityState.Unchanged;
-                context.Employees.Update(employee);
-                context.SaveChanges();
-                return true;
-            }
+            _context.Entry(employee.Department).State = EntityState.Unchanged;
+            _context.Employees.Update(employee);
+            _context.SaveChanges();
+            return true;
         }
 
         public bool DeleteEmployee(int employeeId)
         {
-            using (var context = new ScottishGlenContext())
+            var employee = _context.Employees.Include(e => e.Assets).FirstOrDefault(e => e.Id == employeeId);
+
+            // Reassign assets to the employee for assets without an employee
+            var assetEmployee = _context.Employees.Find(1);
+            foreach (var asset in employee.Assets)
             {
-                var employee = context.Employees.Include(e => e.Assets).FirstOrDefault(e => e.Id == employeeId);
-
-                // Reassign assets to the employee for assets without an employee
-                var assetEmployee = context.Employees.Find(1);
-                foreach (var asset in employee.Assets)
-                {
-                    asset.Employee = assetEmployee;
-                    context.Assets.Update(asset);
-                }
-                employee.Assets.Clear();
-
-                // Remove the employee
-                context.Employees.Remove(employee);
-                context.SaveChanges();
-                return true;
+                asset.Employee = assetEmployee;
+                _context.Assets.Update(asset);
             }
+            employee.Assets.Clear();
+
+            // Remove the employee
+            _context.Employees.Remove(employee);
+            _context.SaveChanges();
+            return true;
         }
     }
 }

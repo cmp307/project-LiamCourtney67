@@ -1,3 +1,4 @@
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -29,7 +30,7 @@ namespace ScottishGlenAssetTracking.Views.Employee
         public ViewEmployee()
         {
             this.InitializeComponent();
-            this.DataContext = new ViewEmployeeViewModel();
+            DataContext = App.AppHost.Services.GetRequiredService<ViewEmployeeViewModel>();
         }
 
         private void DepartmentSelect_SelectionChanged(object sender, SelectionChangedEventArgs e)

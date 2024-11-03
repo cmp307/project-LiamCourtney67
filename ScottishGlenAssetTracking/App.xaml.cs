@@ -1,4 +1,8 @@
-﻿using Microsoft.UI.Windowing;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -8,6 +12,10 @@ using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
 using Microsoft.UI.Xaml.Shapes;
 using ScottishGlenAssetTracking.Data;
+using ScottishGlenAssetTracking.Services;
+using ScottishGlenAssetTracking.ViewModels;
+using ScottishGlenAssetTracking.Views.Asset;
+using ScottishGlenAssetTracking.Views.Employee;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -29,24 +37,33 @@ namespace ScottishGlenAssetTracking
     /// </summary>
     public partial class App : Application
     {
+        public static IConfiguration Configuration { get; private set; }
+        public static IHost AppHost { get; private set; }
+
         /// <summary>
         /// Initializes the singleton application object.  This is the first line of authored code
         /// executed, and as such is the logical equivalent of main() or WinMain().
         /// </summary>
         public App()
         {
+            InitializeConfiguration();
             this.InitializeComponent();
+
+            AppHost = Host.CreateDefaultBuilder()
+                .ConfigureServices((context, services) => { ConfigureServices(services); } )
+                .Build();
         }
 
         /// <summary>
         /// Invoked when the application is launched.
         /// </summary>
         /// <param name="args">Details about the launch request and process.</param>
-        protected override void OnLaunched(Microsoft.UI.Xaml.LaunchActivatedEventArgs args)
+        protected override async void OnLaunched(Microsoft.UI.Xaml.LaunchActivatedEventArgs args)
         {
+            await AppHost.StartAsync();
             WarmUpDatabase();
 
-            m_window = new MainWindow();
+            m_window = AppHost.Services.GetRequiredService<MainWindow>();
             m_window.Title = "Scottish Glen";
 
             // Maximize the window
@@ -58,20 +75,55 @@ namespace ScottishGlenAssetTracking
             m_window.Activate();
         }
 
+        private void InitializeConfiguration()
+        {
+            var builder = new ConfigurationBuilder()
+                .SetBasePath(AppContext.BaseDirectory)
+                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
+
+            Configuration = builder.Build();
+        }
+
+        public void ConfigureServices(IServiceCollection services)
+        {
+            var connectionString = Configuration.GetConnectionString("ScottishGlenDatabase");
+
+            services.AddDbContext<ScottishGlenContext>(options =>
+                options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
+
+            services.AddSingleton<AssetService>();
+            services.AddSingleton<EmployeeService>();
+            services.AddSingleton<DepartmentService>();
+
+            services.AddTransient<AddAssetViewModel>();
+            services.AddTransient<ViewAssetViewModel>();
+            services.AddTransient<AddEmployeeViewModel>();
+            services.AddTransient<ViewEmployeeViewModel>();
+
+            services.AddTransient<AddAsset>();
+            services.AddTransient<ViewAsset>();
+            services.AddTransient<AddEmployee>();
+            services.AddTransient<ViewEmployee>();
+
+            services.AddSingleton<MainWindow>();
+        }
+
         /// <summary>
         /// Warms up the database by executing a query.
         /// </summary>
         private void WarmUpDatabase()
         {
-            using (var context = new ScottishGlenContext())
+            using (var scope = AppHost.Services.CreateScope())
             {
+                var context = scope.ServiceProvider.GetRequiredService<ScottishGlenContext>();
+
                 try
                 {
                     context.Departments.FirstOrDefault();
                 }
                 catch (Exception)
                 {
-                    // No need to do anything here, just catch the exception
+                    // Ignore any exception, only need to warm up the database.
                 }
             }
         }

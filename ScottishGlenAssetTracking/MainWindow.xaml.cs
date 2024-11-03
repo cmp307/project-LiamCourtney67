@@ -1,3 +1,4 @@
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -6,6 +7,7 @@ using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
 using ScottishGlenAssetTracking.Services;
+using ScottishGlenAssetTracking.ViewModels;
 using ScottishGlenAssetTracking.Views.Asset;
 using ScottishGlenAssetTracking.Views.Employee;
 using System;
@@ -55,20 +57,24 @@ namespace ScottishGlenAssetTracking
             {
                 // Asset
                 case "AddAsset":
-                    MainFrame.Navigate(typeof(AddAsset));
+                    var addAssetPage = App.AppHost.Services.GetRequiredService<AddAsset>();
+                    MainFrame.Navigate(addAssetPage.GetType());
                     break;
 
                 case "ViewAsset":
-                    MainFrame.Navigate(typeof(ViewAsset));
+                    var viewAssetPage = App.AppHost.Services.GetRequiredService<ViewAsset>();
+                    MainFrame.Navigate(viewAssetPage.GetType());
                     break;
 
                 // Employee
                 case "AddEmployee":
-                    MainFrame.Navigate(typeof(AddEmployee));
+                    var addEmployeePage = App.AppHost.Services.GetRequiredService<AddEmployee>();
+                    MainFrame.Navigate(addEmployeePage.GetType());
                     break;
 
                 case "ViewEmployee":
-                    MainFrame.Navigate(typeof(ViewEmployee));
+                    var viewEmployeePage = App.AppHost.Services.GetRequiredService<ViewEmployee>();
+                    MainFrame.Navigate(viewEmployeePage.GetType());
                     break;
 
                 default:
