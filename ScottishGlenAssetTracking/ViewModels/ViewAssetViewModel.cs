@@ -60,6 +60,9 @@ namespace ScottishGlenAssetTracking.ViewModels
         private Asset selectedAsset;
 
         [ObservableProperty]
+        private DateTimeOffset purchaseDate;
+
+        [ObservableProperty]
         private string statusMessage;
 
         // Visibility properties
@@ -105,9 +108,12 @@ namespace ScottishGlenAssetTracking.ViewModels
         {
             if (SelectedAsset != null)
             {
+                PurchaseDate = (DateTimeOffset)SelectedAsset.PurchaseDate;
+
                 SelectedAsset.Employee = Employees.FirstOrDefault(e => e.Id == SelectedAsset.Employee.Id);
                 SelectedAsset.Employee.Department = Departments.FirstOrDefault(d => d.Id == SelectedAsset.Employee.Department.Id);
                 OnPropertyChanged(nameof(SelectedAsset));
+
                 StatusVisibility = Visibility.Collapsed;
                 StatusMessage = string.Empty;
                 ChangeViewToView();
@@ -134,6 +140,7 @@ namespace ScottishGlenAssetTracking.ViewModels
         {
             if (SelectedAsset != null)
             {
+                SelectedAsset.PurchaseDate = PurchaseDate.DateTime;
                 _assetService.UpdateAsset(SelectedAsset);
                 OnPropertyChanged(nameof(SelectedAsset));
 
