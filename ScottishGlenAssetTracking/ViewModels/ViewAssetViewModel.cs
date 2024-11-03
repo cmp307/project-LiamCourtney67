@@ -38,6 +38,7 @@ namespace ScottishGlenAssetTracking.ViewModels
 
             DeleteAssetCommand = new RelayCommand(DeleteAsset);
             UpdateAssetCommand = new RelayCommand(UpdateAsset);
+            ClearPurchaseDateCommand = new RelayCommand(() => PurchaseDate = null);
 
             ChangeViewToEditCommand = new RelayCommand(ChangeViewToEdit);
             ChangeViewToViewCommand = new RelayCommand(ChangeViewToView);
@@ -60,7 +61,7 @@ namespace ScottishGlenAssetTracking.ViewModels
         private Asset selectedAsset;
 
         [ObservableProperty]
-        private DateTimeOffset purchaseDate;
+        private DateTimeOffset? purchaseDate;
 
         [ObservableProperty]
         private string statusMessage;
@@ -81,6 +82,7 @@ namespace ScottishGlenAssetTracking.ViewModels
         public RelayCommand SelectAssetCommand { get; }
         public RelayCommand DeleteAssetCommand { get; }
         public RelayCommand UpdateAssetCommand { get; }
+        public RelayCommand ClearPurchaseDateCommand { get; }
         public RelayCommand ChangeViewToEditCommand { get; }
         public RelayCommand ChangeViewToViewCommand { get; }
 
@@ -108,7 +110,14 @@ namespace ScottishGlenAssetTracking.ViewModels
         {
             if (SelectedAsset != null)
             {
-                PurchaseDate = (DateTimeOffset)SelectedAsset.PurchaseDate;
+                if (SelectedAsset.PurchaseDate != null)
+                {
+                    PurchaseDate = (DateTimeOffset)SelectedAsset.PurchaseDate;
+                }
+                else if (SelectedAsset.PurchaseDate == null)
+                {
+                    PurchaseDate = null;
+                }
 
                 SelectedAsset.Employee = Employees.FirstOrDefault(e => e.Id == SelectedAsset.Employee.Id);
                 SelectedAsset.Employee.Department = Departments.FirstOrDefault(d => d.Id == SelectedAsset.Employee.Department.Id);
@@ -140,7 +149,7 @@ namespace ScottishGlenAssetTracking.ViewModels
         {
             if (SelectedAsset != null)
             {
-                SelectedAsset.PurchaseDate = PurchaseDate.DateTime;
+                SelectedAsset.PurchaseDate = PurchaseDate?.DateTime;
                 _assetService.UpdateAsset(SelectedAsset);
                 OnPropertyChanged(nameof(SelectedAsset));
 
@@ -165,6 +174,15 @@ namespace ScottishGlenAssetTracking.ViewModels
         {
             if (SelectedAsset != null)
             {
+                if (SelectedAsset.PurchaseDate != null)
+                {
+                    PurchaseDate = (DateTimeOffset)SelectedAsset.PurchaseDate;
+                }
+                else if (SelectedAsset.PurchaseDate == null)
+                {
+                    PurchaseDate = null;
+                }
+
                 ViewAssetViewVisibility = Visibility.Collapsed;
                 EditAssetViewVisibility = Visibility.Visible;
             }

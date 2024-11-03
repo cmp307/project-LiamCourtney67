@@ -36,9 +36,13 @@ namespace ScottishGlenAssetTracking.ViewModels
             // Initialize new asset with system info
             newAsset = _assetService.GetAssetWithSystemInfo();
 
+            // Set purchase date to null
+            purchaseDate = null;
+
             // Initialize commands
             AddAssetCommand = new RelayCommand(AddAsset);
             SelectDepartmentCommand = new RelayCommand(LoadEmployees);
+            ClearPurchaseDateCommand = new RelayCommand(() => PurchaseDate = null);
         }
 
         // Collections
@@ -50,7 +54,7 @@ namespace ScottishGlenAssetTracking.ViewModels
         private Asset newAsset;
 
         [ObservableProperty]
-        private DateTimeOffset purchaseDate;
+        private DateTimeOffset? purchaseDate;
 
         [ObservableProperty]
         private Department selectedDepartment;
@@ -70,9 +74,11 @@ namespace ScottishGlenAssetTracking.ViewModels
 
         public RelayCommand SelectDepartmentCommand { get; }
 
+        public RelayCommand ClearPurchaseDateCommand { get; }
+
         private void AddAsset()
         {
-            NewAsset.PurchaseDate = PurchaseDate.DateTime;
+            NewAsset.PurchaseDate = PurchaseDate?.DateTime;
             _assetService.AddAsset(NewAsset);
 
             StatusMessage = "Asset Added";
