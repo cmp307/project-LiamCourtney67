@@ -24,14 +24,14 @@ namespace ScottishGlenAssetTracking.Data
 
             modelBuilder.Entity<Department>(entity =>
             {
-                entity.ToTable("Departments");
+                entity.ToTable("SG.Departments");
                 entity.HasKey(d => d.Id);
                 entity.Property(d => d.Name).HasColumnName("name").HasMaxLength(64);
             });
 
             modelBuilder.Entity<Employee>(entity =>
             {
-                entity.ToTable("Employees");
+                entity.ToTable("SG.Employees");
                 entity.HasKey(e => e.Id);
                 entity.Property(e => e.FirstName).HasColumnName("firstName").HasMaxLength(64);
                 entity.Property(e => e.LastName).HasColumnName("lastName").HasMaxLength(64);
@@ -43,7 +43,7 @@ namespace ScottishGlenAssetTracking.Data
 
             modelBuilder.Entity<Asset>(entity =>
             {
-                entity.ToTable("Assets");
+                entity.ToTable("SG.Assets");
                 entity.HasKey(a => a.Id);
                 entity.Property(a => a.Name).HasColumnName("name").HasMaxLength(64);
                 entity.Property(a => a.Model).HasColumnName("model").HasMaxLength(64);
