@@ -71,6 +71,9 @@ namespace ScottishGlenAssetTracking.ViewModels
 
         // Visibility properties
         [ObservableProperty]
+        private Visibility selectsVisibility = Visibility.Visible;
+
+        [ObservableProperty]
         private Visibility statusVisibility = Visibility.Collapsed;
 
         [ObservableProperty]
@@ -186,6 +189,7 @@ namespace ScottishGlenAssetTracking.ViewModels
                     PurchaseDate = null;
                 }
 
+                SelectsVisibility = Visibility.Collapsed;
                 ViewAssetViewVisibility = Visibility.Collapsed;
                 EditAssetViewVisibility = Visibility.Visible;
             }
@@ -194,6 +198,7 @@ namespace ScottishGlenAssetTracking.ViewModels
         private void ChangeViewToView()
         {
             EditAssetViewVisibility = Visibility.Collapsed;
+            SelectsVisibility = Visibility.Visible;
             ViewAssetViewVisibility = Visibility.Visible;
         }
     }
