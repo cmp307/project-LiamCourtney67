@@ -60,6 +60,9 @@ namespace ScottishGlenAssetTracking.ViewModels
         private Visibility statusVisibility = Visibility.Collapsed;
 
         [ObservableProperty]
+        private Visibility employeeAssetsVisibility = Visibility.Collapsed;
+
+        [ObservableProperty]
         private Visibility viewEmployeeViewVisibility = Visibility.Collapsed;
 
         [ObservableProperty]
@@ -89,9 +92,19 @@ namespace ScottishGlenAssetTracking.ViewModels
             {
                 SelectedEmployee.Department = Departments.FirstOrDefault(d => d.Id == SelectedEmployee.Department.Id);
                 OnPropertyChanged(nameof(SelectedEmployee));
+
                 StatusVisibility = Visibility.Collapsed;
                 StatusMessage = string.Empty;
                 ChangeViewToView();
+
+                if (SelectedEmployee.Assets == null || SelectedEmployee.Assets.Count == 0)
+                {
+                    EmployeeAssetsVisibility = Visibility.Collapsed;
+                }
+                else if (SelectedEmployee.Assets.Count > 0)
+                {
+                    EmployeeAssetsVisibility = Visibility.Visible;
+                }
             }
         }
 
