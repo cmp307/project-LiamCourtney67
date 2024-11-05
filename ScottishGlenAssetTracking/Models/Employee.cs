@@ -7,8 +7,12 @@ using System.Threading.Tasks;
 
 namespace ScottishGlenAssetTracking.Models
 {
+    /// <summary>
+    /// Model class for the Employee entity.
+    /// </summary>
     public class Employee
     {
+        // Private fields for the Employee entity.
         private int _id;
         private string _firstName;
         private string _lastName;
@@ -16,36 +20,63 @@ namespace ScottishGlenAssetTracking.Models
         private Department _department;
         private List<Asset> _assets;
 
+        /// <summary>
+        /// Id property for the Employee entity.
+        /// </summary>
         public int Id
         {
             get { return _id; }
             set { _id = value; }
         }
+
+        /// <summary>
+        /// FirstName property for the Employee entity.
+        /// </summary>
         public string FirstName
         {
             get { return _firstName; }
             set { _firstName = value; }
         }
+
+        /// <summary>
+        /// LastName property for the Employee entity.
+        /// </summary>
         public string LastName
         {
             get { return _lastName; }
             set { _lastName = value; }
         }
+
+        /// <summary>
+        /// Non-mapped property for the full name of the employee entity.
+        /// </summary>
         [NotMapped]
         public string Name
         {
             get { return _firstName + " " + _lastName; }
         }
+
+        /// <summary>
+        /// Email property for the Employee entity.
+        /// </summary>
         public string Email
         {
             get { return _email; }
             set { _email = value; }
         }
+
+        /// <summary>
+        /// Navigational property for the Department entity within the Employee entity.
+        /// </summary>
         public Department Department
         {
             get { return _department; }
             set { _department = value; }
         }
+
+        /// <summary>
+        /// List of navigational properties for the Asset entities within the Employee entity.
+        /// </summary>
         public List<Asset> Assets
         {
             get { return _assets; }

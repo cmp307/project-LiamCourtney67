@@ -23,47 +23,73 @@ using Windows.Foundation.Collections;
 namespace ScottishGlenAssetTracking.Views.Asset
 {
     /// <summary>
-    /// An empty page that can be used on its own or navigated to within a Frame.
+    /// Page for viewing an Asset.
     /// </summary>
     public sealed partial class ViewAsset : Page
     {
+        /// <summary>
+        /// Constructor for the ViewAsset class.
+        /// </summary>
         public ViewAsset()
         {
             this.InitializeComponent();
+
+            // Set the DataContext of the page to the ViewAssetViewModel with dependency injection.
             DataContext = App.AppHost.Services.GetRequiredService<ViewAssetViewModel>();
         }
 
+        /// <summary>
+        /// Event handler for the selection changed event of the DepartmentSelect ComboBox.
+        /// </summary>
+        /// <param name="sender">The control that triggered the event.</param>
+        /// <param name="e">Event data that provides information about the selection changed event.</param>
         private void DepartmentSelect_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            // Check if the DataContext is a ViewAssetViewModel and execute the LoadEmployeesCommand.
+            // Selection changed cannot be bound to a command, so it is done in the code-behind.
             if (DataContext is ViewAssetViewModel viewModel)
             {
-                viewModel.SelectDepartmentCommand.Execute(null);
+                viewModel.LoadEmployeesCommand.Execute(null);
             }
         }
 
+        /// <summary>
+        /// Event handler for the selection changed event of the EmployeeSelect ComboBox.
+        /// </summary>
+        /// <param name="sender">The control that triggered the event.</param>
+        /// <param name="e">Event data that provides information about the selection changed event.</param>
         private void EmployeeSelect_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            // Check if the DataContext is a ViewAssetViewModel and execute the LoadAssetsCommand.
+            // Selection changed cannot be bound to a command, so it is done in the code-behind.
             if (DataContext is ViewAssetViewModel viewModel) {
-                viewModel.SelectEmployeeCommand.Execute(null);
+                viewModel.LoadAssetsCommand.Execute(null);
             }
         }
 
+        /// <summary>
+        /// Event handler for the selection changed event of the AssetSelect ComboBox.
+        /// </summary>
+        /// <param name="sender">The control that triggered the event.</param>
+        /// <param name="e">Event data that provides information about the selection changed event.</param>
         private void AssetSelect_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            // Check if the DataContext is a ViewAssetViewModel and execute the PopulateAssetDetailsCommand.
+            // Selection changed cannot be bound to a command, so it is done in the code-behind.
             if (DataContext is ViewAssetViewModel viewModel)
             {
-                viewModel.SelectAssetCommand.Execute(null);
+                viewModel.PopulateAssetDetailsCommand.Execute(null);
             }
         }
 
         private void AssetDepartmentSelect_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-
+            // Not implemented
         }
 
         private void AssetEmployeeSelect_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-
+            // Not implemented
         }
     }
 }

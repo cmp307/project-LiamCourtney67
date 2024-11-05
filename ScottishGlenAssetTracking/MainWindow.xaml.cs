@@ -24,10 +24,13 @@ using Windows.Foundation.Collections;
 namespace ScottishGlenAssetTracking
 {
     /// <summary>
-    /// An empty window that can be used on its own or navigated to within a Frame.
+    /// Main window for the application and navigation view.
     /// </summary>
     public sealed partial class MainWindow : Window
     {
+        /// <summary>
+        /// Constructor for the MainWindow class.
+        /// </summary>
         public MainWindow()
         {
             this.InitializeComponent();
@@ -40,6 +43,7 @@ namespace ScottishGlenAssetTracking
         /// <param name="e">Event data that provides information about the item invoked event.</param>
         private void Nav_ItemInvoked(NavigationView sender, NavigationViewItemInvokedEventArgs args)
         {
+            // Check if the invoked item has a tag and navigate to the corresponding page.
             if (args.InvokedItemContainer.Tag is not null)
             {
                 var itemTag = args.InvokedItemContainer.Tag.ToString();
@@ -53,6 +57,7 @@ namespace ScottishGlenAssetTracking
         /// <param name="pageTag">Tag for the invoked item.</param>
         private void NavigateToPage(string pageTag)
         {
+            // Check the tag of the invoked item and navigate to the corresponding page using the MainFrame and dependency injection.
             switch (pageTag)
             {
                 // Asset

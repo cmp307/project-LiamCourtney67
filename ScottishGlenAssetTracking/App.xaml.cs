@@ -37,7 +37,14 @@ namespace ScottishGlenAssetTracking
     /// </summary>
     public partial class App : Application
     {
+        /// <summary>
+        /// Configuration for the application.
+        /// </summary>
         public static IConfiguration Configuration { get; private set; }
+
+        /// <summary>
+        /// Host for the application.
+        /// </summary>
         public static IHost AppHost { get; private set; }
 
         /// <summary>
@@ -46,9 +53,12 @@ namespace ScottishGlenAssetTracking
         /// </summary>
         public App()
         {
+            // Initialize the configuration for the application.
             InitializeConfiguration();
+
             this.InitializeComponent();
 
+            // Create the host for the application.
             AppHost = Host.CreateDefaultBuilder()
                 .ConfigureServices((context, services) => { ConfigureServices(services); } )
                 .Build();
@@ -60,9 +70,13 @@ namespace ScottishGlenAssetTracking
         /// <param name="args">Details about the launch request and process.</param>
         protected override async void OnLaunched(Microsoft.UI.Xaml.LaunchActivatedEventArgs args)
         {
+            // Start the application host.
             await AppHost.StartAsync();
+
+            // Warm up the database.
             WarmUpDatabase();
 
+            // Inject the main window and set the title.
             m_window = AppHost.Services.GetRequiredService<MainWindow>();
             m_window.Title = "Scottish Glen";
 
@@ -75,8 +89,12 @@ namespace ScottishGlenAssetTracking
             m_window.Activate();
         }
 
+        /// <summary>
+        /// Initializes the configuration for the application.
+        /// </summary>
         private void InitializeConfiguration()
         {
+            // Load the configuration from the appsettings.json file.
             var builder = new ConfigurationBuilder()
                 .SetBasePath(AppContext.BaseDirectory)
                 .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
@@ -84,27 +102,37 @@ namespace ScottishGlenAssetTracking
             Configuration = builder.Build();
         }
 
+        /// <summary>
+        /// Configures the services for the application.
+        /// </summary>
+        /// <param name="services">The collection of services to configure.</param>
         public void ConfigureServices(IServiceCollection services)
         {
+            // Get the connection string for the database.
             var connectionString = Configuration.GetConnectionString("ScottishGlenDatabase");
 
+            // Add the database context to the services.
             services.AddDbContext<ScottishGlenContext>(options =>
                 options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
 
+            // Add services to the services collection.
             services.AddSingleton<AssetService>();
             services.AddSingleton<EmployeeService>();
             services.AddSingleton<DepartmentService>();
 
+            // Add view models to the services collection.
             services.AddTransient<AddAssetViewModel>();
             services.AddTransient<ViewAssetViewModel>();
             services.AddTransient<AddEmployeeViewModel>();
             services.AddTransient<ViewEmployeeViewModel>();
 
+            // Add views to the services collection.
             services.AddTransient<AddAsset>();
             services.AddTransient<ViewAsset>();
             services.AddTransient<AddEmployee>();
             services.AddTransient<ViewEmployee>();
 
+            // Add the main window to the services collection.
             services.AddSingleton<MainWindow>();
         }
 
@@ -113,12 +141,14 @@ namespace ScottishGlenAssetTracking
         /// </summary>
         private void WarmUpDatabase()
         {
+            // Create a scope and get the database context.
             using (var scope = AppHost.Services.CreateScope())
             {
                 var context = scope.ServiceProvider.GetRequiredService<ScottishGlenContext>();
 
                 try
                 {
+                    // Execute a query to warm up the database.
                     context.Departments.FirstOrDefault();
                 }
                 catch (Exception)

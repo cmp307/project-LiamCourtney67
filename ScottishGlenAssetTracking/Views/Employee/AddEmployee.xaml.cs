@@ -24,13 +24,18 @@ using Microsoft.Extensions.DependencyInjection;
 namespace ScottishGlenAssetTracking.Views.Employee
 {
     /// <summary>
-    /// An empty page that can be used on its own or navigated to within a Frame.
+    /// Page for adding an Employee.
     /// </summary>
     public sealed partial class AddEmployee : Page
     {
+        /// <summary>
+        /// Constructor for the AddEmployee class.
+        /// </summary>
         public AddEmployee()
         {
             this.InitializeComponent();
+
+            // Set the DataContext of the page to the AddEmployeeViewModel with dependency injection.
             DataContext = App.AppHost.Services.GetRequiredService<AddEmployeeViewModel>();
         }
     }

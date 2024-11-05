@@ -40,7 +40,7 @@
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
 
-                    <!--Employee Details-->
+                    <!--Employee Firt Name-->
                     <Border BorderBrush="LightGray" Background="Gray" BorderThickness="1" Grid.Row="0" Grid.Column="0">
                         <TextBlock Text="First Name" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Center" TextWrapping="Wrap" FontSize="20"/>
                     </Border>
@@ -48,6 +48,7 @@
                         <TextBlock Text="{Binding SelectedEmployee.FirstName}" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Center" TextWrapping="Wrap" FontSize="20"/>
                     </Border>
 
+                    <!--Employee Last Name-->
                     <Border BorderBrush="LightGray" Background="Gray" BorderThickness="1" Grid.Row="0" Grid.Column="1">
                         <TextBlock Text="Last Name" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Center" TextWrapping="Wrap" FontSize="20"/>
                     </Border>
@@ -55,6 +56,7 @@
                         <TextBlock Text="{Binding SelectedEmployee.LastName}" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Center" TextWrapping="Wrap" FontSize="20"/>
                     </Border>
 
+                    <!--Employee Email-->
                     <Border BorderBrush="LightGray" Background="Gray" BorderThickness="1" Grid.Row="0" Grid.Column="2">
                         <TextBlock Text="Email" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Center" TextWrapping="Wrap" FontSize="20"/>
                     </Border>
@@ -62,6 +64,7 @@
                         <TextBlock Text="{Binding SelectedEmployee.Email}" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Center" TextWrapping="Wrap" FontSize="20"/>
                     </Border>
 
+                    <!--Employee Department-->
                     <Border BorderBrush="LightGray" Background="Gray" BorderThickness="1" Grid.Row="0" Grid.Column="3" Grid.ColumnSpan="3">
                         <TextBlock Text="Department" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Center" TextWrapping="Wrap" FontSize="20"/>
                     </Border>
@@ -70,26 +73,32 @@
                     </Border>
                 </Grid>
 
+                <!-- Employee Assets -->
                 <ListView x:Name="EmployeeAssets" Header="Assets: " ItemsSource="{Binding SelectedEmployee.Assets}" Visibility="{Binding EmployeeAssetsVisibility}" DisplayMemberPath="Name" Margin="10" FontSize="32"/>
 
+                <!--Buttons-->
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
                     <Button x:Name="EditEmployeeButton" Content="Edit Employee" Command="{Binding ChangeViewToEditCommand}" Margin="10" Background="Blue" Foreground="White"/>
                     <Button x:Name="DeleteEmployeeButton" Content="Delete Employee" Command="{Binding DeleteEmployeeCommand}" Margin="10" Background="Red" Foreground="White"/>
                 </StackPanel>
 
+                <!--Status Message-->
                 <TextBlock x:Name="StatusMessage" Text="{Binding StatusMessage}" Visibility="{Binding StatusVisibility}" Margin="10" HorizontalAlignment="Center"/>
             </StackPanel>
 
             <!--Edit Employee View-->
             <StackPanel x:Name="EditEmployeeView" Visibility="{Binding EditEmployeeViewVisibility}">
 
+                <!--Employee Details-->
                 <TextBox Header="First Name" Text="{Binding SelectedEmployee.FirstName, Mode=TwoWay}" Margin="10"/>
                 <TextBox Header="Last Name" Text="{Binding SelectedEmployee.LastName, Mode=TwoWay}" Margin="10"/>
                 <TextBox Header="Email" Text="{Binding SelectedEmployee.Email, Mode=TwoWay}" Margin="10"/>
 
+                <!--Employee Department Select-->
                 <ComboBox x:Name="EmployeeDepartmentSelect" Header="Department" HorizontalAlignment="Stretch" PlaceholderText="Select Department" Margin="10" 
                           ItemsSource="{Binding Departments}" SelectedItem="{Binding SelectedEmployee.Department, Mode=TwoWay}" DisplayMemberPath="Name"/>
 
+                <!--Buttons-->
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
                     <Button x:Name="CancelButton" Content="Cancel" Command="{Binding ChangeViewToViewCommand}" Margin="10" Background="Red" Foreground="White"/>
                     <Button x:Name="UpdateEmployeeButton" Content="Update Employee" Command="{Binding UpdateEmployeeCommand}" Margin="10" Background="Green" Foreground="White"/>
