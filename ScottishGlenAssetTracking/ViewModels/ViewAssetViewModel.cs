@@ -180,6 +180,9 @@ namespace ScottishGlenAssetTracking.ViewModels
                 // Delete the selected asset from the database.
                 _assetService.DeleteAsset(SelectedAsset.Id);
 
+                // Clear the PurchaseDate field so it doesn't show in the view.
+                ClearPurchaseDate();
+
                 // Set the status message and make it visible.
                 StatusVisibility = Visibility.Visible;
                 StatusMessage = "Asset Deleted";
@@ -282,6 +285,10 @@ namespace ScottishGlenAssetTracking.ViewModels
         /// Command to clear the PurchaseDate property.
         /// </summary>
         [RelayCommand]
-        private void ClearPurchaseDate() => PurchaseDate = null;
+        private void ClearPurchaseDate()
+        {
+            PurchaseDate = null;
+            PurchaseDateFormatted = string.Empty;
+        }
     }
 }
