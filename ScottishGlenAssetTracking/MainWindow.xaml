@@ -40,14 +40,20 @@
             <!--Main Frame-->
             <ScrollViewer>
                 <Frame x:Name="MainFrame">
+
+                    <!--Welcome text and info-->
                     <StackPanel VerticalAlignment="Center">
-                        <TextBlock Text="Scottish Glen Asset Tracking System" FontSize="56" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="20"/>
-                        <TextBlock Text="Please select an option from the navigation menu at the top of the screen" FontSize="30" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="20"/>
-                        <TextBlock Text="Asset and Employee both contain dropdowns for adding and viewing" FontSize="20" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="20"/>
+                        <TextBlock Text="Scottish Glen Asset Tracking System" FontSize="56" Foreground="White" 
+                                   HorizontalAlignment="Center" VerticalAlignment="Center" Margin="20"/>
+
+                        <TextBlock Text="Please select an option from the navigation menu at the top of the screen" FontSize="30" Foreground="White" 
+                                   HorizontalAlignment="Center" VerticalAlignment="Center" Margin="20"/>
+
+                        <TextBlock Text="Asset and Employee both contain dropdowns for adding and viewing" FontSize="20" Foreground="White" 
+                                   HorizontalAlignment="Center" VerticalAlignment="Center" Margin="20"/>
                     </StackPanel>
                 </Frame>
             </ScrollViewer>
-
         </NavigationView>
     </Grid>
 </Window>

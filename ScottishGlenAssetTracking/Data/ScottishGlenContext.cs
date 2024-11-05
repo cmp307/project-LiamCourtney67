@@ -8,20 +8,33 @@ using ScottishGlenAssetTracking.Models;
 
 namespace ScottishGlenAssetTracking.Data
 {
+    /// <summary>
+    /// ScottishGlenContext class used to interact with the database.
+    /// </summary>
     public class ScottishGlenContext : DbContext
     {
+        // DbSet properties for each entity.
         public DbSet<Department> Departments { get; set; }
         public DbSet<Employee> Employees { get; set; }
         public DbSet<Asset> Assets { get; set; }
 
+        /// <summary>
+        /// Constructor for the ScottishGlenContext class.
+        /// </summary>
+        /// <param name="options">DBContext options used with dependency injection.</param>
         public ScottishGlenContext(DbContextOptions<ScottishGlenContext> options) : base(options)
         {
         }
 
+        /// <summary>
+        /// Override of the OnModelCreating method to configure the database schema.
+        /// </summary>
+        /// <param name="modelBuilder">Model builder to be used within the method.</param>
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
+            // Configure the Department entity.
             modelBuilder.Entity<Department>(entity =>
             {
                 entity.ToTable("SG.Departments");
@@ -29,6 +42,7 @@ namespace ScottishGlenAssetTracking.Data
                 entity.Property(d => d.Name).HasColumnName("name").HasMaxLength(64);
             });
 
+            // Configure the Employee entity.
             modelBuilder.Entity<Employee>(entity =>
             {
                 entity.ToTable("SG.Employees");
@@ -41,6 +55,7 @@ namespace ScottishGlenAssetTracking.Data
                       .WithMany(d => d.Employees);
             });
 
+            // Configure the Asset entity.
             modelBuilder.Entity<Asset>(entity =>
             {
                 entity.ToTable("SG.Assets");

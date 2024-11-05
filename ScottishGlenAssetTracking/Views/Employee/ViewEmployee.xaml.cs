@@ -23,29 +23,48 @@ using Windows.Foundation.Collections;
 namespace ScottishGlenAssetTracking.Views.Employee
 {
     /// <summary>
-    /// An empty page that can be used on its own or navigated to within a Frame.
+    /// Page for viewing an Employee.
     /// </summary>
     public sealed partial class ViewEmployee : Page
     {
+        /// <summary>
+        /// Constructor for the ViewEmployee class.
+        /// </summary>
         public ViewEmployee()
         {
             this.InitializeComponent();
+
+            // Set the DataContext of the page to the ViewEmployeeViewModel with dependency injection.
             DataContext = App.AppHost.Services.GetRequiredService<ViewEmployeeViewModel>();
         }
 
+        /// <summary>
+        /// Event handler for the selection changed event of the DepartmentSelect ComboBox.
+        /// </summary>
+        /// <param name="sender">The control that triggered the event.</param>
+        /// <param name="e">Event data that provides information about the selection changed event.</param>
         private void DepartmentSelect_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            // Check if the DataContext is a ViewEmployeeViewModel and execute the LoadEmployeesCommand.
+            // Selection changed cannot be bound to a command, so it is done in the code-behind.
             if (DataContext is ViewEmployeeViewModel viewModel)
             {
-                viewModel.SelectDepartmentCommand.Execute(null);
+                viewModel.LoadEmployeesCommand.Execute(null);
             }
         }
 
+        /// <summary>
+        /// Event handler for the selection changed event of the EmployeeSelect ComboBox.
+        /// </summary>
+        /// <param name="sender">The control that triggered the event.</param>
+        /// <param name="e">Event data that provides information about the selection changed event.</param>
         private void EmployeeSelect_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            // Check if the DataContext is a ViewEmployeeViewModel and execute the PopulateEmployeeDetailsCommand.
+            // Selection changed cannot be bound to a command, so it is done in the code-behind.
             if (DataContext is ViewEmployeeViewModel viewModel)
             {
-                viewModel.SelectEmployeeCommand.Execute(null);
+                viewModel.PopulateEmployeeDetailsCommand.Execute(null);
             }
         }
     }
