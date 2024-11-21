@@ -116,19 +116,19 @@ namespace ScottishGlenAssetTracking
                 options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
 
             // Add services to the services collection.
-            services.AddSingleton<AssetService>();
+            services.AddSingleton<HardwareAssetService>();
             services.AddSingleton<EmployeeService>();
             services.AddSingleton<DepartmentService>();
 
             // Add view models to the services collection.
-            services.AddTransient<AddAssetViewModel>();
-            services.AddTransient<ViewAssetViewModel>();
+            services.AddTransient<AddHardwareAssetViewModel>();
+            services.AddTransient<ViewHardwareAssetViewModel>();
             services.AddTransient<AddEmployeeViewModel>();
             services.AddTransient<ViewEmployeeViewModel>();
 
             // Add views to the services collection.
-            services.AddTransient<AddAsset>();
-            services.AddTransient<ViewAsset>();
+            services.AddTransient<AddHardwareAsset>();
+            services.AddTransient<ViewHardwareAsset>();
             services.AddTransient<AddEmployee>();
             services.AddTransient<ViewEmployee>();
 

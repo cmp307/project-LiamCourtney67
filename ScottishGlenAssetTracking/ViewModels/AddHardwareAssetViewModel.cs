@@ -14,37 +14,37 @@ using System.Threading.Tasks;
 namespace ScottishGlenAssetTracking.ViewModels
 {
     /// <summary>
-    /// Partial class for the AddAssetViewModel using the ObservableObject class.
+    /// Partial class for the AddHardwareAssetViewModel using the ObservableObject class.
     /// </summary>
-    public partial class AddAssetViewModel : ObservableObject
+    public partial class AddHardwareAssetViewModel : ObservableObject
     {
-        // Private fields for the DepartmentService, EmployeeService, and AssetService.
+        // Private fields for the DepartmentService, EmployeeService, and HardwareAssetService.
         private readonly DepartmentService _departmentService;
         private readonly EmployeeService _employeeService;
-        private readonly AssetService _assetService;
+        private readonly HardwareAssetService _hardwareAssetService;
 
         /// <summary>
-        /// Constructor for the AddAssetViewModel class using the DepartmentService, EmployeeService, and AssetService with dependency injection.
+        /// Constructor for the AddHardwareAssetViewModel class using the DepartmentService, EmployeeService, and HardwareAssetService with dependency injection.
         /// </summary>
         /// <param name="departmentService">DepartmentService from dependency injection.</param>
         /// <param name="employeeService">EmployeeService from dependency injection.</param>
-        /// <param name="assetService">AssetService from dependency injection.</param>
-        public AddAssetViewModel(DepartmentService departmentService, EmployeeService employeeService, AssetService assetService)
+        /// <param name="hardwareAssetService">HardwareAssetService from dependency injection.</param>
+        public AddHardwareAssetViewModel(DepartmentService departmentService, EmployeeService employeeService, HardwareAssetService hardwareAssetService)
         {
             // Initialize services.
             _departmentService = departmentService;
             _employeeService = employeeService;
-            _assetService = assetService;
+            _hardwareAssetService = hardwareAssetService;
 
             // Load departments and remove any unwanted items.
             Departments = new ObservableCollection<Department>(_departmentService.GetDepartments()
-                .Where(d => d.Name != "Assets without Employee"));
+                .Where(d => d.Name != "HardwareAssets without Employee"));
 
             // Initialize collections.
             Employees = new ObservableCollection<Employee>();
 
-            // Initialize new asset with system info.
-            newAsset = _assetService.GetAssetWithSystemInfo();
+            // Initialize new HardwareAsset with system info.
+            newHardwareAsset = _hardwareAssetService.GetHardwareAssetWithSystemInfo();
 
             // Set purchase date to null.
             purchaseDate = null;
@@ -64,7 +64,7 @@ namespace ScottishGlenAssetTracking.ViewModels
 
         // Properties.
         [ObservableProperty]
-        private Asset newAsset;
+        private HardwareAsset newHardwareAsset;
 
         // Need to use a DateTimeOffset property as a workaround for the DatePicker control not binding to a DateTime property.
         [ObservableProperty]
@@ -89,16 +89,16 @@ namespace ScottishGlenAssetTracking.ViewModels
         /// Command to add an asset to the database.
         /// </summary>
         [RelayCommand]
-        private void AddAsset()
+        private void AddHardwareAsset()
         {
             // Set the PurchaseDate property of the new asset to the DateTime value of the PurchaseDate property.
-            NewAsset.PurchaseDate = PurchaseDate?.DateTime;
+            NewHardwareAsset.PurchaseDate = PurchaseDate?.DateTime;
 
             // Add the new asset to the database.
-            _assetService.AddAsset(NewAsset);
+            _hardwareAssetService.AddHardwareAsset(NewHardwareAsset);
 
             // Set the status message and make it visible.
-            StatusMessage = "Asset Added";
+            StatusMessage = "Hardware Asset Added";
             StatusVisibility = Visibility.Visible;
         }
 

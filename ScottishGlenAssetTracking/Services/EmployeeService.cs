@@ -61,7 +61,7 @@ namespace ScottishGlenAssetTracking.Services
         public List<Employee> GetEmployees(int departmentId)
         {
             // Return the list of all Employees from the database for the chosen Department.
-            return _context.Employees.Include(e => e.Assets).Include(e => e.Department).Where(e => e.Department.Id == departmentId).ToList();
+            return _context.Employees.Include(e => e.HardwareAssets).Include(e => e.Department).Where(e => e.Department.Id == departmentId).ToList();
         }
 
         /// <summary>
@@ -90,20 +90,20 @@ namespace ScottishGlenAssetTracking.Services
         public bool DeleteEmployee(int employeeId)
         {
             // Find the employee in the database.
-            var employee = _context.Employees.Include(e => e.Assets).FirstOrDefault(e => e.Id == employeeId);
+            var employee = _context.Employees.Include(e => e.HardwareAssets).FirstOrDefault(e => e.Id == employeeId);
             
-            // Find the Assets without Employee record in the database.
+            // Find the HardwareAssets without Employee record in the database.
             var assetEmployee = _context.Employees.Find(1);
 
             // Reassign assets to the employee for assets without an employee
-            foreach (var asset in employee.Assets)
+            foreach (var asset in employee.HardwareAssets)
             {
                 asset.Employee = assetEmployee;
-                _context.Assets.Update(asset);
+                _context.HardwareAssets.Update(asset);
             }
 
             // Clear the assets from the employee
-            employee.Assets.Clear();
+            employee.HardwareAssets.Clear();
 
             // Remove the employee from the database and save the changes.
             _context.Employees.Remove(employee);

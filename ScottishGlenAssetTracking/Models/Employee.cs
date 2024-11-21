@@ -18,7 +18,7 @@ namespace ScottishGlenAssetTracking.Models
         private string _lastName;
         private string _email;
         private Department _department;
-        private List<Asset> _assets;
+        private List<HardwareAsset> _hardwareAssets;
 
         /// <summary>
         /// Id property for the Employee entity.
@@ -75,12 +75,12 @@ namespace ScottishGlenAssetTracking.Models
         }
 
         /// <summary>
-        /// List of navigational properties for the Asset entities within the Employee entity.
+        /// List of navigational properties for the HardwareAsset entities within the Employee entity.
         /// </summary>
-        public List<Asset> Assets
+        public List<HardwareAsset> HardwareAssets
         {
-            get { return _assets; }
-            set { _assets = value; }
+            get { return _hardwareAssets; }
+            set { _hardwareAssets = value; }
         }
     }
 }
