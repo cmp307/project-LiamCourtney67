@@ -125,7 +125,7 @@
                 <!--Buttons-->
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
                     <Button x:Name="EditHardwareAssetButton" Content="Edit Hardware Asset" Command="{Binding ChangeViewToEditCommand}" Margin="10" Background="Blue" Foreground="White"/>
-                    <Button x:Name="DeleteHardwareAssetButton" Content="Delete Hardware Asset" Command="{Binding DeleteAssetCommand}" Margin="10" Background="Red" Foreground="White"/>
+                    <Button x:Name="DeleteHardwareAssetButton" Content="Delete Hardware Asset" Command="{Binding DeleteHardwareAssetCommand}" Margin="10" Background="Red" Foreground="White"/>
                 </StackPanel>
 
                 <!--Status Message-->
