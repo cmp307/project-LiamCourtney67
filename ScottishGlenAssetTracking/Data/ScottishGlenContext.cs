@@ -17,6 +17,7 @@ namespace ScottishGlenAssetTracking.Data
         public DbSet<Department> Departments { get; set; }
         public DbSet<Employee> Employees { get; set; }
         public DbSet<HardwareAsset> HardwareAssets { get; set; }
+        public DbSet<SoftwareAsset> SoftwareAssets { get; set; }
 
         /// <summary>
         /// Constructor for the ScottishGlenContext class.
@@ -40,6 +41,10 @@ namespace ScottishGlenAssetTracking.Data
                 entity.ToTable("SG.Departments");
                 entity.HasKey(d => d.Id);
                 entity.Property(d => d.Name).HasColumnName("name").HasMaxLength(64);
+
+                entity.HasMany(d => d.Employees)
+                      .WithOne(e => e.Department)
+                      .IsRequired(false);
             });
 
             // Configure the Employee entity.
@@ -53,6 +58,10 @@ namespace ScottishGlenAssetTracking.Data
 
                 entity.HasOne(e => e.Department)
                       .WithMany(d => d.Employees);
+
+                entity.HasMany(e => e.HardwareAssets)
+                      .WithOne(a => a.Employee)
+                      .IsRequired(false);
             });
 
             // Configure the HardwareAsset entity.
@@ -70,6 +79,23 @@ namespace ScottishGlenAssetTracking.Data
 
                 entity.HasOne(a => a.Employee)
                       .WithMany(e => e.HardwareAssets);
+
+                entity.HasOne(a => a.SoftwareAsset)
+                      .WithOne(e => e.HardwareAsset)
+                      .IsRequired(false);
+            });
+
+            // Configure the SoftwareAsset entity.
+            modelBuilder.Entity<SoftwareAsset>(entity =>
+            {
+                entity.ToTable("SG.SoftwareAssets");
+                entity.HasKey(a => a.Id);
+                entity.Property(a => a.Name).HasColumnName("name").HasMaxLength(64);
+                entity.Property(a => a.Version).HasColumnName("version").HasMaxLength(64);
+                entity.Property(a => a.Manufacturer).HasColumnName("manufacturer").HasMaxLength(64);
+
+                entity.HasOne(a => a.HardwareAsset)
+                      .WithOne(e => e.SoftwareAsset);
             });
         }
     }
