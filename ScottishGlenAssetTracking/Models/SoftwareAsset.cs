@@ -16,6 +16,7 @@ namespace ScottishGlenAssetTracking.Models
         private string _name;
         private string _version;
         private string _manufacturer;
+        private HardwareAsset _hardwareAsset;
 
         /// <summary>
         /// Id property for the SoftwareAsset entity.
@@ -51,6 +52,15 @@ namespace ScottishGlenAssetTracking.Models
         {
             get { return _manufacturer; }
             set { _manufacturer = value; }
+        }
+
+        /// <summary>
+        /// Navigational property for the HardwareAsset entity within the SoftwareAsset entity.
+        /// </summary>
+        public HardwareAsset HardwareAsset
+        {
+            get { return _hardwareAsset; }
+            set { _hardwareAsset = value; }
         }
     }
 }
