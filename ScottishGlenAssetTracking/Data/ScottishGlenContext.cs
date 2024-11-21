@@ -16,7 +16,7 @@ namespace ScottishGlenAssetTracking.Data
         // DbSet properties for each entity.
         public DbSet<Department> Departments { get; set; }
         public DbSet<Employee> Employees { get; set; }
-        public DbSet<Asset> Assets { get; set; }
+        public DbSet<HardwareAsset> HardwareAssets { get; set; }
 
         /// <summary>
         /// Constructor for the ScottishGlenContext class.
@@ -55,10 +55,10 @@ namespace ScottishGlenAssetTracking.Data
                       .WithMany(d => d.Employees);
             });
 
-            // Configure the Asset entity.
-            modelBuilder.Entity<Asset>(entity =>
+            // Configure the HardwareAsset entity.
+            modelBuilder.Entity<HardwareAsset>(entity =>
             {
-                entity.ToTable("SG.Assets");
+                entity.ToTable("SG.HardwareAssets");
                 entity.HasKey(a => a.Id);
                 entity.Property(a => a.Name).HasColumnName("name").HasMaxLength(64);
                 entity.Property(a => a.Model).HasColumnName("model").HasMaxLength(64);
@@ -69,7 +69,7 @@ namespace ScottishGlenAssetTracking.Data
                 entity.Property(a => a.Notes).HasColumnName("notes").HasMaxLength(64).IsRequired(false);
 
                 entity.HasOne(a => a.Employee)
-                      .WithMany(e => e.Assets);
+                      .WithMany(e => e.HardwareAssets);
             });
         }
     }

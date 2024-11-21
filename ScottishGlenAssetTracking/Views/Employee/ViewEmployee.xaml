@@ -73,8 +73,8 @@
                     </Border>
                 </Grid>
 
-                <!-- Employee Assets -->
-                <ListView x:Name="EmployeeAssets" Header="Assets: " ItemsSource="{Binding SelectedEmployee.Assets}" Visibility="{Binding EmployeeAssetsVisibility}" DisplayMemberPath="Name" Margin="10" FontSize="32"/>
+                <!-- Employee HardwareAssets -->
+                <ListView x:Name="EmployeeHardwareAssets" Header="Hardware Assets: " ItemsSource="{Binding SelectedEmployee.HardwareAssets}" Visibility="{Binding EmployeeHardwareAssetsVisibility}" DisplayMemberPath="Name" Margin="10" FontSize="32"/>
 
                 <!--Buttons-->
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">

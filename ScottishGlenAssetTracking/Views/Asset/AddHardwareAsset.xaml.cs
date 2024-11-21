@@ -26,19 +26,19 @@ using Windows.Services.Maps;
 namespace ScottishGlenAssetTracking.Views.Asset
 {
     /// <summary>
-    /// Page for adding an Asset.
+    /// Page for adding an HardwareAsset.
     /// </summary>
-    public sealed partial class AddAsset : Page
+    public sealed partial class AddHardwareAsset : Page
     {
         /// <summary>
-        /// Constructor for the AddAsset class.
+        /// Constructor for the AddHardwareAsset class.
         /// </summary>
-        public AddAsset()
+        public AddHardwareAsset()
         {
             this.InitializeComponent();
 
-            // Set the DataContext of the page to the AddAssetViewModel with dependency injection.
-            DataContext = App.AppHost.Services.GetRequiredService<AddAssetViewModel>();
+            // Set the DataContext of the page to the AddHardwareAssetViewModel with dependency injection.
+            DataContext = App.AppHost.Services.GetRequiredService<AddHardwareAssetViewModel>();
         }
 
         /// <summary>
@@ -48,9 +48,9 @@ namespace ScottishGlenAssetTracking.Views.Asset
         /// <param name="e">Event data that provides information about the selection changed event.</param>
         private void DepartmentSelect_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            // Check if the DataContext is an AddAssetViewModel and execute the LoadEmployeesCommand.
+            // Check if the DataContext is an AddHardwareAssetViewModel and execute the LoadEmployeesCommand.
             // Selection changed cannot be bound to a command, so it is done in the code-behind.
-            if (DataContext is AddAssetViewModel viewModel)
+            if (DataContext is AddHardwareAssetViewModel viewModel)
             {
                 viewModel.LoadEmployeesCommand.Execute(null);
             }

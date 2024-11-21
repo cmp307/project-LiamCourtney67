@@ -23,19 +23,19 @@ using Windows.Foundation.Collections;
 namespace ScottishGlenAssetTracking.Views.Asset
 {
     /// <summary>
-    /// Page for viewing an Asset.
+    /// Page for viewing an HardwareAsset.
     /// </summary>
-    public sealed partial class ViewAsset : Page
+    public sealed partial class ViewHardwareAsset : Page
     {
         /// <summary>
-        /// Constructor for the ViewAsset class.
+        /// Constructor for the ViewHardwareAsset class.
         /// </summary>
-        public ViewAsset()
+        public ViewHardwareAsset()
         {
             this.InitializeComponent();
 
-            // Set the DataContext of the page to the ViewAssetViewModel with dependency injection.
-            DataContext = App.AppHost.Services.GetRequiredService<ViewAssetViewModel>();
+            // Set the DataContext of the page to the ViewHardwareAssetViewModel with dependency injection.
+            DataContext = App.AppHost.Services.GetRequiredService<ViewHardwareAssetViewModel>();
         }
 
         /// <summary>
@@ -45,9 +45,9 @@ namespace ScottishGlenAssetTracking.Views.Asset
         /// <param name="e">Event data that provides information about the selection changed event.</param>
         private void DepartmentSelect_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            // Check if the DataContext is a ViewAssetViewModel and execute the LoadEmployeesCommand.
+            // Check if the DataContext is a ViewHardwareAssetViewModel and execute the LoadEmployeesCommand.
             // Selection changed cannot be bound to a command, so it is done in the code-behind.
-            if (DataContext is ViewAssetViewModel viewModel)
+            if (DataContext is ViewHardwareAssetViewModel viewModel)
             {
                 viewModel.LoadEmployeesCommand.Execute(null);
             }
@@ -60,10 +60,10 @@ namespace ScottishGlenAssetTracking.Views.Asset
         /// <param name="e">Event data that provides information about the selection changed event.</param>
         private void EmployeeSelect_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            // Check if the DataContext is a ViewAssetViewModel and execute the LoadAssetsCommand.
+            // Check if the DataContext is a ViewHardwareAssetViewModel and execute the LoadAssetsCommand.
             // Selection changed cannot be bound to a command, so it is done in the code-behind.
-            if (DataContext is ViewAssetViewModel viewModel) {
-                viewModel.LoadAssetsCommand.Execute(null);
+            if (DataContext is ViewHardwareAssetViewModel viewModel) {
+                viewModel.LoadHardwareAssetsCommand.Execute(null);
             }
         }
 
@@ -72,22 +72,22 @@ namespace ScottishGlenAssetTracking.Views.Asset
         /// </summary>
         /// <param name="sender">The control that triggered the event.</param>
         /// <param name="e">Event data that provides information about the selection changed event.</param>
-        private void AssetSelect_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void HardwareAssetSelect_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            // Check if the DataContext is a ViewAssetViewModel and execute the PopulateAssetDetailsCommand.
+            // Check if the DataContext is a ViewHardwareAssetViewModel and execute the PopulateAssetDetailsCommand.
             // Selection changed cannot be bound to a command, so it is done in the code-behind.
-            if (DataContext is ViewAssetViewModel viewModel)
+            if (DataContext is ViewHardwareAssetViewModel viewModel)
             {
-                viewModel.PopulateAssetDetailsCommand.Execute(null);
+                viewModel.PopulateHardwareAssetDetailsCommand.Execute(null);
             }
         }
 
-        private void AssetDepartmentSelect_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void HardwareAssetDepartmentSelect_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             // Not implemented
         }
 
-        private void AssetEmployeeSelect_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void HardwareAssetEmployeeSelect_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             // Not implemented
         }

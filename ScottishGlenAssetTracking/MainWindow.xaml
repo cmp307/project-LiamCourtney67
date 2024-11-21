@@ -19,15 +19,15 @@
                 <!--Title-->
                 <NavigationViewItemHeader Content="Scottish Glen" FontWeight="Bold"/>
 
-                <!--Team-->
-                <NavigationViewItem Content="Asset">
+                <!--Hardware Asset-->
+                <NavigationViewItem Content="Hardware Asset">
                     <NavigationViewItem.MenuItems>
-                        <NavigationViewItem Tag="AddAsset" Content="Add Asset" Background="Gray"/>
-                        <NavigationViewItem Tag="ViewAsset" Content="View Asset" Background="Gray"/>
+                        <NavigationViewItem Tag="AddHardwareAsset" Content="Add Hardware Asset" Background="Gray"/>
+                        <NavigationViewItem Tag="ViewHardwareAsset" Content="View Hardware Asset" Background="Gray"/>
                     </NavigationViewItem.MenuItems>
                 </NavigationViewItem>
 
-                <!--Member-->
+                <!--Employee-->
                 <NavigationViewItem Content="Employee">
                     <NavigationViewItem.MenuItems>
                         <NavigationViewItem Tag="AddEmployee" Content="Add Employee" Background="Gray"/>

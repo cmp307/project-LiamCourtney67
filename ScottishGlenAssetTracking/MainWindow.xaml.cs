@@ -60,14 +60,14 @@ namespace ScottishGlenAssetTracking
             // Check the tag of the invoked item and navigate to the corresponding page using the MainFrame and dependency injection.
             switch (pageTag)
             {
-                // Asset
-                case "AddAsset":
-                    var addAssetPage = App.AppHost.Services.GetRequiredService<AddAsset>();
+                // HardwareAsset
+                case "AddHardwareAsset":
+                    var addAssetPage = App.AppHost.Services.GetRequiredService<AddHardwareAsset>();
                     MainFrame.Navigate(addAssetPage.GetType());
                     break;
 
-                case "ViewAsset":
-                    var viewAssetPage = App.AppHost.Services.GetRequiredService<ViewAsset>();
+                case "ViewHardwareAsset":
+                    var viewAssetPage = App.AppHost.Services.GetRequiredService<ViewHardwareAsset>();
                     MainFrame.Navigate(viewAssetPage.GetType());
                     break;
 
