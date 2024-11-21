@@ -21,6 +21,7 @@ namespace ScottishGlenAssetTracking.Models
         private DateTime? _purchaseDate;        // Purchase date can be empty
         private string? _notes;                 // Notes can be empty
         private Employee _employee;
+        private SoftwareAsset _softwareAsset;
 
         /// <summary>
         /// Id property for the HardwareAsset entity.
@@ -101,6 +102,15 @@ namespace ScottishGlenAssetTracking.Models
         {
             get { return _employee; }
             set { _employee = value; }
+        }
+
+        /// <summary>
+        /// Navigational property for the SoftwareAsset entity within the HardwareAsset entity.
+        /// </summary>
+        public SoftwareAsset SoftwareAsset
+        {
+            get { return _softwareAsset; }
+            set { _softwareAsset = value; }
         }
     }
 }
