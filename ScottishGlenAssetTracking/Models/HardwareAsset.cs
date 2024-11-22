@@ -22,6 +22,7 @@ namespace ScottishGlenAssetTracking.Models
         private string? _notes;                 // Notes can be empty
         private Employee _employee;
         private SoftwareAsset _softwareAsset;
+        private DateTime _softwareLinkDate;
 
         /// <summary>
         /// Id property for the HardwareAsset entity.
@@ -111,6 +112,15 @@ namespace ScottishGlenAssetTracking.Models
         {
             get { return _softwareAsset; }
             set { _softwareAsset = value; }
+        }
+
+        /// <summary>
+        /// SoftwareLinkDate property for the HardwareAsset entity, the date the software was linked to the hardware.
+        /// </summary>
+        public DateTime SoftwareLinkDate
+        {
+            get { return _softwareLinkDate; }
+            set { _softwareLinkDate = value; }
         }
     }
 }
