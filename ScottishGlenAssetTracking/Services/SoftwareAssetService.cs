@@ -35,6 +35,22 @@ namespace ScottishGlenAssetTracking.Services
         /// <returns>True if added to the database, false if not.</returns>
         public bool AddSoftwareAsset(SoftwareAsset softwareAsset)
         {
+            // Check if the SoftwareAsset already exists in the database.
+            if (_context.SoftwareAssets.Any(a => a.Name == softwareAsset.Name && a.Version == softwareAsset.Version))
+            {
+                // Set the SoftwareAsset to the existing SoftwareAsset in the database.
+                foreach (var hardwareAsset in softwareAsset.HardwareAssets)
+                {
+                    HardwareAsset existingHardwareAsset = _context.HardwareAssets.FirstOrDefault(a => a.Id == hardwareAsset.Id);
+                    existingHardwareAsset.SoftwareAsset = softwareAsset;
+                    existingHardwareAsset.SoftwareLinkDate = DateTime.Now;
+                }
+
+                // Save the changes to the database and return true.
+                _context.SaveChanges();
+                return true;
+            }
+
             // Set the state of the HardwareAssets to Unchanged to prevent adding new HardwareAssets.
             foreach (var hardwareAsset in softwareAsset.HardwareAssets)
             {
