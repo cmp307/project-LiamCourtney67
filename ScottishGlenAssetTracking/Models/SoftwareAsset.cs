@@ -16,7 +16,7 @@ namespace ScottishGlenAssetTracking.Models
         private string _name;
         private string _version;
         private string _manufacturer;
-        private HardwareAsset _hardwareAsset;
+        private List<HardwareAsset> _hardwareAssets;
 
         /// <summary>
         /// Id property for the SoftwareAsset entity.
@@ -55,12 +55,12 @@ namespace ScottishGlenAssetTracking.Models
         }
 
         /// <summary>
-        /// Navigational property for the HardwareAsset entity within the SoftwareAsset entity.
+        /// List of navigational properties for the HardwareAsset entities within the SoftwareAsset entity.
         /// </summary>
-        public HardwareAsset HardwareAsset
+        public List<HardwareAsset> HardwareAssets
         {
-            get { return _hardwareAsset; }
-            set { _hardwareAsset = value; }
+            get { return _hardwareAssets; }
+            set { _hardwareAssets = value; }
         }
     }
 }
