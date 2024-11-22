@@ -81,7 +81,7 @@ namespace ScottishGlenAssetTracking.Data
                       .WithMany(e => e.HardwareAssets);
 
                 entity.HasOne(a => a.SoftwareAsset)
-                      .WithOne(e => e.HardwareAsset)
+                      .WithMany(e => e.HardwareAssets)
                       .IsRequired(false);
             });
 
@@ -94,7 +94,7 @@ namespace ScottishGlenAssetTracking.Data
                 entity.Property(a => a.Version).HasColumnName("version").HasMaxLength(64);
                 entity.Property(a => a.Manufacturer).HasColumnName("manufacturer").HasMaxLength(64);
 
-                entity.HasOne(a => a.HardwareAsset)
+                entity.HasMany(a => a.HardwareAssets)
                       .WithOne(e => e.SoftwareAsset);
             });
         }
