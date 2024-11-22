@@ -13,8 +13,8 @@
     <EnableMsixTooling>true</EnableMsixTooling>
   </PropertyGroup>
   <ItemGroup>
-    <None Remove="Views\Asset\AddHardwareAsset.xaml" />
-    <None Remove="Views\Asset\ViewHardwareAsset.xaml" />
+    <None Remove="Views\HardwareAsset\AddHardwareAsset.xaml" />
+    <None Remove="Views\HardwareAsset\ViewHardwareAsset.xaml" />
     <None Remove="Views\Employee\AddEmployee.xaml" />
     <None Remove="Views\Employee\ViewEmployee.xaml" />
   </ItemGroup>
