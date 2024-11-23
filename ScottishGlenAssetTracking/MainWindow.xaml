@@ -26,6 +26,14 @@
                         <NavigationViewItem Tag="ViewHardwareAsset" Content="View Hardware Asset" Background="Gray"/>
                     </NavigationViewItem.MenuItems>
                 </NavigationViewItem>
+                
+                <!--Software Asset-->
+                <NavigationViewItem Content="Software Asset">
+                    <NavigationViewItem.MenuItems>
+                        <NavigationViewItem Tag="AddSoftwareAsset" Content="Add Software Asset" Background="Gray"/>
+                        <NavigationViewItem Tag="ViewSoftwareAsset" Content="View Software Asset" Background="Gray"/>
+                    </NavigationViewItem.MenuItems>
+                </NavigationViewItem>
 
                 <!--Employee-->
                 <NavigationViewItem Content="Employee">

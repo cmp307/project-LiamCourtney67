@@ -70,6 +70,16 @@ namespace ScottishGlenAssetTracking.Services
         }
 
         /// <summary>
+        /// Method to get all HardwareAssets from the database.
+        /// </summary>
+        /// <returns>List of the HardwareAssets from the database.</returns>
+        public List<HardwareAsset> GetAllHardwareAssets()
+        {
+            // Return the list of HardwareAssets from the database.
+            return _context.HardwareAssets.Include(a => a.Employee).ThenInclude(e => e.Department).ToList();
+        }
+
+        /// <summary>
         /// Method to update an HardwareAsset in the database.
         /// </summary>
         /// <param name="hardwareAsset">HardwareAsset to be updated in the database.</param>

@@ -14,7 +14,8 @@ using Microsoft.UI.Xaml.Shapes;
 using ScottishGlenAssetTracking.Data;
 using ScottishGlenAssetTracking.Services;
 using ScottishGlenAssetTracking.ViewModels;
-using ScottishGlenAssetTracking.Views.Asset;
+using ScottishGlenAssetTracking.Views.HardwareAsset;
+using ScottishGlenAssetTracking.Views.SoftwareAsset;
 using ScottishGlenAssetTracking.Views.Employee;
 using System;
 using System.Collections.Generic;
@@ -124,12 +125,18 @@ namespace ScottishGlenAssetTracking
             // Add view models to the services collection.
             services.AddTransient<AddHardwareAssetViewModel>();
             services.AddTransient<ViewHardwareAssetViewModel>();
+
+            services.AddTransient<AddSoftwareAssetViewModel>();
+
             services.AddTransient<AddEmployeeViewModel>();
             services.AddTransient<ViewEmployeeViewModel>();
 
             // Add views to the services collection.
             services.AddTransient<AddHardwareAsset>();
             services.AddTransient<ViewHardwareAsset>();
+
+            services.AddTransient<AddSoftwareAsset>();
+
             services.AddTransient<AddEmployee>();
             services.AddTransient<ViewEmployee>();
 
