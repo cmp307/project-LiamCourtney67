@@ -8,7 +8,7 @@ using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
 using ScottishGlenAssetTracking.Services;
 using ScottishGlenAssetTracking.ViewModels;
-using ScottishGlenAssetTracking.Views.Asset;
+using ScottishGlenAssetTracking.Views.HardwareAsset;
 using ScottishGlenAssetTracking.Views.Employee;
 using System;
 using System.Collections.Generic;
@@ -17,6 +17,7 @@ using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using ScottishGlenAssetTracking.Views.SoftwareAsset;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -62,13 +63,24 @@ namespace ScottishGlenAssetTracking
             {
                 // HardwareAsset
                 case "AddHardwareAsset":
-                    var addAssetPage = App.AppHost.Services.GetRequiredService<AddHardwareAsset>();
-                    MainFrame.Navigate(addAssetPage.GetType());
+                    var addHardwareAssetPage = App.AppHost.Services.GetRequiredService<AddHardwareAsset>();
+                    MainFrame.Navigate(addHardwareAssetPage.GetType());
                     break;
 
                 case "ViewHardwareAsset":
-                    var viewAssetPage = App.AppHost.Services.GetRequiredService<ViewHardwareAsset>();
-                    MainFrame.Navigate(viewAssetPage.GetType());
+                    var viewHardwareAssetPage = App.AppHost.Services.GetRequiredService<ViewHardwareAsset>();
+                    MainFrame.Navigate(viewHardwareAssetPage.GetType());
+                    break;
+
+                // SoftwareAsset
+                case "AddSoftwareAsset":
+                    var addSoftwareAssetPage = App.AppHost.Services.GetRequiredService<AddSoftwareAsset>();
+                    MainFrame.Navigate(addSoftwareAssetPage.GetType());
+                    break;
+
+                case "ViewSoftwareAsset":
+                    //var viewSoftwareAssetPage = App.AppHost.Services.GetRequiredService<ViewSoftwareAsset>();
+                    //MainFrame.Navigate(viewSoftwareAssetPage.GetType());
                     break;
 
                 // Employee

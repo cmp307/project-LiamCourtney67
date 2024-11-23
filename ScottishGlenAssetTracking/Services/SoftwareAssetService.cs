@@ -42,11 +42,14 @@ namespace ScottishGlenAssetTracking.Services
 
             if (existingSoftwareAsset != null)
             {
-                // Set each HardwareAssets's SoftwareAsset to the existing SoftwareAsset in the database.
-                foreach (var hardwareAsset in softwareAsset.HardwareAssets)
+                // Set each HardwareAssets's SoftwareAsset to the existing SoftwareAsset in the database if there are any.
+                if (softwareAsset.HardwareAssets != null)
                 {
-                    hardwareAsset.SoftwareAsset = existingSoftwareAsset;
-                    hardwareAsset.SoftwareLinkDate = DateTime.Now;
+                    foreach (var hardwareAsset in softwareAsset.HardwareAssets)
+                    {
+                        hardwareAsset.SoftwareAsset = existingSoftwareAsset;
+                        hardwareAsset.SoftwareLinkDate = DateTime.Now;
+                    }
                 }
 
                 // Save the changes to the database and return true.
@@ -56,15 +59,18 @@ namespace ScottishGlenAssetTracking.Services
 
             ///// Logic for new SoftwareAsset
 
-            // Set the state of the HardwareAssets to Unchanged to prevent adding new HardwareAssets, and attach them to the context.
-            foreach (var hardwareAsset in softwareAsset.HardwareAssets)
+            // Set the state of the HardwareAssets to Unchanged to prevent adding new HardwareAssets, and attach them to the context if there are any.
+            if (softwareAsset.HardwareAssets != null)
             {
-                HardwareAsset trackedHardwareAsset = _context.HardwareAssets.Local.FirstOrDefault(a => a.Id == hardwareAsset.Id);
-
-                if (trackedHardwareAsset == null)
+                foreach (var hardwareAsset in softwareAsset.HardwareAssets)
                 {
-                    _context.HardwareAssets.Attach(hardwareAsset);
-                    _context.Entry(trackedHardwareAsset).State = EntityState.Unchanged;
+                    HardwareAsset trackedHardwareAsset = _context.HardwareAssets.Local.FirstOrDefault(a => a.Id == hardwareAsset.Id);
+
+                    if (trackedHardwareAsset == null)
+                    {
+                        _context.HardwareAssets.Attach(hardwareAsset);
+                        _context.Entry(trackedHardwareAsset).State = EntityState.Unchanged;
+                    }
                 }
             }
 
