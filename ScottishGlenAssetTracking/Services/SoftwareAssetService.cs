@@ -35,15 +35,18 @@ namespace ScottishGlenAssetTracking.Services
         /// <returns>True if added to the database, false if not.</returns>
         public bool AddSoftwareAsset(SoftwareAsset softwareAsset)
         {
+            ///// Logic for existing SoftwareAsset
+
             // Check if the SoftwareAsset already exists in the database.
-            if (_context.SoftwareAssets.Any(a => a.Name == softwareAsset.Name && a.Version == softwareAsset.Version))
+            SoftwareAsset existingSoftwareAsset = _context.SoftwareAssets.FirstOrDefault(a => a.Name == softwareAsset.Name && a.Version == softwareAsset.Version);
+
+            if (existingSoftwareAsset != null)
             {
-                // Set the SoftwareAsset to the existing SoftwareAsset in the database.
+                // Set each HardwareAssets's SoftwareAsset to the existing SoftwareAsset in the database.
                 foreach (var hardwareAsset in softwareAsset.HardwareAssets)
                 {
-                    HardwareAsset existingHardwareAsset = _context.HardwareAssets.FirstOrDefault(a => a.Id == hardwareAsset.Id);
-                    existingHardwareAsset.SoftwareAsset = softwareAsset;
-                    existingHardwareAsset.SoftwareLinkDate = DateTime.Now;
+                    hardwareAsset.SoftwareAsset = existingSoftwareAsset;
+                    hardwareAsset.SoftwareLinkDate = DateTime.Now;
                 }
 
                 // Save the changes to the database and return true.
@@ -51,19 +54,22 @@ namespace ScottishGlenAssetTracking.Services
                 return true;
             }
 
-            // Set the state of the HardwareAssets to Unchanged to prevent adding new HardwareAssets.
+            ///// Logic for new SoftwareAsset
+
+            // Set the state of the HardwareAssets to Unchanged to prevent adding new HardwareAssets, and attach them to the context.
             foreach (var hardwareAsset in softwareAsset.HardwareAssets)
             {
-                _context.Entry(hardwareAsset).State = EntityState.Unchanged;
+                HardwareAsset trackedHardwareAsset = _context.HardwareAssets.Local.FirstOrDefault(a => a.Id == hardwareAsset.Id);
+
+                if (trackedHardwareAsset == null)
+                {
+                    _context.HardwareAssets.Attach(hardwareAsset);
+                    _context.Entry(trackedHardwareAsset).State = EntityState.Unchanged;
+                }
             }
 
-            // Add the SoftwareAsset to the database, attach the HardwareAssets and save the changes.
+            // Add the SoftwareAsset to the database and save the changes.
             _context.SoftwareAssets.Add(softwareAsset);
-
-            foreach (var hardwareAsset in softwareAsset.HardwareAssets)
-            {
-                _context.HardwareAssets.Attach(hardwareAsset);
-            }
 
             _context.SaveChanges();
 
