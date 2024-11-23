@@ -117,6 +117,7 @@ namespace ScottishGlenAssetTracking
 
             // Add services to the services collection.
             services.AddSingleton<HardwareAssetService>();
+            services.AddSingleton<SoftwareAssetService>();
             services.AddSingleton<EmployeeService>();
             services.AddSingleton<DepartmentService>();
 
