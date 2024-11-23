@@ -22,6 +22,7 @@ namespace ScottishGlenAssetTracking.ViewModels
         private readonly DepartmentService _departmentService;
         private readonly EmployeeService _employeeService;
         private readonly HardwareAssetService _hardwareAssetService;
+        private readonly SoftwareAssetService _softwareAssetService;
 
         /// <summary>
         /// Constructor for the AddHardwareAssetViewModel class using the DepartmentService, EmployeeService, and HardwareAssetService with dependency injection.
@@ -29,12 +30,17 @@ namespace ScottishGlenAssetTracking.ViewModels
         /// <param name="departmentService">DepartmentService from dependency injection.</param>
         /// <param name="employeeService">EmployeeService from dependency injection.</param>
         /// <param name="hardwareAssetService">HardwareAssetService from dependency injection.</param>
-        public AddHardwareAssetViewModel(DepartmentService departmentService, EmployeeService employeeService, HardwareAssetService hardwareAssetService)
+        /// <param name="softwareAssetService">SoftwareAssetService from dependency injection.</param>
+        public AddHardwareAssetViewModel(DepartmentService departmentService, 
+                                         EmployeeService employeeService, 
+                                         HardwareAssetService hardwareAssetService, 
+                                         SoftwareAssetService softwareAssetService)
         {
             // Initialize services.
             _departmentService = departmentService;
             _employeeService = employeeService;
             _hardwareAssetService = hardwareAssetService;
+            _softwareAssetService = softwareAssetService;
 
             // Load departments and remove any unwanted items.
             Departments = new ObservableCollection<Department>(_departmentService.GetDepartments()
@@ -94,8 +100,18 @@ namespace ScottishGlenAssetTracking.ViewModels
             // Set the PurchaseDate property of the new asset to the DateTime value of the PurchaseDate property.
             NewHardwareAsset.PurchaseDate = PurchaseDate?.DateTime;
 
-            // Add the new asset to the database.
+            // Add the new hardware asset to the database.
             _hardwareAssetService.AddHardwareAsset(NewHardwareAsset);
+
+            // Get a new SoftwareAsset with system info and set the SoftwareLinkDate property to the current date.
+            NewHardwareAsset.SoftwareAsset = _softwareAssetService.GetSoftwareAssetWithSystemInfo();
+            NewHardwareAsset.SoftwareLinkDate = DateTime.Now;
+
+            // Add the new hardware asset to the SoftwareAsset's HardwareAssets collection.
+            NewHardwareAsset.SoftwareAsset.HardwareAssets = new List<HardwareAsset> { NewHardwareAsset };
+
+            // Add the new software asset to the database, if it already exists the HardwareAsset will be linked to it.
+            _softwareAssetService.AddSoftwareAsset(NewHardwareAsset.SoftwareAsset);
 
             // Set the status message and make it visible.
             StatusMessage = "Hardware Asset Added";
