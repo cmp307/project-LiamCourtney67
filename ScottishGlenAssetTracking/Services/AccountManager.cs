@@ -34,10 +34,14 @@ namespace ScottishGlenAssetTracking.Services
         /// </summary>
         /// <param name="email">User's email.</param>
         /// <param name="password">User's password.</param>
-        public void Login(string email, string password)
+        /// <returns>True if the login was successful, false otherwise.</returns>
+        public bool Login(string email, string password)
         {
             // Logic to authenticate and set the current account
             CurrentAccount = _accountService.AuthenticateAccount(email, password);
+
+            // Return true if the current account is not null
+            return CurrentAccount != null;
         }
 
         /// <summary>

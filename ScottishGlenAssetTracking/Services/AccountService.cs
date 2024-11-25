@@ -1,4 +1,5 @@
-﻿using ScottishGlenAssetTracking.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using ScottishGlenAssetTracking.Data;
 using ScottishGlenAssetTracking.Models;
 using System;
 using System.Collections.Generic;
@@ -34,12 +35,12 @@ namespace ScottishGlenAssetTracking.Services
 
         public Account GetAccount(string email)
         {
-            return _context.Accounts.FirstOrDefault(a => a.Email == email);
+            return _context.Accounts.Include(a => a.Employee).FirstOrDefault(a => a.Email == email);
         }
 
         public List<Account> GetAccounts()
         {
-            return _context.Accounts.ToList();
+            return _context.Accounts.Include(a => a.Employee).ToList();
         }
 
         public bool UpdateAccount(Account account)
@@ -77,7 +78,7 @@ namespace ScottishGlenAssetTracking.Services
         public Account AuthenticateAccount(string email, string password)
         {
             // Retrieve account and verify password
-            var account = _context.Accounts.FirstOrDefault(a => a.Email == email);
+            var account = _context.Accounts.Include(a => a.Employee).FirstOrDefault(a => a.Email == email);
 
             if (account != null && account.VerifyPassword(password))
             {
