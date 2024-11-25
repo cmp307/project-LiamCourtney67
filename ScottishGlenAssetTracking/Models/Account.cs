@@ -42,7 +42,7 @@ namespace ScottishGlenAssetTracking.Models
         public string Password
         {
             get { return _password; }
-            set { _password = value; }
+            set { _password = HashPassword(value); }
         }
 
         /// <summary>
@@ -60,8 +60,28 @@ namespace ScottishGlenAssetTracking.Models
         public bool IsAdmin
         {
             get { return _isAdmin; }
-            set { _isAdmin = value; }
+            set { SetAdmin(); }
         }
 
+        /// <summary>
+        /// Hashes a password using BCrypt.
+        /// </summary>
+        /// <param name="password">Password to be hashed.</param>
+        /// <returns>Hashed password using BCrypt.</returns>
+        private string HashPassword(string password) { return BCrypt.Net.BCrypt.EnhancedHashPassword(password); }
+
+        /// <summary>
+        /// Verifies a password using BCrypt.
+        /// </summary>
+        /// <param name="password">Password to be verified.</param>
+        /// <returns>True if verified using BCrypt, false if not valid.</returns>
+        public bool VerifyPassword(string password) { return BCrypt.Net.BCrypt.EnhancedVerify(password, _password); }
+
+        private bool SetAdmin()
+        {
+            // TODO
+            IsAdmin = true;
+            return true;
+        }
     }
 }

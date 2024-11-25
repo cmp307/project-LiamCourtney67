@@ -122,6 +122,10 @@ namespace ScottishGlenAssetTracking
             services.AddSingleton<EmployeeService>();
             services.AddSingleton<DepartmentService>();
 
+            // Add the account-related services to the services collection.
+            services.AddTransient<AccountService>();
+            services.AddSingleton<AccountManager>();
+
             // Add view models to the services collection.
             services.AddTransient<AddHardwareAssetViewModel>();
             services.AddTransient<ViewHardwareAssetViewModel>();

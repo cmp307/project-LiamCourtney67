@@ -19,6 +19,7 @@ namespace ScottishGlenAssetTracking.Models
         private string _email;
         private Department _department;
         private List<HardwareAsset> _hardwareAssets;
+        private Account _account;
 
         /// <summary>
         /// Id property for the Employee entity.
@@ -81,6 +82,15 @@ namespace ScottishGlenAssetTracking.Models
         {
             get { return _hardwareAssets; }
             set { _hardwareAssets = value; }
+        }
+
+        /// <summary>
+        /// Account property for the Employee entity.
+        /// </summary>
+        public Account Account
+        {
+            get { return _account; }
+            set { _account = value; }
         }
     }
 }
