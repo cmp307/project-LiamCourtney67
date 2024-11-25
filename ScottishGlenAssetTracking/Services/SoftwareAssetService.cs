@@ -37,23 +37,9 @@ namespace ScottishGlenAssetTracking.Services
         {
             ///// Logic for existing SoftwareAsset
 
-            // Check if the SoftwareAsset already exists in the database.
-            SoftwareAsset existingSoftwareAsset = _context.SoftwareAssets.FirstOrDefault(a => a.Name == softwareAsset.Name && a.Version == softwareAsset.Version);
-
-            if (existingSoftwareAsset != null)
+            if (DoesSoftwareAssetExist(softwareAsset))
             {
-                // Set each HardwareAssets's SoftwareAsset to the existing SoftwareAsset in the database if there are any.
-                if (softwareAsset.HardwareAssets != null)
-                {
-                    foreach (var hardwareAsset in softwareAsset.HardwareAssets)
-                    {
-                        hardwareAsset.SoftwareAsset = existingSoftwareAsset;
-                        hardwareAsset.SoftwareLinkDate = DateTime.Now;
-                    }
-                }
-
-                // Save the changes to the database and return true.
-                _context.SaveChanges();
+                LinkHardwareAssetsToSoftwareAsset(softwareAsset);
                 return true;
             }
 
@@ -111,6 +97,16 @@ namespace ScottishGlenAssetTracking.Services
         /// <returns>True if updated in the database, false if not.</returns>
         public bool UpdateSoftwareAsset(SoftwareAsset softwareAsset)
         {
+            ///// Logic for existing SoftwareAsset
+
+            if (DoesSoftwareAssetExist(softwareAsset))
+            {
+                LinkHardwareAssetsToSoftwareAsset(softwareAsset);
+                return true;
+            }
+
+            ///// Logic for new SoftwareAsset
+
             // Set the state of the HardwareAssets to Unchanged to prevent adding new HardwareAssets.
             foreach (var hardwareAsset in softwareAsset.HardwareAssets)
             {
@@ -119,6 +115,68 @@ namespace ScottishGlenAssetTracking.Services
 
             // Update the SoftwareAsset in the database and save the changes.
             _context.SoftwareAssets.Update(softwareAsset);
+            _context.SaveChanges();
+
+            // Return true if the SoftwareAsset was updated in the database.
+            return true;
+        }
+
+        /// <summary>
+        /// Method to update an SoftwareAsset in the database.
+        /// </summary>
+        /// <param name="softwareAsset">SoftwareAsset to be updated in the database.</param>
+        /// <returns>True if updated in the database, false if not.</returns>
+        public bool UpdateSoftwareAsset(SoftwareAsset softwareAsset, Employee employee)
+        {
+            ///// Logic for existing SoftwareAsset
+
+            if (DoesSoftwareAssetExist(softwareAsset))
+            {
+                LinkHardwareAssetsToSoftwareAsset(softwareAsset, employee);
+                return true;
+            }
+
+            ///// Logic for new SoftwareAsset
+
+            if (softwareAsset.HardwareAssets != null)
+            {
+                // Create a temp list to store the hardware assets that the employee has.
+                List<HardwareAsset> employeesHardwareAssetsInSoftwareAsset = softwareAsset.HardwareAssets
+                    .Where(hardwareAsset => employee.HardwareAssets.Contains(hardwareAsset))
+                    .ToList();
+
+                // Set the HardwareAssets of the new SoftwareAsset to the temp list.
+                softwareAsset.HardwareAssets = employeesHardwareAssetsInSoftwareAsset;
+
+                // Set the state of the HardwareAssets to Unchanged to prevent adding new HardwareAssets, and attach them to the context if there are any.
+                foreach (var hardwareAsset in softwareAsset.HardwareAssets)
+                {
+                    HardwareAsset trackedHardwareAsset = _context.HardwareAssets.Local.FirstOrDefault(a => a.Id == hardwareAsset.Id);
+
+                    if (trackedHardwareAsset == null)
+                    {
+                        _context.HardwareAssets.Attach(hardwareAsset);
+                        _context.Entry(trackedHardwareAsset).State = EntityState.Unchanged;
+                    }
+                }
+
+                // Identify the hardware assets to remove from the original list.
+                List<HardwareAsset> hardwareAssetsToRemove = softwareAsset.HardwareAssets
+                    .Where(hardwareAsset => !employeesHardwareAssetsInSoftwareAsset.Contains(hardwareAsset))
+                    .ToList();
+
+                // Remove the employees hardware assets from the original software asset.
+                if (softwareAsset.HardwareAssets != null)
+                {
+                    foreach (var hardwareAsset in hardwareAssetsToRemove)
+                    {
+                        softwareAsset.HardwareAssets.Remove(hardwareAsset);
+                    }
+                }
+            }
+
+            // Add the SoftwareAsset to the database and save the changes.
+            _context.SoftwareAssets.Add(softwareAsset);
             _context.SaveChanges();
 
             // Return true if the SoftwareAsset was updated in the database.
@@ -171,5 +229,62 @@ namespace ScottishGlenAssetTracking.Services
         }
 
         // TODO: Add method to check for vulnerabilities in software assets.
+
+        public SoftwareAsset GetExistingSoftwareAsset(string name, string version) => _context.SoftwareAssets.FirstOrDefault(a => a.Name == name && a.Version == version);
+
+        private bool DoesSoftwareAssetExist(SoftwareAsset softwareAsset)
+        {
+            // Check if the SoftwareAsset already exists in the database.
+            SoftwareAsset existingSoftwareAsset = GetExistingSoftwareAsset(softwareAsset.Name, softwareAsset.Version);
+
+            // Return true if the SoftwareAsset already exists in the database, false if not.
+            return existingSoftwareAsset != null;
+        }
+
+        private bool LinkHardwareAssetsToSoftwareAsset(SoftwareAsset softwareAsset)
+        {
+            // Get the existing SoftwareAsset from the database.
+            SoftwareAsset existingSoftwareAsset = GetExistingSoftwareAsset(softwareAsset.Name, softwareAsset.Version);
+
+            // Set each HardwareAssets's SoftwareAsset to the existing SoftwareAsset in the database if there are any.
+            if (softwareAsset.HardwareAssets != null)
+            {
+                foreach (var hardwareAsset in softwareAsset.HardwareAssets)
+                {
+                    hardwareAsset.SoftwareAsset = existingSoftwareAsset;
+                    hardwareAsset.SoftwareLinkDate = DateTime.Now;
+                }
+            }
+
+            if (_context.SoftwareAssets.Contains(softwareAsset))
+            {
+                _context.SoftwareAssets.Remove(softwareAsset);
+            }
+
+            // Save the changes to the database and return true.
+            _context.SaveChanges();
+            return true;
+        }
+
+        private bool LinkHardwareAssetsToSoftwareAsset(SoftwareAsset softwareAsset, Employee employee)
+        {
+            // Get the existing SoftwareAsset from the database.
+            SoftwareAsset existingSoftwareAsset = GetExistingSoftwareAsset(softwareAsset.Name, softwareAsset.Version);
+
+            // Set each Employee's SoftwareAsset to the existing SoftwareAsset in the database if there are any.
+            if (softwareAsset.HardwareAssets != null)
+            {
+                foreach (var hardwareAsset in softwareAsset.HardwareAssets)
+                {
+                    if (employee.HardwareAssets.Contains(hardwareAsset))
+                        hardwareAsset.SoftwareAsset = existingSoftwareAsset;
+                    hardwareAsset.SoftwareLinkDate = DateTime.Now;
+                }
+            }
+
+            // Save the changes to the database and return true.
+            _context.SaveChanges();
+            return true;
+        }
     }
 }

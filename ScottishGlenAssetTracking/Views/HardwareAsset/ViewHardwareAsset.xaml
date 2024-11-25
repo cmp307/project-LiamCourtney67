@@ -3,7 +3,7 @@
     x:Class="ScottishGlenAssetTracking.Views.HardwareAsset.ViewHardwareAsset"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:ScottishGlenAssetTracking.Views.Asset"
+    xmlns:local="using:ScottishGlenAssetTracking.Views.HardwareAsset"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:vm="using:ScottishGlenAssetTracking.ViewModels"
@@ -38,6 +38,7 @@
                         <ColumnDefinition Width="3*"/>
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
@@ -120,6 +121,14 @@
                     <Border BorderBrush="LightGray" Background="DarkGray" BorderThickness="1" Grid.Row="8" Grid.Column="1">
                         <TextBlock Text="{Binding SelectedHardwareAsset.Employee.Name, Mode=TwoWay}" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Center" TextWrapping="Wrap" FontSize="20"/>
                     </Border>
+                    
+                    <!--HardwareAsset SoftwareAsset-->
+                    <Border BorderBrush="LightGray" Background="Gray" BorderThickness="1" Grid.Row="9" Grid.Column="0">
+                        <TextBlock Text="Software Asset" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Center" TextWrapping="Wrap" FontSize="20"/>
+                    </Border>
+                    <Border BorderBrush="LightGray" Background="DarkGray" BorderThickness="1" Grid.Row="9" Grid.Column="1">
+                        <TextBlock Text="{Binding SelectedHardwareAsset.SoftwareAsset.Name, Mode=TwoWay}" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Center" TextWrapping="Wrap" FontSize="20"/>
+                    </Border>
                 </Grid>
 
                 <!--Buttons-->
@@ -148,10 +157,12 @@
                 <TextBox x:Name="HardwareAssetNotesInput" Header="Notes" Text="{Binding SelectedHardwareAsset.Notes, Mode=TwoWay}" Margin="10"/>
 
                 <!--Department and Employee Selects-->
-                <ComboBox x:Name="AssetDepartmentSelect" Header="Department" HorizontalAlignment="Stretch" PlaceholderText="Select Department" Margin="10" 
+                <ComboBox x:Name="HardwareAssetDepartmentSelect" Header="Department" HorizontalAlignment="Stretch" PlaceholderText="Select Department" Margin="10" 
                           ItemsSource="{Binding Departments}" SelectedItem="{Binding SelectedDepartment, Mode=TwoWay}" DisplayMemberPath="Name" SelectionChanged="HardwareAssetDepartmentSelect_SelectionChanged"/>
-                <ComboBox x:Name="AssetEmployeeSelect" Header="Employee" HorizontalAlignment="Stretch" PlaceholderText="Select Employee" Margin="10" 
+                <ComboBox x:Name="HardwareAssetEmployeeSelect" Header="Employee" HorizontalAlignment="Stretch" PlaceholderText="Select Employee" Margin="10" 
                           ItemsSource="{Binding Employees}" SelectedItem="{Binding SelectedHardwareAsset.Employee, Mode=TwoWay}" DisplayMemberPath="Name" SelectionChanged="HardwareAssetEmployeeSelect_SelectionChanged"/>
+                <ComboBox x:Name="HardwareAssetSoftwareAssetSelect" Header="Software Asset" HorizontalAlignment="Stretch" PlaceholderText="Select Software Asset" Margin="10" 
+                          ItemsSource="{Binding SoftwareAssets}" SelectedItem="{Binding SelectedHardwareAsset.SoftwareAsset, Mode=TwoWay}" DisplayMemberPath="Name" SelectionChanged="HardwareAssetSoftwareAssetSelect_SelectionChanged"/>
 
                 <!--Buttons-->
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">

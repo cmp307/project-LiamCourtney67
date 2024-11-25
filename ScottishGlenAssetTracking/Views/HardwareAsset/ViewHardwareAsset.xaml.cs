@@ -91,5 +91,10 @@ namespace ScottishGlenAssetTracking.Views.HardwareAsset
         {
             // Not implemented
         }
+
+        private void HardwareAssetSoftwareAssetSelect_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            // Not implemented
+        }
     }
 }

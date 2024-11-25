@@ -18,6 +18,7 @@
     <None Remove="Views\Employee\AddEmployee.xaml" />
     <None Remove="Views\Employee\ViewEmployee.xaml" />
     <None Remove="Views\SoftwareAsset\AddSoftwareAsset.xaml" />
+    <None Remove="Views\SoftwareAsset\ViewSoftwareAsset.xaml" />
   </ItemGroup>
 
   <ItemGroup>
@@ -56,6 +57,9 @@
     <None Update="appsettings.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <Page Update="Views\SoftwareAsset\ViewSoftwareAsset.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Update="Views\SoftwareAsset\AddSoftwareAsset.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
