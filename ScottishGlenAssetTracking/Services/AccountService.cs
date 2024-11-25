@@ -35,7 +35,7 @@ namespace ScottishGlenAssetTracking.Services
 
         public Account GetAccount(string email)
         {
-            return _context.Accounts.Include(a => a.Employee).FirstOrDefault(a => a.Email == email);
+            return _context.Accounts.Include(a => a.Employee).ThenInclude(e => e.Department).FirstOrDefault(a => a.Email == email);
         }
 
         public List<Account> GetAccounts()
@@ -78,7 +78,7 @@ namespace ScottishGlenAssetTracking.Services
         public Account AuthenticateAccount(string email, string password)
         {
             // Retrieve account and verify password
-            var account = _context.Accounts.Include(a => a.Employee).FirstOrDefault(a => a.Email == email);
+            Account account = GetAccount(email);
 
             if (account != null && account.VerifyPassword(password))
             {

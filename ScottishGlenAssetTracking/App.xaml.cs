@@ -140,6 +140,7 @@ namespace ScottishGlenAssetTracking
 
             services.AddSingleton<RegisterViewModel>();
             services.AddSingleton<LoginViewModel>();
+            services.AddSingleton<ViewAccountViewModel>();
 
             // Add views to the services collection.
             services.AddTransient<AddHardwareAsset>();
@@ -153,6 +154,7 @@ namespace ScottishGlenAssetTracking
 
             services.AddSingleton<Register>();
             services.AddSingleton<Login>();
+            services.AddTransient<ViewAccount>();
 
             // Add the portals to the services collection.
             services.AddSingleton<AdminPortal>();

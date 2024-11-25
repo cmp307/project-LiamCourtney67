@@ -93,8 +93,8 @@ namespace ScottishGlenAssetTracking.Views.Portals
 
                 // Account
                 case "ViewAccount":
-                    //var viewAccountPage = App.AppHost.Services.GetRequiredService<ViewAccount>();
-                    //AdminFrame.Navigate(viewAccountPage.GetType());
+                    var viewAccountPage = App.AppHost.Services.GetRequiredService<ViewAccount>();
+                    AdminFrame.Navigate(viewAccountPage.GetType());
                     break;
 
                 // Logout
