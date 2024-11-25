@@ -79,8 +79,8 @@ namespace ScottishGlenAssetTracking
                     break;
 
                 case "ViewSoftwareAsset":
-                    //var viewSoftwareAssetPage = App.AppHost.Services.GetRequiredService<ViewSoftwareAsset>();
-                    //MainFrame.Navigate(viewSoftwareAssetPage.GetType());
+                    var viewSoftwareAssetPage = App.AppHost.Services.GetRequiredService<ViewSoftwareAsset>();
+                    MainFrame.Navigate(viewSoftwareAssetPage.GetType());
                     break;
 
                 // Employee

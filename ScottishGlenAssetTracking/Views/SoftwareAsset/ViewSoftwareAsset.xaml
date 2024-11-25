@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Page
+    x:Class="ScottishGlenAssetTracking.Views.SoftwareAsset.ViewSoftwareAsset"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:ScottishGlenAssetTracking.Views.SoftwareAsset"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <Grid Background="#5C5C5C">
+        <StackPanel>
+            <!--Header-->
+            <TextBlock x:Name="ViewSoftwareAssetHeader" Text="View Software Asset" FontSize="24" Margin="10"/>
+
+            <!--Selects-->
+            <StackPanel Visibility="{Binding SelectsVisibility}">
+                <ComboBox x:Name="AssetSelect" Header="Asset" HorizontalAlignment="Stretch" PlaceholderText="Select Software Asset" Margin="10" 
+                  ItemsSource="{Binding SoftwareAssets}" SelectedItem="{Binding SelectedSoftwareAsset, Mode=TwoWay}" DisplayMemberPath="Name" SelectionChanged="SoftwareAssetSelect_SelectionChanged"/>
+            </StackPanel>
+
+            <!--View SoftwareAsset View-->
+            <StackPanel x:Name="ViewSoftwareAssetView" Visibility="{Binding ViewSoftwareAssetViewVisibility}">
+
+                <!--Asset Data Grid-->
+                <Grid x:Name="ViewSoftwareAssetData" Margin="10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="3*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <!--SoftwareAsset Name-->
+                    <Border BorderBrush="LightGray" Background="Gray" BorderThickness="1" Grid.Row="0" Grid.Column="0">
+                        <TextBlock Text="Name" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Center" TextWrapping="Wrap" FontSize="20"/>
+                    </Border>
+                    <Border BorderBrush="LightGray" Background="DarkGray" BorderThickness="1" Grid.Row="0" Grid.Column="1">
+                        <TextBlock Text="{Binding SelectedSoftwareAsset.Name, Mode=TwoWay}" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Center" TextWrapping="Wrap" FontSize="20"/>
+                    </Border>
+
+                    <!--SoftwareAsset Version-->
+                    <Border BorderBrush="LightGray" Background="Gray" BorderThickness="1" Grid.Row="1" Grid.Column="0">
+                        <TextBlock Text="Model" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Center" TextWrapping="Wrap" FontSize="20"/>
+                    </Border>
+                    <Border BorderBrush="LightGray" Background="DarkGray" BorderThickness="1" Grid.Row="1" Grid.Column="1">
+                        <TextBlock Text="{Binding SelectedSoftwareAsset.Version, Mode=TwoWay}" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Center" TextWrapping="Wrap" FontSize="20"/>
+                    </Border>
+
+                    <!--SoftwareAsset Manufacturer-->
+                    <Border BorderBrush="LightGray" Background="Gray" BorderThickness="1" Grid.Row="2" Grid.Column="0">
+                        <TextBlock Text="Manufacturer" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Center" TextWrapping="Wrap" FontSize="20"/>
+                    </Border>
+                    <Border BorderBrush="LightGray" Background="DarkGray" BorderThickness="1" Grid.Row="2" Grid.Column="1">
+                        <TextBlock Text="{Binding SelectedSoftwareAsset.Manufacturer, Mode=TwoWay}" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Center" TextWrapping="Wrap" FontSize="20"/>
+                    </Border>
+                </Grid>
+
+                <!--SoftwareAsset's HardwareAssets-->
+                <ListView x:Name="HardwareAssets" Header="Hardware Assets: " ItemsSource="{Binding SelectedSoftwareAsset.HardwareAssets}" Visibility="{Binding SoftwareAssetHardwareAssetsVisibility}" DisplayMemberPath="Name" Margin="10" FontSize="32"/>
+
+                <!--Buttons-->
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                    <Button x:Name="EditSoftwareAssetButton" Content="Edit Software Asset" Command="{Binding ChangeViewToEditCommand}" Margin="10" Background="Blue" Foreground="White"/>
+                    <Button x:Name="DeleteSoftwareAssetButton" Content="Delete Software Asset" Command="{Binding DeleteSoftwareAssetCommand}" Margin="10" Background="Red" Foreground="White"/>
+                </StackPanel>
+
+                <!--Status Message-->
+                <TextBlock x:Name="StatusMessage" Text="{Binding StatusMessage}" Visibility="{Binding StatusVisibility}" Margin="10" HorizontalAlignment="Center"/>
+            </StackPanel>
+
+            <!--Edit SoftwareAsset View-->
+            <StackPanel x:Name="EditSoftwareAssetView" Visibility="{Binding EditSoftwareAssetViewVisibility}">
+
+                <!--SoftwareAsset Details-->
+                <TextBox x:Name="SoftwareAssetNameInput" Header="Name" Text="{Binding UpdatedSoftwareAsset.Name, Mode=TwoWay}" Margin="10"/>
+                <TextBox x:Name="SoftwareAssetVersionInput" Header="Version" Text="{Binding UpdatedSoftwareAsset.Version, Mode=TwoWay}" Margin="10"/>
+                <TextBox x:Name="SoftwareAssetManufacturerInput" Header="Manufacturer" Text="{Binding UpdatedSoftwareAsset.Manufacturer, Mode=TwoWay}" Margin="10"/>
+
+                <!--Buttons-->
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                    <Button x:Name="CancelButton" Content="Cancel" Command="{Binding ChangeViewToViewCommand}" Margin="10" Background="Red" Foreground="White"/>
+                    <Button x:Name="UpdateSoftwareAssetButton" Content="Update Software Asset" Command="{Binding UpdateSoftwareAssetCommand}" Margin="10" Background="Green" Foreground="White"/>
+                </StackPanel>
+
+            </StackPanel>
+        </StackPanel>
+    </Grid>
+</Page>

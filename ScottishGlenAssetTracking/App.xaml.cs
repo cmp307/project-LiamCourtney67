@@ -127,6 +127,7 @@ namespace ScottishGlenAssetTracking
             services.AddTransient<ViewHardwareAssetViewModel>();
 
             services.AddTransient<AddSoftwareAssetViewModel>();
+            services.AddTransient<ViewSoftwareAssetViewModel>();
 
             services.AddTransient<AddEmployeeViewModel>();
             services.AddTransient<ViewEmployeeViewModel>();
@@ -136,6 +137,7 @@ namespace ScottishGlenAssetTracking
             services.AddTransient<ViewHardwareAsset>();
 
             services.AddTransient<AddSoftwareAsset>();
+            services.AddTransient<ViewSoftwareAsset>();
 
             services.AddTransient<AddEmployee>();
             services.AddTransient<ViewEmployee>();

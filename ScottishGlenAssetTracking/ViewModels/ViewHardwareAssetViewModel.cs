@@ -21,25 +21,34 @@ namespace ScottishGlenAssetTracking.ViewModels
         private readonly DepartmentService _departmentService;
         private readonly EmployeeService _employeeService;
         private readonly HardwareAssetService _hardwareAssetService;
+        private readonly SoftwareAssetService _softwareAssetService;
 
         /// <summary>
-        /// Constructor for the ViewHardwareAssetViewModel class using the DepartmentService, EmployeeService, and HardwareAssetService with dependency injection.
+        /// Constructor for the ViewHardwareAssetViewModel class using the DepartmentService, EmployeeService, SoftwareAssetService, and HardwareAssetService with dependency injection.
         /// </summary>
         /// <param name="departmentService">DepartmentService from dependency injection.</param>
         /// <param name="employeeService">EmployeeService from dependency injection.</param>
         /// <param name="hardwareAssetService">HardwareAssetService from dependency injection.</param>
-        public ViewHardwareAssetViewModel(DepartmentService departmentService, EmployeeService employeeService, HardwareAssetService hardwareAssetService)
+        /// <param name="softwareAssetService">SoftwareAssetService from dependency injection.</param>
+        public ViewHardwareAssetViewModel(DepartmentService departmentService, 
+                                          EmployeeService employeeService, 
+                                          HardwareAssetService hardwareAssetService,
+                                          SoftwareAssetService softwareAssetService)
         {
             // Initialize services.
             _departmentService = departmentService;
             _employeeService = employeeService;
             _hardwareAssetService = hardwareAssetService;
+            _softwareAssetService = softwareAssetService;
 
             // Load departments.
             Departments = new ObservableCollection<Department>(_departmentService.GetDepartments());
 
             // Initialize collections.
             Employees = new ObservableCollection<Employee>();
+
+            // Load software assets.
+            SoftwareAssets = new ObservableCollection<SoftwareAsset>(_softwareAssetService.GetSoftwareAssets());
         }
 
         // Collections
@@ -58,6 +67,11 @@ namespace ScottishGlenAssetTracking.ViewModels
         /// ObservableCollection of HardwareAsset objects used in the view.
         /// </summary>
         public ObservableCollection<HardwareAsset> HardwareAssets { get; private set; }
+
+        /// <summary>
+        /// ObservableCollection of SoftwareAsset objects used in the view.
+        /// </summary>
+        public ObservableCollection<SoftwareAsset> SoftwareAssets { get; private set; }
 
         // Properties.
         [ObservableProperty]
@@ -152,9 +166,14 @@ namespace ScottishGlenAssetTracking.ViewModels
                     PurchaseDateFormatted = string.Empty;
                 }
 
-                // Set the selected employee and department to the employee and department from the Employees and Departments collections.
+                // Set the selected employee, department, and software asset to the employee, department, and software asset from the Employees, Departments, and SoftwareAssets collections.
                 SelectedHardwareAsset.Employee = Employees.FirstOrDefault(e => e.Id == SelectedEmployee.Id);
                 SelectedHardwareAsset.Employee.Department = Departments.FirstOrDefault(d => d.Id == SelectedDepartment.Id);
+
+                if (SelectedHardwareAsset.SoftwareAsset != null)
+                {
+                    SelectedHardwareAsset.SoftwareAsset = SoftwareAssets.FirstOrDefault(s => s.Id == SelectedHardwareAsset.SoftwareAsset.Id);
+                }
 
                 // Notify the view that the SelectedHardwareAsset property has changed.
                 OnPropertyChanged(nameof(SelectedHardwareAsset));
@@ -185,7 +204,7 @@ namespace ScottishGlenAssetTracking.ViewModels
 
                 // Set the status message and make it visible.
                 StatusVisibility = Visibility.Visible;
-                StatusMessage = "HardwareAsset Deleted";
+                StatusMessage = "Hardware Asset Deleted";
 
                 // Reload the HardwareAssets.
                 LoadHardwareAssets();
@@ -235,7 +254,7 @@ namespace ScottishGlenAssetTracking.ViewModels
 
                 // Set the status message and make it visible.
                 StatusVisibility = Visibility.Visible;
-                StatusMessage = "HardwareAsset Updated";
+                StatusMessage = "Hardware Asset Updated";
 
                 // Change the view to the view mode.
                 ChangeViewToView();
