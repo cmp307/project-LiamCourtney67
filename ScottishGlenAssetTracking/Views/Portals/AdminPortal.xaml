@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Page
+    x:Class="ScottishGlenAssetTracking.Views.Portals.AdminPortal"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:ScottishGlenAssetTracking.Views.Portals"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <Grid Background="Gray">
+        <!--Navigation-->
+        <NavigationView x:Name="Navigation"
+        ItemInvoked="Nav_ItemInvoked" PaneDisplayMode="Top"
+        IsBackButtonVisible="Collapsed" IsSettingsVisible="False">
+
+            <NavigationView.MenuItems>
+
+                <!--Title-->
+                <NavigationViewItemHeader Content="Scottish Glen" FontWeight="Bold"/>
+
+                <!--Hardware Asset-->
+                <NavigationViewItem Content="Hardware Asset">
+                    <NavigationViewItem.MenuItems>
+                        <NavigationViewItem Tag="AddHardwareAsset" Content="Add Hardware Asset" Background="Gray"/>
+                        <NavigationViewItem Tag="ViewHardwareAsset" Content="View Hardware Asset" Background="Gray"/>
+                    </NavigationViewItem.MenuItems>
+                </NavigationViewItem>
+
+                <!--Software Asset-->
+                <NavigationViewItem Content="Software Asset">
+                    <NavigationViewItem.MenuItems>
+                        <NavigationViewItem Tag="AddSoftwareAsset" Content="Add Software Asset" Background="Gray"/>
+                        <NavigationViewItem Tag="ViewSoftwareAsset" Content="View Software Asset" Background="Gray"/>
+                    </NavigationViewItem.MenuItems>
+                </NavigationViewItem>
+
+                <!--Employee-->
+                <NavigationViewItem Content="Employee">
+                    <NavigationViewItem.MenuItems>
+                        <NavigationViewItem Tag="AddEmployee" Content="Add Employee" Background="Gray"/>
+                        <NavigationViewItem Tag="ViewEmployee" Content="View Employee" Background="Gray"/>
+                    </NavigationViewItem.MenuItems>
+                </NavigationViewItem>
+
+            </NavigationView.MenuItems>
+
+
+            <!--Account and Logout-->
+            <NavigationView.FooterMenuItems>
+                <NavigationViewItem Tag="ViewAccount" Content="T" Background="Gray"/>
+                <!--{Binding Username, Mode=TwoWay}-->
+                <NavigationViewItem Tag="Logout" Content="Logout" Background="Gray"/>
+            </NavigationView.FooterMenuItems>
+
+            <!--Main Frame-->
+            <ScrollViewer>
+                <Frame x:Name="AdminFrame">
+
+                    <!--Welcome text and info-->
+                    <StackPanel VerticalAlignment="Center">
+                        <TextBlock Text="Scottish Glen Asset Tracking System" FontSize="56" Foreground="White" 
+                               HorizontalAlignment="Center" VerticalAlignment="Center" Margin="20"/>
+
+                        <TextBlock Text="Please select an option from the navigation menu at the top of the screen" FontSize="30" Foreground="White" 
+                               HorizontalAlignment="Center" VerticalAlignment="Center" Margin="20"/>
+
+                        <TextBlock Text="Asset and Employee both contain dropdowns for adding and viewing" FontSize="20" Foreground="White" 
+                               HorizontalAlignment="Center" VerticalAlignment="Center" Margin="20"/>
+                    </StackPanel>
+                </Frame>
+            </ScrollViewer>
+        </NavigationView>
+    </Grid>
+</Page>
