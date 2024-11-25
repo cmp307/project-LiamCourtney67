@@ -59,11 +59,10 @@ namespace ScottishGlenAssetTracking.Views.Portals
             // Check the tag of the invoked item and navigate to the corresponding page using the NewUserFrame and dependency injection.
             switch (pageTag)
             {
-
                 // Account
                 case "ViewAccount":
-                    //var viewAccountPage = App.AppHost.Services.GetRequiredService<ViewAccount>();
-                    //NewUserFrame.Navigate(viewAccountPage.GetType());
+                    var viewAccountPage = App.AppHost.Services.GetRequiredService<ViewAccount>();
+                    NewUserFrame.Navigate(viewAccountPage.GetType());
                     break;
 
                 // Logout

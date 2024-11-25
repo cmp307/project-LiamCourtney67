@@ -17,7 +17,7 @@
 
             <!--Account and Logout-->
             <NavigationView.FooterMenuItems>
-                <NavigationViewItem Tag="ViewAccount" Content="T" Background="Gray"/>
+                <NavigationViewItem Tag="ViewAccount" Content="Account" Background="Gray"/>
                 <!--{Binding Username, Mode=TwoWay}-->
                 <NavigationViewItem Tag="Logout" Content="Logout" Background="Gray"/>
             </NavigationView.FooterMenuItems>
