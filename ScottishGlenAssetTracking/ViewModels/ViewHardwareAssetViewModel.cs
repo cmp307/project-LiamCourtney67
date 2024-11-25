@@ -91,6 +91,9 @@ namespace ScottishGlenAssetTracking.ViewModels
         private string purchaseDateFormatted;
 
         [ObservableProperty]
+        private string softwareLinkDateFormatted;
+
+        [ObservableProperty]
         private string statusMessage;
 
         // Visibility properties.
@@ -173,6 +176,9 @@ namespace ScottishGlenAssetTracking.ViewModels
                 if (SelectedHardwareAsset.SoftwareAsset != null)
                 {
                     SelectedHardwareAsset.SoftwareAsset = SoftwareAssets.FirstOrDefault(s => s.Id == SelectedHardwareAsset.SoftwareAsset.Id);
+
+                    // Set the SoftwareLinkDateFormatted property to the DateTimeOffset value of the SoftwareLinkDate property and format it or an empty string.
+                    SoftwareLinkDateFormatted = SelectedHardwareAsset.SoftwareLinkDate.ToString("MM/dd/yyyy") ?? string.Empty;
                 }
 
                 // Notify the view that the SelectedHardwareAsset property has changed.
