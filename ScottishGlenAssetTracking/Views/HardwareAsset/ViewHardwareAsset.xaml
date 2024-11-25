@@ -48,6 +48,7 @@
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
 
                     <!--HardwareAsset Name-->
@@ -128,6 +129,14 @@
                     </Border>
                     <Border BorderBrush="LightGray" Background="DarkGray" BorderThickness="1" Grid.Row="9" Grid.Column="1">
                         <TextBlock Text="{Binding SelectedHardwareAsset.SoftwareAsset.Name, Mode=TwoWay}" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Center" TextWrapping="Wrap" FontSize="20"/>
+                    </Border>
+
+                    <!--HardwareAsset SoftwareLinkDate-->
+                    <Border BorderBrush="LightGray" Background="Gray" BorderThickness="1" Grid.Row="9" Grid.Column="0">
+                        <TextBlock Text="Software Link Date" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Center" TextWrapping="Wrap" FontSize="20"/>
+                    </Border>
+                    <Border BorderBrush="LightGray" Background="DarkGray" BorderThickness="1" Grid.Row="9" Grid.Column="1">
+                        <TextBlock Text="{Binding SoftwareLinkDateFormatted}" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Center" TextWrapping="Wrap" FontSize="20"/>
                     </Border>
                 </Grid>
 
