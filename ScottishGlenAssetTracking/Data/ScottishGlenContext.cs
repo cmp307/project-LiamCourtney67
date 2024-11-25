@@ -18,6 +18,7 @@ namespace ScottishGlenAssetTracking.Data
         public DbSet<Employee> Employees { get; set; }
         public DbSet<HardwareAsset> HardwareAssets { get; set; }
         public DbSet<SoftwareAsset> SoftwareAssets { get; set; }
+        public DbSet<Account> Accounts { get; set; }
 
         /// <summary>
         /// Constructor for the ScottishGlenContext class.
@@ -62,6 +63,10 @@ namespace ScottishGlenAssetTracking.Data
                 entity.HasMany(e => e.HardwareAssets)
                       .WithOne(a => a.Employee)
                       .IsRequired(false);
+
+                entity.HasOne(e => e.Account)
+                      .WithOne(a => a.Employee)
+                      .IsRequired(false);
             });
 
             // Configure the HardwareAsset entity.
@@ -96,6 +101,19 @@ namespace ScottishGlenAssetTracking.Data
 
                 entity.HasMany(a => a.HardwareAssets)
                       .WithOne(e => e.SoftwareAsset);
+            });
+
+            // Configure the Account entity.
+            modelBuilder.Entity<Account>(entity =>
+            {
+                entity.ToTable("SG.Accounts");
+                entity.HasKey(a => a.Id);
+                entity.Property(a => a.Email).HasColumnName("username").HasMaxLength(64);
+                entity.Property(a => a.Password).HasColumnName("password").HasMaxLength(64);
+                entity.Property(a => a.IsAdmin).HasColumnName("admin").HasDefaultValue(false);
+
+                entity.HasOne(a => a.Employee)
+                      .WithOne(e => e.Account);
             });
         }
     }
