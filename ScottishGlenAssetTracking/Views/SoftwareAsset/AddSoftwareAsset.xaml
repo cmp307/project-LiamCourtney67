@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Page
+    x:Class="ScottishGlenAssetTracking.Views.SoftwareAsset.AddSoftwareAsset"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:ScottishGlenAssetTracking.Views.SoftwareAsset"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:vm="using:ScottishGlenAssetTracking.ViewModels"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <Grid Background="#5C5C5C">
+        <StackPanel>
+            <!--Header-->
+            <TextBlock x:Name="AddSoftwareAssetHeader" Text="Add Software Asset" FontSize="24" Margin="10"/>
+
+            <!--Selects-->
+            <ComboBox x:Name="HardwareAssetSelect" Header="Hardware Asset" HorizontalAlignment="Stretch" PlaceholderText="Select Hardware Asset" Margin="10"
+                      ItemsSource="{Binding HardwareAssets}" SelectedItem="{Binding SelectedHardwareAsset, Mode=TwoWay}" DisplayMemberPath="Name"/>
+
+            <!--Add SoftwareAsset Button-->
+            <Button x:Name="AddSoftwareAssetButton" Content="Add Software Asset" Command="{Binding AddSoftwareAssetCommand}" Margin="10" 
+                    Background="Green" Foreground="White" HorizontalAlignment="Right"/>
+
+            <!--Status Message-->
+            <TextBlock x:Name="StatusMessage" Text="{Binding StatusMessage}" Visibility="{Binding StatusVisibility}" Margin="10" HorizontalAlignment="Center"/>
+        </StackPanel>
+    </Grid>
+</Page>

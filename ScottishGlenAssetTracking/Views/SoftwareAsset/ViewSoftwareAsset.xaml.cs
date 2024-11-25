@@ -6,53 +6,48 @@ using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
-using ScottishGlenAssetTracking.Models;
-using ScottishGlenAssetTracking.Services;
 using ScottishGlenAssetTracking.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Management;
-using System.Net;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
-using Windows.Services.Maps;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
 
-namespace ScottishGlenAssetTracking.Views.Asset
+namespace ScottishGlenAssetTracking.Views.SoftwareAsset
 {
     /// <summary>
-    /// Page for adding an Asset.
+    /// Page for viewing an SoftwareAsset.
     /// </summary>
-    public sealed partial class AddAsset : Page
+    public sealed partial class ViewSoftwareAsset : Page
     {
         /// <summary>
-        /// Constructor for the AddAsset class.
+        /// Constructor for the ViewSoftwareAsset class.
         /// </summary>
-        public AddAsset()
+        public ViewSoftwareAsset()
         {
             this.InitializeComponent();
 
-            // Set the DataContext of the page to the AddAssetViewModel with dependency injection.
-            DataContext = App.AppHost.Services.GetRequiredService<AddAssetViewModel>();
+            // Set the DataContext of the page to the ViewSoftwareAssetViewModel with dependency injection.
+            DataContext = App.AppHost.Services.GetRequiredService<ViewSoftwareAssetViewModel>();
         }
 
         /// <summary>
-        /// Event handler for the selection changed event of the DepartmentSelect ComboBox.
+        /// Event handler for the selection changed event of the SoftwareAssetSelect ComboBox.
         /// </summary>
         /// <param name="sender">The control that triggered the event.</param>
         /// <param name="e">Event data that provides information about the selection changed event.</param>
-        private void DepartmentSelect_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void SoftwareAssetSelect_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            // Check if the DataContext is an AddAssetViewModel and execute the LoadEmployeesCommand.
+            // Check if the DataContext is a ViewSoftwareAssetViewModel and execute the PopulateSoftwareAssetDetailsCommand.
             // Selection changed cannot be bound to a command, so it is done in the code-behind.
-            if (DataContext is AddAssetViewModel viewModel)
+            if (DataContext is ViewSoftwareAssetViewModel viewModel)
             {
-                viewModel.LoadEmployeesCommand.Execute(null);
+                viewModel.PopulateSoftwareAssetDetailsCommand.Execute(null);
             }
         }
     }

@@ -16,7 +16,8 @@ namespace ScottishGlenAssetTracking.Data
         // DbSet properties for each entity.
         public DbSet<Department> Departments { get; set; }
         public DbSet<Employee> Employees { get; set; }
-        public DbSet<Asset> Assets { get; set; }
+        public DbSet<HardwareAsset> HardwareAssets { get; set; }
+        public DbSet<SoftwareAsset> SoftwareAssets { get; set; }
 
         /// <summary>
         /// Constructor for the ScottishGlenContext class.
@@ -40,6 +41,10 @@ namespace ScottishGlenAssetTracking.Data
                 entity.ToTable("SG.Departments");
                 entity.HasKey(d => d.Id);
                 entity.Property(d => d.Name).HasColumnName("name").HasMaxLength(64);
+
+                entity.HasMany(d => d.Employees)
+                      .WithOne(e => e.Department)
+                      .IsRequired(false);
             });
 
             // Configure the Employee entity.
@@ -53,12 +58,16 @@ namespace ScottishGlenAssetTracking.Data
 
                 entity.HasOne(e => e.Department)
                       .WithMany(d => d.Employees);
+
+                entity.HasMany(e => e.HardwareAssets)
+                      .WithOne(a => a.Employee)
+                      .IsRequired(false);
             });
 
-            // Configure the Asset entity.
-            modelBuilder.Entity<Asset>(entity =>
+            // Configure the HardwareAsset entity.
+            modelBuilder.Entity<HardwareAsset>(entity =>
             {
-                entity.ToTable("SG.Assets");
+                entity.ToTable("SG.HardwareAssets");
                 entity.HasKey(a => a.Id);
                 entity.Property(a => a.Name).HasColumnName("name").HasMaxLength(64);
                 entity.Property(a => a.Model).HasColumnName("model").HasMaxLength(64);
@@ -69,7 +78,24 @@ namespace ScottishGlenAssetTracking.Data
                 entity.Property(a => a.Notes).HasColumnName("notes").HasMaxLength(64).IsRequired(false);
 
                 entity.HasOne(a => a.Employee)
-                      .WithMany(e => e.Assets);
+                      .WithMany(e => e.HardwareAssets);
+
+                entity.HasOne(a => a.SoftwareAsset)
+                      .WithMany(e => e.HardwareAssets)
+                      .IsRequired(false);
+            });
+
+            // Configure the SoftwareAsset entity.
+            modelBuilder.Entity<SoftwareAsset>(entity =>
+            {
+                entity.ToTable("SG.SoftwareAssets");
+                entity.HasKey(a => a.Id);
+                entity.Property(a => a.Name).HasColumnName("name").HasMaxLength(64);
+                entity.Property(a => a.Version).HasColumnName("version").HasMaxLength(64);
+                entity.Property(a => a.Manufacturer).HasColumnName("manufacturer").HasMaxLength(64);
+
+                entity.HasMany(a => a.HardwareAssets)
+                      .WithOne(e => e.SoftwareAsset);
             });
         }
     }

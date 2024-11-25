@@ -34,7 +34,7 @@ namespace ScottishGlenAssetTracking.ViewModels
 
             // Load departments and remove any unwanted items.
             Departments = new ObservableCollection<Department>(_departmentService.GetDepartments()
-                .Where(d => d.Name != "Assets without Employee"));
+                .Where(d => d.Name != "HardwareAssets without Employee"));
 
             // Initialize collections.
             Employees = new ObservableCollection<Employee>();
@@ -70,7 +70,7 @@ namespace ScottishGlenAssetTracking.ViewModels
         private Visibility statusVisibility = Visibility.Collapsed;
 
         [ObservableProperty]
-        private Visibility employeeAssetsVisibility = Visibility.Collapsed;
+        private Visibility employeeHardwareAssetsVisibility = Visibility.Collapsed;
 
         [ObservableProperty]
         private Visibility viewEmployeeViewVisibility = Visibility.Collapsed;
@@ -119,14 +119,14 @@ namespace ScottishGlenAssetTracking.ViewModels
                 // Change the view to the view mode.
                 ChangeViewToView();
 
-                // Check if the selected employee has any assets and set the visibility of the EmployeeAssetsVisibility property.
-                if (SelectedEmployee.Assets == null || SelectedEmployee.Assets.Count == 0)
+                // Check if the selected employee has any hardware assets and set the visibility of the EmployeeHardwareAssetsVisibility property.
+                if (SelectedEmployee.HardwareAssets == null || SelectedEmployee.HardwareAssets.Count == 0)
                 {
-                    EmployeeAssetsVisibility = Visibility.Collapsed;
+                    EmployeeHardwareAssetsVisibility = Visibility.Collapsed;
                 }
-                else if (SelectedEmployee.Assets.Count > 0)
+                else if (SelectedEmployee.HardwareAssets.Count > 0)
                 {
-                    EmployeeAssetsVisibility = Visibility.Visible;
+                    EmployeeHardwareAssetsVisibility = Visibility.Visible;
                 }
             }
         }

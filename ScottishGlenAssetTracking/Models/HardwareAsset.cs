@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 namespace ScottishGlenAssetTracking.Models
 {
     /// <summary>
-    /// Model class for the Asset entity.
+    /// Model class for the HardwareAsset entity.
     /// </summary>
-    public class Asset
+    public class HardwareAsset
     {
-        // Private fields for the Asset entity.
+        // Private fields for the HardwareAsset entity.
         private int _id;
         private string _name;
         private string _model;
@@ -21,9 +21,11 @@ namespace ScottishGlenAssetTracking.Models
         private DateTime? _purchaseDate;        // Purchase date can be empty
         private string? _notes;                 // Notes can be empty
         private Employee _employee;
+        private SoftwareAsset _softwareAsset;
+        private DateTime _softwareLinkDate;
 
         /// <summary>
-        /// Id property for the Asset entity.
+        /// Id property for the HardwareAsset entity.
         /// </summary>
         public int Id
         {
@@ -32,7 +34,7 @@ namespace ScottishGlenAssetTracking.Models
         }
 
         /// <summary>
-        /// Name property for the Asset entity.
+        /// Name property for the HardwareAsset entity.
         /// </summary>
         public string Name
         {
@@ -41,7 +43,7 @@ namespace ScottishGlenAssetTracking.Models
         }
 
         /// <summary>
-        /// Model property for the Asset entity.
+        /// Model property for the HardwareAsset entity.
         /// </summary>
         public string Model
         {
@@ -50,7 +52,7 @@ namespace ScottishGlenAssetTracking.Models
         }
 
         /// <summary>
-        /// Manufacturer property for the Asset entity.
+        /// Manufacturer property for the HardwareAsset entity.
         /// </summary>
         public string Manufacturer
         {
@@ -59,7 +61,7 @@ namespace ScottishGlenAssetTracking.Models
         }
 
         /// <summary>
-        /// Type property for the Asset entity.
+        /// Type property for the HardwareAsset entity.
         /// </summary>
         public string Type
         {
@@ -68,7 +70,7 @@ namespace ScottishGlenAssetTracking.Models
         }
 
         /// <summary>
-        /// IpAddress property for the Asset entity.
+        /// IpAddress property for the HardwareAsset entity.
         /// </summary>
         public string IpAddress
         {
@@ -77,7 +79,7 @@ namespace ScottishGlenAssetTracking.Models
         }
 
         /// <summary>
-        /// Optional PurchaseDate property for the Asset entity.
+        /// Optional PurchaseDate property for the HardwareAsset entity.
         /// </summary>
         public DateTime? PurchaseDate
         {
@@ -86,7 +88,7 @@ namespace ScottishGlenAssetTracking.Models
         }
 
         /// <summary>
-        /// Optional Notes property for the Asset entity.
+        /// Optional Notes property for the HardwareAsset entity.
         /// </summary>
         public string? Notes
         {
@@ -95,12 +97,30 @@ namespace ScottishGlenAssetTracking.Models
         }
 
         /// <summary>
-        /// Navigational property for the Employee entity within the Asset entity.
+        /// Navigational property for the Employee entity within the HardwareAsset entity.
         /// </summary>
         public Employee Employee
         {
             get { return _employee; }
             set { _employee = value; }
+        }
+
+        /// <summary>
+        /// Navigational property for the SoftwareAsset entity within the HardwareAsset entity.
+        /// </summary>
+        public SoftwareAsset SoftwareAsset
+        {
+            get { return _softwareAsset; }
+            set { _softwareAsset = value; }
+        }
+
+        /// <summary>
+        /// SoftwareLinkDate property for the HardwareAsset entity, the date the software was linked to the hardware.
+        /// </summary>
+        public DateTime SoftwareLinkDate
+        {
+            get { return _softwareLinkDate; }
+            set { _softwareLinkDate = value; }
         }
     }
 }
