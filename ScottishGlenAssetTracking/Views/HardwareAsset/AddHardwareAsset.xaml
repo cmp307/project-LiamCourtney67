@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Page
-    x:Class="ScottishGlenAssetTracking.Views.Asset.AddAsset"
+    x:Class="ScottishGlenAssetTracking.Views.HardwareAsset.AddHardwareAsset"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:ScottishGlenAssetTracking.Views.Asset"
@@ -13,24 +13,25 @@
     <Grid Background="#5C5C5C">
         <StackPanel>
             <!--Header-->
-            <TextBlock x:Name="AddAssetHeader" Text="Add Asset" FontSize="24" Margin="10"/>
+            <TextBlock x:Name="AddHardwareAssetHeader" Text="Add Hardware Asset" FontSize="24" Margin="10"/>
             
             <!--Selects-->
             <ComboBox x:Name="DepartmentSelect" Header="Department" HorizontalAlignment="Stretch" PlaceholderText="Select Department" Margin="10"
                       ItemsSource="{Binding Departments}" SelectedItem="{Binding SelectedDepartment, Mode=TwoWay}" DisplayMemberPath="Name" SelectionChanged="DepartmentSelect_SelectionChanged"/>
             <ComboBox x:Name="EmployeeSelect" Header="Employee" HorizontalAlignment="Stretch" PlaceholderText="Select Employee" Margin="10"
-                      ItemsSource="{Binding Employees}" SelectedItem="{Binding NewAsset.Employee, Mode=TwoWay}" DisplayMemberPath="Name"/>
-            
-            <!--Asset Details-->
+                      ItemsSource="{Binding Employees}" SelectedItem="{Binding NewHardwareAsset.Employee, Mode=TwoWay}" DisplayMemberPath="Name"/>
+
+            <!--HardwareAsset Details-->
             <StackPanel Orientation="Horizontal">
-                <DatePicker x:Name="AssetPurchaseDateInput" Header="Purchase Date" Date="{Binding PurchaseDate, Mode=TwoWay}" Margin="10"/>
+                <DatePicker x:Name="HardwareAssetPurchaseDateInput" Header="Purchase Date" Date="{Binding PurchaseDate, Mode=TwoWay}" Margin="10"/>
                 <Button x:Name="ClearPurchaseDateButton" Content="Clear" Command="{Binding ClearPurchaseDateCommand}" Margin="10, 30, 10, 10"/>
             </StackPanel>
-            
-            <TextBox x:Name="AssetNotes" Header="Notes" PlaceholderText="Enter Notes" Margin="10" Text="{Binding NewAsset.Notes, Mode=TwoWay}"/>
-            
-            <!--Add Asset Button-->
-            <Button x:Name="AddAssetButton" Content="Add Asset" Command="{Binding AddAssetCommand}" Margin="10" Background="Green" Foreground="White" HorizontalAlignment="Right"/>
+
+            <TextBox x:Name="HardwareAssetNotes" Header="Notes" PlaceholderText="Enter Notes" Margin="10" Text="{Binding NewHardwareAsset.Notes, Mode=TwoWay}"/>
+
+            <!--Add HardwareAsset Button-->
+            <Button x:Name="AddHardwareAssetButton" Content="Add Hardware Asset" Command="{Binding AddHardwareAssetCommand}" Margin="10" 
+                    Background="Green" Foreground="White" HorizontalAlignment="Right"/>
             
             <!--Status Message-->
             <TextBlock x:Name="StatusMessage" Text="{Binding StatusMessage}" Visibility="{Binding StatusVisibility}" Margin="10" HorizontalAlignment="Center"/>

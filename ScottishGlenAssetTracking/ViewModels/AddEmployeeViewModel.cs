@@ -31,7 +31,7 @@ namespace ScottishGlenAssetTracking.ViewModels
 
             // Load departments and remove any unwanted items.
             Departments = new ObservableCollection<Department>(_departmentService.GetDepartments()
-                .Where(d => d.Name != "Assets without Employee"));
+                .Where(d => d.Name != "HardwareAssets without Employee"));
 
             // Initialize new employee.
             newEmployee = new Employee();

@@ -14,7 +14,8 @@ using Microsoft.UI.Xaml.Shapes;
 using ScottishGlenAssetTracking.Data;
 using ScottishGlenAssetTracking.Services;
 using ScottishGlenAssetTracking.ViewModels;
-using ScottishGlenAssetTracking.Views.Asset;
+using ScottishGlenAssetTracking.Views.HardwareAsset;
+using ScottishGlenAssetTracking.Views.SoftwareAsset;
 using ScottishGlenAssetTracking.Views.Employee;
 using System;
 using System.Collections.Generic;
@@ -116,19 +117,28 @@ namespace ScottishGlenAssetTracking
                 options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
 
             // Add services to the services collection.
-            services.AddSingleton<AssetService>();
+            services.AddSingleton<HardwareAssetService>();
+            services.AddSingleton<SoftwareAssetService>();
             services.AddSingleton<EmployeeService>();
             services.AddSingleton<DepartmentService>();
 
             // Add view models to the services collection.
-            services.AddTransient<AddAssetViewModel>();
-            services.AddTransient<ViewAssetViewModel>();
+            services.AddTransient<AddHardwareAssetViewModel>();
+            services.AddTransient<ViewHardwareAssetViewModel>();
+
+            services.AddTransient<AddSoftwareAssetViewModel>();
+            services.AddTransient<ViewSoftwareAssetViewModel>();
+
             services.AddTransient<AddEmployeeViewModel>();
             services.AddTransient<ViewEmployeeViewModel>();
 
             // Add views to the services collection.
-            services.AddTransient<AddAsset>();
-            services.AddTransient<ViewAsset>();
+            services.AddTransient<AddHardwareAsset>();
+            services.AddTransient<ViewHardwareAsset>();
+
+            services.AddTransient<AddSoftwareAsset>();
+            services.AddTransient<ViewSoftwareAsset>();
+
             services.AddTransient<AddEmployee>();
             services.AddTransient<ViewEmployee>();
 
