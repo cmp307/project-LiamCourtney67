@@ -91,6 +91,12 @@ namespace ScottishGlenAssetTracking.Views.Portals
                     AdminFrame.Navigate(viewEmployeePage.GetType());
                     break;
 
+                // Manage Accounts
+                case "ManageAccounts":
+                    var manageAccountsPage = App.AppHost.Services.GetRequiredService<ManageAccounts>();
+                    AdminFrame.Navigate(manageAccountsPage.GetType());
+                    break;
+
                 // Account
                 case "ViewAccount":
                     var viewAccountPage = App.AppHost.Services.GetRequiredService<ViewAccount>();

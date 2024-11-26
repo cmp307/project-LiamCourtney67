@@ -43,6 +43,13 @@
                         <NavigationViewItem Tag="ViewEmployee" Content="View Employee" Background="Gray"/>
                     </NavigationViewItem.MenuItems>
                 </NavigationViewItem>
+                
+                <!--Manage Accounts-->
+                <NavigationViewItem Content="Admin">
+                    <NavigationViewItem.MenuItems>
+                        <NavigationViewItem Tag="ManageAccounts" Content="Manage Accounts" Background="Gray"/>
+                    </NavigationViewItem.MenuItems>
+                </NavigationViewItem>
 
             </NavigationView.MenuItems>
 
