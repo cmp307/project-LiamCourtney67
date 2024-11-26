@@ -61,7 +61,7 @@
                 </Grid>
 
                 <!--SoftwareAsset's HardwareAssets-->
-                <ListView x:Name="HardwareAssets" Header="Hardware Assets: " ItemsSource="{Binding SelectedSoftwareAsset.HardwareAssets}" Visibility="{Binding SoftwareAssetHardwareAssetsVisibility}" DisplayMemberPath="Name" Margin="10" FontSize="32"/>
+                <ListView x:Name="HardwareAssets" Header="Hardware Assets: " ItemsSource="{Binding SoftwareAssetHardwareAssets}" Visibility="{Binding SoftwareAssetHardwareAssetsVisibility}" DisplayMemberPath="Name" Margin="10" FontSize="32"/>
 
                 <!--Buttons-->
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
