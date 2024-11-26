@@ -43,6 +43,16 @@ namespace ScottishGlenAssetTracking.Services
             return _context.Accounts.Include(a => a.Employee).ToList();
         }
 
+        public List<Account> GetAccounts(int departmentId)
+        {
+            return _context.Accounts.Include(a => a.Employee).Where(a => a.Employee.Department.Id == departmentId).ToList();
+        }
+
+        public List<Account> GetAccounts(int departmentId, bool isAdmin)
+        {
+            return _context.Accounts.Include(a => a.Employee).Where(a => a.Employee.Department.Id == departmentId && a.IsAdmin == isAdmin).ToList();
+        }
+
         public bool UpdateAccount(Account account)
         {
             // Check if the account exists
@@ -93,9 +103,26 @@ namespace ScottishGlenAssetTracking.Services
             // Retrieve account and update password
             var account = _context.Accounts.FirstOrDefault(a => a.Email == email);
 
-            if (account != null && account.VerifyPassword(password))
+            if (account != null)
             {
                 account.Password = password;
+                _context.Accounts.Update(account);
+                _context.SaveChanges();
+
+                return true;
+            }
+
+            return false;
+        }
+
+        public bool SetAccountToAdmin(string email)
+        {
+            // Retrieve account and update admin status
+            var account = _context.Accounts.FirstOrDefault(a => a.Email == email);
+
+            if (account != null)
+            {
+                account.IsAdmin = true;
                 _context.Accounts.Update(account);
                 _context.SaveChanges();
 

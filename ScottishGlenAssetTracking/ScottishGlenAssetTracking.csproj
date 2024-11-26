@@ -14,6 +14,7 @@
   </PropertyGroup>
   <ItemGroup>
     <None Remove="Views\Account\Login.xaml" />
+    <None Remove="Views\Account\ManageAccounts.xaml" />
     <None Remove="Views\Account\Register.xaml" />
     <None Remove="Views\Account\ViewAccount.xaml" />
     <None Remove="Views\HardwareAsset\AddHardwareAsset.xaml" />
@@ -64,6 +65,9 @@
     <None Update="appsettings.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <Page Update="Views\Account\ManageAccounts.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Update="Views\Account\ViewAccount.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>

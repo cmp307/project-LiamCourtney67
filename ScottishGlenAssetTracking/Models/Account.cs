@@ -57,6 +57,8 @@ namespace ScottishGlenAssetTracking.Models
 
         public int? EmployeeId => Employee.Id;
 
+        public string EmployeeName => Employee.Name;
+
         /// <summary>
         /// IsAdmin property for the Account entity, used to determine if the account is an administrator.
         /// </summary>
@@ -83,7 +85,7 @@ namespace ScottishGlenAssetTracking.Models
         private bool SetAdmin()
         {
             // TODO
-            IsAdmin = true;
+           _isAdmin = true;
             return true;
         }
     }

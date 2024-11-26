@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 using ScottishGlenAssetTracking.Models;
 using ScottishGlenAssetTracking.Services;
 using ScottishGlenAssetTracking.Views.Account;
@@ -20,6 +21,8 @@ namespace ScottishGlenAssetTracking.ViewModels
         private readonly EmployeeService _employeeService;
         private readonly AccountService _accountService;
 
+        private ContentDialog _updatePasswordDialog;
+
         public ViewAccountViewModel(DepartmentService departmentService, EmployeeService employeeService, AccountService accountService)
         {
             SelectedAccount = App.AppHost.Services.GetRequiredService<AccountManager>().CurrentAccount;
@@ -37,6 +40,21 @@ namespace ScottishGlenAssetTracking.ViewModels
         [ObservableProperty]
         private string statusMessage;
 
+
+        // Dialog properties.
+
+        [ObservableProperty]
+        private string currentPassword;
+
+        [ObservableProperty]
+        private string newPassword;
+
+        [ObservableProperty]
+        private string confirmNewPassword;
+
+        [ObservableProperty]
+        private string dialogStatusMessage;
+
         // Visibility properties.
 
         [ObservableProperty]
@@ -47,6 +65,11 @@ namespace ScottishGlenAssetTracking.ViewModels
 
         [ObservableProperty]
         private Visibility editAccountViewVisibility = Visibility.Collapsed;
+
+        // Dialog visibility properties.
+
+        [ObservableProperty]
+        private Visibility dialogStatusVisibility = Visibility.Collapsed;
 
         // Commands.
 
@@ -62,7 +85,7 @@ namespace ScottishGlenAssetTracking.ViewModels
                 // Log out the account.
                 App.AppHost.Services.GetRequiredService<AccountManager>().Logout();
 
-                // Change the view to the login page.
+                // Update the view to the login page.
                 var loginPage = App.AppHost.Services.GetRequiredService<Login>();
                 MainWindow.Frame.Navigate(loginPage.GetType());
             }
@@ -111,6 +134,69 @@ namespace ScottishGlenAssetTracking.ViewModels
             // Set the visibility properties for the view.
             EditAccountViewVisibility = Visibility.Collapsed;
             ViewAccountViewVisibility = Visibility.Visible;
+        }
+
+        // Dialog commands.
+
+        public void SetDialog(ContentDialog dialog) => _updatePasswordDialog = dialog;
+
+        [RelayCommand]
+        private async Task ShowDialog()
+        {
+            // Set the dialog visibility properties.
+            if (SelectedAccount != null)
+            {
+                await _updatePasswordDialog.ShowAsync();
+                DialogStatusVisibility = Visibility.Collapsed;
+            }
+        }
+
+        public bool UpdatePassword()
+        {
+            // Only change the password if the current password is correct.
+            if (!SelectedAccount.VerifyPassword(CurrentPassword))
+            {
+                // Set the status message and make it visible.
+                DialogStatusVisibility = Visibility.Visible;
+                DialogStatusMessage = "Incorrect Password";
+                ResetPasswords();
+                return false;
+            }
+            // Only change the password if the new password and confirm new password match.
+            if (NewPassword != ConfirmNewPassword)
+            {
+                // Set the status message and make it visible.
+                DialogStatusVisibility = Visibility.Visible;
+                DialogStatusMessage = "Passwords do not match";
+                ResetPasswords();
+                return false;
+            }
+
+            // Update the password in the database.
+            if (_accountService.UpdatePassword(SelectedAccount.Email, NewPassword))
+            {
+                // Set the new password for the selected account.
+                SelectedAccount.Password = NewPassword;
+
+                ResetPasswords();
+                return true;
+            }
+            else
+            {
+                // Set the status message and make it visible.
+                DialogStatusVisibility = Visibility.Visible;
+                DialogStatusMessage = "Password could not be updated";
+                ResetPasswords();
+                return false;
+            }
+        }
+
+        private void ResetPasswords()
+        {
+            // Reset the password properties.
+            CurrentPassword = string.Empty;
+            NewPassword = string.Empty;
+            ConfirmNewPassword = string.Empty;
         }
     }
 }
