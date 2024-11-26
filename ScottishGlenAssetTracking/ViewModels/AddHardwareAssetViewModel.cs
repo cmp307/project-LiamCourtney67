@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Xaml;
 using ScottishGlenAssetTracking.Models;
 using ScottishGlenAssetTracking.Services;
@@ -8,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Security.Principal;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -24,6 +26,9 @@ namespace ScottishGlenAssetTracking.ViewModels
         private readonly HardwareAssetService _hardwareAssetService;
         private readonly SoftwareAssetService _softwareAssetService;
 
+        // Private field for the Account.
+        private readonly Account _account;
+
         /// <summary>
         /// Constructor for the AddHardwareAssetViewModel class using the DepartmentService, EmployeeService, and HardwareAssetService with dependency injection.
         /// </summary>
@@ -36,6 +41,9 @@ namespace ScottishGlenAssetTracking.ViewModels
                                          HardwareAssetService hardwareAssetService, 
                                          SoftwareAssetService softwareAssetService)
         {
+            // Get the current account from the AccountManager.
+            _account = App.AppHost.Services.GetRequiredService<AccountManager>().CurrentAccount;
+
             // Initialize services.
             _departmentService = departmentService;
             _employeeService = employeeService;
@@ -54,6 +62,9 @@ namespace ScottishGlenAssetTracking.ViewModels
 
             // Set purchase date to null.
             purchaseDate = null;
+
+            // Load selections for the account type.
+            LoadSelectionsForAccountType();
         }
 
         // Collections.
@@ -88,6 +99,13 @@ namespace ScottishGlenAssetTracking.ViewModels
         // Visibility properties.
         [ObservableProperty]
         private Visibility statusVisibility = Visibility.Collapsed;
+
+        // IsEnabled properties.
+        [ObservableProperty]
+        private bool departmentSelectIsEnabled = true;
+
+        [ObservableProperty]
+        private bool employeeSelectIsEnabled = true;
 
         // Commands
 
@@ -141,5 +159,26 @@ namespace ScottishGlenAssetTracking.ViewModels
         /// </summary>
         [RelayCommand]
         private void ClearPurchaseDate() => PurchaseDate = null;
+
+        /// <summary>
+        /// Load selections for the account type and disable the selects if the account is not an admin.
+        /// </summary>
+        private void LoadSelectionsForAccountType()
+        {
+            // Only load selections for the account type if the account is not an admin.
+            if (!_account.IsAdmin)
+            {
+                // Set the selected department to the department from the Departments collection.
+                SelectedDepartment = Departments.FirstOrDefault(d => d.Id == _account.Employee.Department.Id);
+
+                // Load employees based on the selected department and set the HardwareAssets's employee to the employee from the Employees collection.
+                LoadEmployees();
+                NewHardwareAsset.Employee = Employees.FirstOrDefault(e => e.Id == _account.Employee.Id);
+
+                // Disable the selects.
+                DepartmentSelectIsEnabled = false;
+                EmployeeSelectIsEnabled = false;
+            }
+        }
     }
 }

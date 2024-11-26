@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Xaml;
 using ScottishGlenAssetTracking.Models;
 using ScottishGlenAssetTracking.Services;
@@ -21,6 +22,9 @@ namespace ScottishGlenAssetTracking.ViewModels
         private readonly DepartmentService _departmentService;
         private readonly EmployeeService _employeeService;
 
+        // Private field for the Account.
+        private readonly Account _account;
+
         /// <summary>
         /// Constructor for the ViewEmployeeViewModel class using the DepartmentService and EmployeeService with dependency injection.
         /// </summary>
@@ -28,6 +32,9 @@ namespace ScottishGlenAssetTracking.ViewModels
         /// <param name="employeeService">EmployeeService from dependency injection.</param>
         public ViewEmployeeViewModel(DepartmentService departmentService, EmployeeService employeeService)
         {
+            // Get the current account from the AccountManager.
+            _account = App.AppHost.Services.GetRequiredService<AccountManager>().CurrentAccount;
+
             // Initialize services.
             _departmentService = departmentService;
             _employeeService = employeeService;
@@ -38,6 +45,9 @@ namespace ScottishGlenAssetTracking.ViewModels
 
             // Initialize collections.
             Employees = new ObservableCollection<Employee>();
+
+            // Load selections for the account type.
+            LoadSelectionsForAccountType();
         }
 
         // Collections.
@@ -77,6 +87,16 @@ namespace ScottishGlenAssetTracking.ViewModels
 
         [ObservableProperty]
         private Visibility editEmployeeViewVisibility = Visibility.Collapsed;
+
+        // IsEnabled properties.
+        [ObservableProperty]
+        private bool departmentSelectIsEnabled = true;
+
+        [ObservableProperty]
+        private bool employeeSelectIsEnabled = true;
+
+        [ObservableProperty]
+        private bool employeeDepartmentSelectIsEnabled = true;
 
 
         //Commands
@@ -219,6 +239,31 @@ namespace ScottishGlenAssetTracking.ViewModels
             EditEmployeeViewVisibility = Visibility.Collapsed;
             SelectsVisibility = Visibility.Visible;
             ViewEmployeeViewVisibility = Visibility.Visible;
+        }
+
+        /// <summary>
+        /// Load selections for the account type and disable the selects if the account is not an admin.
+        /// </summary>
+        private void LoadSelectionsForAccountType()
+        {
+            // Only load selections for the account type if the account is not an admin.
+            if (!_account.IsAdmin)
+            {
+                // Set the selected department to the department from the Departments collection.
+                SelectedDepartment = Departments.FirstOrDefault(d => d.Id == _account.Employee.Department.Id);
+
+                // Load employees based on the selected department and set the selected employee to the employee from the Employees collection.
+                LoadEmployees();
+                SelectedEmployee = Employees.FirstOrDefault(e => e.Id == _account.Employee.Id);
+
+                // Change the view to the view mode.
+                ChangeViewToView();
+
+                // Disable the selects.
+                DepartmentSelectIsEnabled = false;
+                EmployeeSelectIsEnabled = false;
+                EmployeeDepartmentSelectIsEnabled = false;
+            }
         }
     }
 }
