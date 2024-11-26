@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Xaml;
 using ScottishGlenAssetTracking.Models;
 using ScottishGlenAssetTracking.Services;
@@ -23,6 +24,9 @@ namespace ScottishGlenAssetTracking.ViewModels
         private readonly HardwareAssetService _hardwareAssetService;
         private readonly SoftwareAssetService _softwareAssetService;
 
+        // Private field for the Account.
+        private readonly Account _account;
+
         /// <summary>
         /// Constructor for the ViewSoftwareAssetViewModel class using the DepartmentService, EmployeeService, and SoftwareAssetService with dependency injection.
         /// </summary>
@@ -35,6 +39,9 @@ namespace ScottishGlenAssetTracking.ViewModels
                                           HardwareAssetService hardwareAssetService, 
                                           SoftwareAssetService softwareAssetService)
         {
+            // Get the current account from the AccountManager.
+            _account = App.AppHost.Services.GetRequiredService<AccountManager>().CurrentAccount;
+
             // Initialize services.
             _departmentService = departmentService;
             _employeeService = employeeService;
@@ -54,6 +61,12 @@ namespace ScottishGlenAssetTracking.ViewModels
         /// ObservableCollection of SoftwareAsset objects used in the view.
         /// </summary>
         public ObservableCollection<SoftwareAsset> SoftwareAssets { get; private set; }
+
+        /// <summary>
+        /// ObservableCollection of HardwareAssets belonging to the selected SoftwareAsset that are linked to the Employee.
+        /// </summary>
+        public ObservableCollection<HardwareAsset> SoftwareAssetHardwareAssets { get; private set; }
+
 
         // Properties.
         [ObservableProperty]
@@ -127,6 +140,19 @@ namespace ScottishGlenAssetTracking.ViewModels
                 }
                 else if (SelectedSoftwareAsset.HardwareAssets.Count > 0)
                 {
+                    // Set the SoftwareAssetHardwareAssets collection to the HardwareAssets of the selected SoftwareAsset or only the HardwareAssets linked to the Employee.
+                    if (_account.IsAdmin)
+                    {
+                        SoftwareAssetHardwareAssets = new ObservableCollection<HardwareAsset>(SelectedSoftwareAsset.HardwareAssets);
+                        OnPropertyChanged(nameof(SoftwareAssetHardwareAssets));
+                    }
+                    else if (_account.Employee != null)
+                    {
+                        SoftwareAssetHardwareAssets = new ObservableCollection<HardwareAsset>(SelectedSoftwareAsset.HardwareAssets
+                            .Where(h => h.Employee != null && h.Employee.Id == _account.Employee.Id));
+                        OnPropertyChanged(nameof(SoftwareAssetHardwareAssets));
+                    }
+
                     SoftwareAssetHardwareAssetsVisibility = Visibility.Visible;
                 }
             }
