@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Mail;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -12,11 +13,10 @@ namespace ScottishGlenAssetTracking.Models
     public class Account
     {
         // Private fields for the Account entity.
-        private int _id;
+        private int _id;                            // Set by the database, so no validation needed.
         private string _email;
         private string _password;
-        private Employee _employee;
-        private int _employeeId;
+        private Employee _employee;                 // No validation needed, handled by Employee entity.
         private bool _isAdmin;
 
         /// <summary>
@@ -34,7 +34,18 @@ namespace ScottishGlenAssetTracking.Models
         public string Email
         {
             get { return _email; }
-            set { _email = value; }
+            set
+            {
+                if (IsValidEmail(value.Trim()))
+                {
+                    // Trim the value to remove leading and trailing whitespace.
+                    _email = value.Trim();
+                }
+                else
+                {
+                    throw new ArgumentException("Email must be a valid email address.");
+                }
+            }
         }
 
         /// <summary>
@@ -43,7 +54,17 @@ namespace ScottishGlenAssetTracking.Models
         public string Password
         {
             get { return _password; }
-            set { _password = HashPassword(value); }
+            set
+            {
+                if (IsValidPassword(value))
+                {
+                    _password = HashPassword(value);
+                }
+                else
+                {
+                    throw new ArgumentException("Password must be between 8 and 64 characters.");
+                }
+            }
         }
 
         /// <summary>
@@ -55,8 +76,14 @@ namespace ScottishGlenAssetTracking.Models
             set { _employee = value; }
         }
 
+        /// <summary>
+        /// Reference property for the EmployeeId of the Employee entity within the Account entity.
+        /// </summary>
         public int? EmployeeId => Employee.Id;
 
+        /// <summary>
+        /// Used to display the full name of the Employee entity within the Account entity.
+        /// </summary>
         public string EmployeeName => Employee.Name;
 
         /// <summary>
@@ -65,7 +92,17 @@ namespace ScottishGlenAssetTracking.Models
         public bool IsAdmin
         {
             get { return _isAdmin; }
-            set { SetAdmin(); }
+            set
+            {
+                if (CanBeAdmin())
+                {
+                    _isAdmin = value;
+                }
+                else
+                {
+                    throw new ArgumentException("Only IT department employees can be administrators.");
+                }
+            }
         }
 
         /// <summary>
@@ -82,11 +119,39 @@ namespace ScottishGlenAssetTracking.Models
         /// <returns>True if verified using BCrypt, false if not valid.</returns>
         public bool VerifyPassword(string password) { return BCrypt.Net.BCrypt.EnhancedVerify(password, _password); }
 
-        private bool SetAdmin()
+        /// <summary>
+        /// Validation method for the Email property of the Employee entity, using the MailAddress class to validate.
+        /// </summary>
+        /// <param name="email">Email to be validated.</param>
+        /// <returns>True if valid, false if not.</returns>
+        private bool IsValidEmail(string email)
         {
-            // TODO
-           _isAdmin = true;
-            return true;
+            try
+            {
+                // Attempt to create a MailAddress object from the email string.
+                MailAddress mailAddress = new MailAddress(email);
+
+                // Valid email.
+                return true;
+            }
+            catch (FormatException)
+            {
+                // Invalid email.
+                return false;
+            }
         }
+
+        /// <summary>
+        /// Validation method for the Password property of the Account entity, must be between 8 and 64 characters.
+        /// </summary>
+        /// <param name="password">Password to be validated.</param>
+        /// <returns>True if valid, false if not.</returns>
+        private bool IsValidPassword(string password) => password.Length >= 8 && password.Length <= 64;
+
+        /// <summary>
+        /// Validates the IsAdmin property of the Account entity, only the IT department can be an administrator.
+        /// </summary>
+        /// <returns>True if valid, false if not.</returns>
+        private bool CanBeAdmin() => Employee.Department.Id == 5;    // Department 5 is the IT department, Departments are static and will not change.
     }
 }
