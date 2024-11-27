@@ -95,12 +95,17 @@ namespace ScottishGlenAssetTracking.Models
             get { return _isAdmin; }
             set
             {
-                if (CanBeAdmin())
+                if (value == false)
                 {
-                    _isAdmin = value;
+                    _isAdmin = false;
+                }
+                else if (CanBeAdmin())
+                {
+                    _isAdmin = true;
                 }
                 else
                 {
+                    _isAdmin = false;
                     throw new ArgumentException("Only IT department employees can be administrators.");
                 }
             }

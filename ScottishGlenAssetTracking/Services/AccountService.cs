@@ -62,7 +62,7 @@ namespace ScottishGlenAssetTracking.Services
         /// <returns>List of all Accounts from the database.</returns>
         public List<Account> GetAccounts()
         {
-            return _context.Accounts.Include(a => a.Employee).ToList();
+            return _context.Accounts.Include(a => a.Employee).ThenInclude(e => e.Department).ToList();
         }
 
         /// <summary>
@@ -72,7 +72,7 @@ namespace ScottishGlenAssetTracking.Services
         /// <returns>List of Accounts from the database for the chosen Department.</returns>
         public List<Account> GetAccounts(int departmentId)
         {
-            return _context.Accounts.Include(a => a.Employee).Where(a => a.Employee.Department.Id == departmentId).ToList();
+            return _context.Accounts.Include(a => a.Employee).ThenInclude(e => e.Department).Where(a => a.Employee.Department.Id == departmentId).ToList();
         }
 
         /// <summary>
@@ -83,7 +83,7 @@ namespace ScottishGlenAssetTracking.Services
         /// <returns>List of Accounts from the database for the chosen Department and admin status.</returns>
         public List<Account> GetAccounts(int departmentId, bool isAdmin)
         {
-            return _context.Accounts.Include(a => a.Employee).Where(a => a.Employee.Department.Id == departmentId && a.IsAdmin == isAdmin).ToList();
+            return _context.Accounts.Include(a => a.Employee).ThenInclude(e => e.Department).Where(a => a.Employee.Department.Id == departmentId && a.IsAdmin == isAdmin).ToList();
         }
 
         /// <summary>
@@ -183,6 +183,39 @@ namespace ScottishGlenAssetTracking.Services
             if (account != null)
             {
                 account.IsAdmin = true;
+                _context.Accounts.Update(account);
+                _context.SaveChanges();
+
+                return true;
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Method to set the Employee entity for an Account.
+        /// </summary>
+        /// <param name="email">Email of the Account for the Employee to be set.</param>
+        /// <param name="employee">Employee for the Account.</param>
+        /// <returns></returns>
+        public bool SetAccountEmployee(string email, Employee employee)
+        {
+            // Retrieve account and update employee
+            Account account = _context.Accounts.FirstOrDefault(a => a.Email == email);
+            Employee existingEmployee = _context.Employees.FirstOrDefault(e => e.Id == employee.Id);
+
+            if (account != null)
+            {
+                // Check if the employee is in the IT department and remove admin status if not.
+                if (existingEmployee.Department.Id != 5)
+                {
+                    account.IsAdmin = false;
+                }
+
+                // Set the new navigational properties.
+                account.Employee = existingEmployee;
+                existingEmployee.Account = account;
+
                 _context.Accounts.Update(account);
                 _context.SaveChanges();
 

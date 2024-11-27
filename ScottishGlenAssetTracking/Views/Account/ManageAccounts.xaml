@@ -14,6 +14,20 @@
             <!--Header-->
             <TextBlock x:Name="ManageAccountsAssetHeader" Text="Manage Accounts" FontSize="24" Margin="10"/>
 
+            <!--Set Employee-->
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <ComboBox x:Name="SetEmployeeAccountSelect" Header="Set Account Employee" HorizontalAlignment="Stretch" PlaceholderText="Select Account" Margin="10" 
+                          ItemsSource="{Binding AllAccounts}" SelectedItem="{Binding SelectedSetEmployeeAccount, Mode=TwoWay}" DisplayMemberPath="Email" Grid.Column="0"/>
+
+                <Button x:Name="SetEmployeeButton" Content="Set Employee" Command="{Binding ShowSetEmployeeDialogCommand}" 
+                        Margin="10, 37, 10, 10" Height="32" Background="Green" Foreground="White" Grid.Column="1"/>
+            </Grid>
+
             <!--Set to Admin-->
             <Grid>
                 <Grid.ColumnDefinitions>
@@ -24,8 +38,8 @@
                 <ComboBox x:Name="AdminAccountSelect" Header="Set Admin Account" HorizontalAlignment="Stretch" PlaceholderText="Select Account" Margin="10" 
                           ItemsSource="{Binding AdminAccounts}" SelectedItem="{Binding SelectedAdminAccount, Mode=TwoWay}" DisplayMemberPath="EmployeeName" Grid.Column="0"/>
 
-                <Button x:Name="SetAccountToAdminButton" Content="Set Admin" Command="{Binding SetAccountToAdminCommand}" 
-                        Margin="10, 37, 10, 10" Height="32" Background="Green" Foreground="White" Grid.Column="1"/>
+                <Button x:Name="SetAccountToAdminButton" Content="Set Admin" Command="{Binding ShowSetAdminDialogCommand}" 
+                        Margin="10, 37, 10, 10" Height="32" Background="Red" Foreground="White" Grid.Column="1"/>
             </Grid>
 
             <!--Change Password-->
@@ -35,10 +49,10 @@
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
                 
-                <ComboBox x:Name="AccountSelect" Header="Update Account Password" HorizontalAlignment="Stretch" PlaceholderText="Select Account" Margin="10" 
-                          ItemsSource="{Binding AllAccounts}" SelectedItem="{Binding SelectedAccount, Mode=TwoWay}" DisplayMemberPath="Email" Grid.Column="0"/>
+                <ComboBox x:Name="UpdatePasswordAccountSelect" Header="Update Account Password" HorizontalAlignment="Stretch" PlaceholderText="Select Account" Margin="10" 
+                          ItemsSource="{Binding AllAccounts}" SelectedItem="{Binding SelectedUpdatePasswordAccount, Mode=TwoWay}" DisplayMemberPath="Email" Grid.Column="0"/>
 
-                <Button x:Name="UpdatePasswordButton" Content="Update Password" Command="{Binding ShowDialogCommand}" 
+                <Button x:Name="UpdatePasswordButton" Content="Update Password" Command="{Binding ShowUpdatePasswordDialogCommand}" 
                         Margin="10, 37, 10, 10" Height="32" Background="Blue" Foreground="White" Grid.Column="1"/>
             </Grid>
 
@@ -46,7 +60,33 @@
             <TextBlock x:Name="StatusMessage" Text="{Binding StatusMessage}" Visibility="{Binding StatusVisibility}" Margin="10" HorizontalAlignment="Center"/>
 
         </StackPanel>
+        
+        <!--Set Employee Dialog-->
+        <ContentDialog x:Name="SetEmployeeDialog" Title="Set Employee" PrimaryButtonText="Set Employee" CloseButtonText="Cancel"
+                           PrimaryButtonClick="SetEmployeeDialog_PrimaryButtonClick" Background="#5C5C5C" Foreground="White" DefaultButton="Primary">
+            <StackPanel>
+                <!--Department Select-->
+                <ComboBox x:Name="DepartmentSelect" Header="Department" PlaceholderText="Select Department" Margin="10" 
+                          ItemsSource="{Binding Departments}" SelectedItem="{Binding SelectedDepartment, Mode=TwoWay}" DisplayMemberPath="Name"
+                          SelectionChanged="DepartmentSelect_SelectionChanged"/>
+                
+                <!--Employee Select-->
+                <ComboBox x:Name="EmployeeSelect" Header="Employee" PlaceholderText="Select Employee" Margin="10" 
+                          ItemsSource="{Binding Employees}" SelectedItem="{Binding SelectedEmployee, Mode=TwoWay}" DisplayMemberPath="Name"/>
+            </StackPanel>
+        </ContentDialog>
 
+        <!--Set Admin Dialog-->
+        <ContentDialog x:Name="SetAdminDialog" Title="Set Admin" PrimaryButtonText="Set Admin" CloseButtonText="Cancel"
+                           PrimaryButtonClick="SetAdminDialog_PrimaryButtonClick" Background="#5C5C5C" Foreground="White" DefaultButton="Primary">
+            <StackPanel>
+                <!--Confirmation Message-->
+                <TextBlock Text="Are you sure you want to set this account as an admin? They will have full access to the system." 
+                           TextWrapping="WrapWholeWords" Foreground="White" Width="300"/>
+            </StackPanel>
+        </ContentDialog>
+
+        <!--Update Password Dialog-->
         <ContentDialog x:Name="UpdatePasswordDialog" Title="Update Password" PrimaryButtonText="Update" CloseButtonText="Cancel"
                            PrimaryButtonClick="UpdatePasswordDialog_PrimaryButtonClick" Background="#5C5C5C" Foreground="White" DefaultButton="Primary">
             <StackPanel>
