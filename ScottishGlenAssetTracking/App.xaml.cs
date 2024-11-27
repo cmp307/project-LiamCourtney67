@@ -27,6 +27,8 @@ using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using ScottishGlenAssetTracking.Views.Account;
+using ScottishGlenAssetTracking.Views.Portals;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -122,6 +124,10 @@ namespace ScottishGlenAssetTracking
             services.AddSingleton<EmployeeService>();
             services.AddSingleton<DepartmentService>();
 
+            // Add the account-related services to the services collection.
+            services.AddTransient<AccountService>();
+            services.AddSingleton<AccountManager>();
+
             // Add view models to the services collection.
             services.AddTransient<AddHardwareAssetViewModel>();
             services.AddTransient<ViewHardwareAssetViewModel>();
@@ -132,6 +138,11 @@ namespace ScottishGlenAssetTracking
             services.AddTransient<AddEmployeeViewModel>();
             services.AddTransient<ViewEmployeeViewModel>();
 
+            services.AddSingleton<RegisterViewModel>();
+            services.AddSingleton<LoginViewModel>();
+            services.AddSingleton<ViewAccountViewModel>();
+            services.AddTransient<ManageAccountsViewModel>();
+
             // Add views to the services collection.
             services.AddTransient<AddHardwareAsset>();
             services.AddTransient<ViewHardwareAsset>();
@@ -141,6 +152,16 @@ namespace ScottishGlenAssetTracking
 
             services.AddTransient<AddEmployee>();
             services.AddTransient<ViewEmployee>();
+
+            services.AddSingleton<Register>();
+            services.AddSingleton<Login>();
+            services.AddTransient<ViewAccount>();
+            services.AddTransient<ManageAccounts>();
+
+            // Add the portals to the services collection.
+            services.AddSingleton<AdminPortal>();
+            services.AddTransient<EmployeePortal>();
+            services.AddSingleton<NewUserPortal>();
 
             // Add the main window to the services collection.
             services.AddSingleton<MainWindow>();

@@ -19,10 +19,10 @@
             <!--Selects-->
             <StackPanel Visibility="{Binding SelectsVisibility}">
                 <ComboBox x:Name="DepartmentSelect" Header="Department" HorizontalAlignment="Stretch" PlaceholderText="Select Department" Margin="10" 
-                      ItemsSource="{Binding Departments}" SelectedItem="{Binding SelectedDepartment, Mode=TwoWay}" DisplayMemberPath="Name" SelectionChanged="DepartmentSelect_SelectionChanged"/>
+                      ItemsSource="{Binding Departments}" SelectedItem="{Binding SelectedDepartment, Mode=TwoWay}" IsEnabled="{Binding DepartmentSelectIsEnabled}" DisplayMemberPath="Name" SelectionChanged="DepartmentSelect_SelectionChanged"/>
 
                 <ComboBox x:Name="EmployeeSelect" Header="Employee" HorizontalAlignment="Stretch" PlaceholderText="Select Employee" Margin="10" 
-                      ItemsSource="{Binding Employees}" SelectedItem="{Binding SelectedEmployee, Mode=TwoWay}" DisplayMemberPath="Name" SelectionChanged="EmployeeSelect_SelectionChanged"/>
+                      ItemsSource="{Binding Employees}" SelectedItem="{Binding SelectedEmployee, Mode=TwoWay}" IsEnabled="{Binding EmployeeSelectIsEnabled}" DisplayMemberPath="Name" SelectionChanged="EmployeeSelect_SelectionChanged"/>
 
                 <ComboBox x:Name="AssetSelect" Header="Asset" HorizontalAlignment="Stretch" PlaceholderText="Select Hardware Asset" Margin="10" 
                       ItemsSource="{Binding HardwareAssets}" SelectedItem="{Binding SelectedHardwareAsset, Mode=TwoWay}" DisplayMemberPath="Name" SelectionChanged="HardwareAssetSelect_SelectionChanged"/>
@@ -38,6 +38,7 @@
                         <ColumnDefinition Width="3*"/>
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
@@ -129,6 +130,14 @@
                     <Border BorderBrush="LightGray" Background="DarkGray" BorderThickness="1" Grid.Row="9" Grid.Column="1">
                         <TextBlock Text="{Binding SelectedHardwareAsset.SoftwareAsset.Name, Mode=TwoWay}" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Center" TextWrapping="Wrap" FontSize="20"/>
                     </Border>
+
+                    <!--HardwareAsset SoftwareLinkDate-->
+                    <Border BorderBrush="LightGray" Background="Gray" BorderThickness="1" Grid.Row="10" Grid.Column="0">
+                        <TextBlock Text="Software Link Date" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Center" TextWrapping="Wrap" FontSize="20"/>
+                    </Border>
+                    <Border BorderBrush="LightGray" Background="DarkGray" BorderThickness="1" Grid.Row="10" Grid.Column="1">
+                        <TextBlock Text="{Binding SoftwareLinkDateFormatted}" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Center" TextWrapping="Wrap" FontSize="20"/>
+                    </Border>
                 </Grid>
 
                 <!--Buttons-->
@@ -158,9 +167,9 @@
 
                 <!--Department and Employee Selects-->
                 <ComboBox x:Name="HardwareAssetDepartmentSelect" Header="Department" HorizontalAlignment="Stretch" PlaceholderText="Select Department" Margin="10" 
-                          ItemsSource="{Binding Departments}" SelectedItem="{Binding SelectedDepartment, Mode=TwoWay}" DisplayMemberPath="Name" SelectionChanged="HardwareAssetDepartmentSelect_SelectionChanged"/>
+                          ItemsSource="{Binding Departments}" SelectedItem="{Binding SelectedDepartment, Mode=TwoWay}" IsEnabled="{Binding HardwareAssetDepartmentSelectIsEnabled}" DisplayMemberPath="Name" SelectionChanged="HardwareAssetDepartmentSelect_SelectionChanged"/>
                 <ComboBox x:Name="HardwareAssetEmployeeSelect" Header="Employee" HorizontalAlignment="Stretch" PlaceholderText="Select Employee" Margin="10" 
-                          ItemsSource="{Binding Employees}" SelectedItem="{Binding SelectedHardwareAsset.Employee, Mode=TwoWay}" DisplayMemberPath="Name" SelectionChanged="HardwareAssetEmployeeSelect_SelectionChanged"/>
+                          ItemsSource="{Binding Employees}" SelectedItem="{Binding SelectedHardwareAsset.Employee, Mode=TwoWay}" IsEnabled="{Binding HardwareAssetEmployeeSelectIsEnabled}" DisplayMemberPath="Name" SelectionChanged="HardwareAssetEmployeeSelect_SelectionChanged"/>
                 <ComboBox x:Name="HardwareAssetSoftwareAssetSelect" Header="Software Asset" HorizontalAlignment="Stretch" PlaceholderText="Select Software Asset" Margin="10" 
                           ItemsSource="{Binding SoftwareAssets}" SelectedItem="{Binding SelectedHardwareAsset.SoftwareAsset, Mode=TwoWay}" DisplayMemberPath="Name" SelectionChanged="HardwareAssetSoftwareAssetSelect_SelectionChanged"/>
 

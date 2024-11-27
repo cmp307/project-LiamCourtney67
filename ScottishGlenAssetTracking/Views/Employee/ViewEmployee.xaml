@@ -18,10 +18,10 @@
             <!--Selects-->
             <StackPanel Visibility="{Binding SelectsVisibility}">
                 <ComboBox x:Name="DepartmentSelect" Header="Department" HorizontalAlignment="Stretch" PlaceholderText="Select Department" Margin="10" 
-                      ItemsSource="{Binding Departments}" SelectedItem="{Binding SelectedDepartment, Mode=TwoWay}" DisplayMemberPath="Name" SelectionChanged="DepartmentSelect_SelectionChanged"/>
+                      ItemsSource="{Binding Departments}" SelectedItem="{Binding SelectedDepartment, Mode=TwoWay}" IsEnabled="{Binding DepartmentSelectIsEnabled}" DisplayMemberPath="Name" SelectionChanged="DepartmentSelect_SelectionChanged"/>
 
                 <ComboBox x:Name="EmployeeSelect" Header="Employee" HorizontalAlignment="Stretch" PlaceholderText="Select Employee" Margin="10" 
-                      ItemsSource="{Binding Employees}" SelectedItem="{Binding SelectedEmployee, Mode=TwoWay}" DisplayMemberPath="Name" SelectionChanged="EmployeeSelect_SelectionChanged"/>
+                      ItemsSource="{Binding Employees}" SelectedItem="{Binding SelectedEmployee, Mode=TwoWay}" IsEnabled="{Binding EmployeeSelectIsEnabled}" DisplayMemberPath="Name" SelectionChanged="EmployeeSelect_SelectionChanged"/>
             </StackPanel>
 
             <!--View Employee View-->
@@ -40,7 +40,7 @@
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
 
-                    <!--Employee Firt Name-->
+                    <!--Employee First Name-->
                     <Border BorderBrush="LightGray" Background="Gray" BorderThickness="1" Grid.Row="0" Grid.Column="0">
                         <TextBlock Text="First Name" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Center" TextWrapping="Wrap" FontSize="20"/>
                     </Border>
@@ -96,7 +96,7 @@
 
                 <!--Employee Department Select-->
                 <ComboBox x:Name="EmployeeDepartmentSelect" Header="Department" HorizontalAlignment="Stretch" PlaceholderText="Select Department" Margin="10" 
-                          ItemsSource="{Binding Departments}" SelectedItem="{Binding SelectedEmployee.Department, Mode=TwoWay}" DisplayMemberPath="Name"/>
+                          ItemsSource="{Binding Departments}" SelectedItem="{Binding SelectedEmployee.Department, Mode=TwoWay}" IsEnabled="{Binding EmployeeDepartmentSelectIsEnabled}" DisplayMemberPath="Name"/>
 
                 <!--Buttons-->
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">

@@ -1,12 +1,15 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Xaml;
 using ScottishGlenAssetTracking.Models;
 using ScottishGlenAssetTracking.Services;
+using ScottishGlenAssetTracking.Views.HardwareAsset;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Security.Principal;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -23,6 +26,9 @@ namespace ScottishGlenAssetTracking.ViewModels
         private readonly HardwareAssetService _hardwareAssetService;
         private readonly SoftwareAssetService _softwareAssetService;
 
+        // Private field for the Account.
+        private readonly Account _account;
+
         /// <summary>
         /// Constructor for the ViewHardwareAssetViewModel class using the DepartmentService, EmployeeService, SoftwareAssetService, and HardwareAssetService with dependency injection.
         /// </summary>
@@ -35,6 +41,9 @@ namespace ScottishGlenAssetTracking.ViewModels
                                           HardwareAssetService hardwareAssetService,
                                           SoftwareAssetService softwareAssetService)
         {
+            // Get the current account from the AccountManager.
+            _account = App.AppHost.Services.GetRequiredService<AccountManager>().CurrentAccount;
+
             // Initialize services.
             _departmentService = departmentService;
             _employeeService = employeeService;
@@ -49,6 +58,9 @@ namespace ScottishGlenAssetTracking.ViewModels
 
             // Load software assets.
             SoftwareAssets = new ObservableCollection<SoftwareAsset>(_softwareAssetService.GetSoftwareAssets());
+
+            // Load selections for the account type.
+            LoadSelectionsForAccountType();
         }
 
         // Collections
@@ -91,6 +103,9 @@ namespace ScottishGlenAssetTracking.ViewModels
         private string purchaseDateFormatted;
 
         [ObservableProperty]
+        private string softwareLinkDateFormatted;
+
+        [ObservableProperty]
         private string statusMessage;
 
         // Visibility properties.
@@ -105,6 +120,19 @@ namespace ScottishGlenAssetTracking.ViewModels
 
         [ObservableProperty]
         private Visibility editHardwareAssetViewVisibility = Visibility.Collapsed;
+
+        // IsEnabled properties.
+        [ObservableProperty]
+        private bool departmentSelectIsEnabled = true;
+
+        [ObservableProperty]
+        private bool employeeSelectIsEnabled = true;
+
+        [ObservableProperty]
+        private bool hardwareAssetDepartmentSelectIsEnabled = true;
+
+        [ObservableProperty]
+        private bool hardwareAssetEmployeeSelectIsEnabled = true;
 
         // Commands
 
@@ -173,6 +201,9 @@ namespace ScottishGlenAssetTracking.ViewModels
                 if (SelectedHardwareAsset.SoftwareAsset != null)
                 {
                     SelectedHardwareAsset.SoftwareAsset = SoftwareAssets.FirstOrDefault(s => s.Id == SelectedHardwareAsset.SoftwareAsset.Id);
+
+                    // Set the SoftwareLinkDateFormatted property to the DateTimeOffset value of the SoftwareLinkDate property and format it or an empty string.
+                    SoftwareLinkDateFormatted = SelectedHardwareAsset.SoftwareLinkDate.ToString("MM/dd/yyyy") ?? string.Empty;
                 }
 
                 // Notify the view that the SelectedHardwareAsset property has changed.
@@ -202,6 +233,9 @@ namespace ScottishGlenAssetTracking.ViewModels
                 // Clear the PurchaseDate field so it doesn't show in the view.
                 ClearPurchaseDate();
 
+                // Clear the SoftwareLinkDateFormatted field so it doesn't show in the view.
+                SoftwareLinkDateFormatted = string.Empty;
+
                 // Set the status message and make it visible.
                 StatusVisibility = Visibility.Visible;
                 StatusMessage = "Hardware Asset Deleted";
@@ -211,6 +245,9 @@ namespace ScottishGlenAssetTracking.ViewModels
 
                 // Change the view to the view mode.
                 ChangeViewToView();
+
+                // Hide the view for the HardwareAsset.
+                ViewHardwareAssetViewVisibility = Visibility.Collapsed;
             }
             else
             {
@@ -308,6 +345,29 @@ namespace ScottishGlenAssetTracking.ViewModels
         {
             PurchaseDate = null;
             PurchaseDateFormatted = string.Empty;
+        }
+
+        /// <summary>
+        /// Load selections for the account type and disable the selects if the account is not an admin.
+        /// </summary>
+        private void LoadSelectionsForAccountType()
+        {
+            // Only load selections for the account type if the account is not an admin.
+            if (!_account.IsAdmin)
+            {
+                // Set the selected department to the department from the Departments collection.
+                SelectedDepartment = Departments.FirstOrDefault(d => d.Id == _account.Employee.Department.Id);
+
+                // Load employees based on the selected department and set the selected employee to the employee from the Employees collection.
+                LoadEmployees();
+                SelectedEmployee = Employees.FirstOrDefault(e => e.Id == _account.Employee.Id);
+
+                // Disable the selects.
+                DepartmentSelectIsEnabled = false;
+                EmployeeSelectIsEnabled = false;
+                HardwareAssetDepartmentSelectIsEnabled = false;
+                HardwareAssetEmployeeSelectIsEnabled = false;
+            }
         }
     }
 }

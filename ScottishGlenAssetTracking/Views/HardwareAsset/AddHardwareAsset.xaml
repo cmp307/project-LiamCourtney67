@@ -3,7 +3,7 @@
     x:Class="ScottishGlenAssetTracking.Views.HardwareAsset.AddHardwareAsset"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:ScottishGlenAssetTracking.Views.Asset"
+    xmlns:local="using:ScottishGlenAssetTracking.Views.HardwareAsset"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:vm="using:ScottishGlenAssetTracking.ViewModels"
@@ -17,9 +17,9 @@
             
             <!--Selects-->
             <ComboBox x:Name="DepartmentSelect" Header="Department" HorizontalAlignment="Stretch" PlaceholderText="Select Department" Margin="10"
-                      ItemsSource="{Binding Departments}" SelectedItem="{Binding SelectedDepartment, Mode=TwoWay}" DisplayMemberPath="Name" SelectionChanged="DepartmentSelect_SelectionChanged"/>
+                      ItemsSource="{Binding Departments}" SelectedItem="{Binding SelectedDepartment, Mode=TwoWay}" IsEnabled="{Binding DepartmentSelectIsEnabled}"  DisplayMemberPath="Name" SelectionChanged="DepartmentSelect_SelectionChanged"/>
             <ComboBox x:Name="EmployeeSelect" Header="Employee" HorizontalAlignment="Stretch" PlaceholderText="Select Employee" Margin="10"
-                      ItemsSource="{Binding Employees}" SelectedItem="{Binding NewHardwareAsset.Employee, Mode=TwoWay}" DisplayMemberPath="Name"/>
+                      ItemsSource="{Binding Employees}" SelectedItem="{Binding NewHardwareAsset.Employee, Mode=TwoWay}" IsEnabled="{Binding EmployeeSelectIsEnabled}" DisplayMemberPath="Name"/>
 
             <!--HardwareAsset Details-->
             <StackPanel Orientation="Horizontal">
