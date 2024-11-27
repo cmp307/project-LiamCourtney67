@@ -17,6 +17,7 @@ namespace ScottishGlenAssetTracking.Models
         private string _email;
         private string _password;
         private Employee _employee;                 // No validation needed, handled by Employee entity.
+        private int _employeeId;                    // Reference property for the EmployeeId of the Employee entity.
         private bool _isAdmin;
 
         /// <summary>
