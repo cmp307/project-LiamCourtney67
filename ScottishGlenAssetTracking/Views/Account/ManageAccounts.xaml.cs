@@ -32,10 +32,12 @@ namespace ScottishGlenAssetTracking.Views.Account
             // Set the DataContext of the page to the ManageAccountsViewModel with dependency injection.
             DataContext = App.AppHost.Services.GetRequiredService<ManageAccountsViewModel>();
 
-            // Set the dialog for the UpdatePasswordDialog to the UpdatePasswordDialog.
+            // Set the dialog properties.
             if (DataContext is ManageAccountsViewModel viewModel)
             {
-                viewModel.SetDialog(UpdatePasswordDialog);
+                viewModel.SetUpdatePasswordDialog(UpdatePasswordDialog);
+                viewModel.SetSetAdminDialog(SetAdminDialog);
+                viewModel.SetSetEmployeeDialog(SetEmployeeDialog);
             }
         }
 
@@ -49,11 +51,56 @@ namespace ScottishGlenAssetTracking.Views.Account
                 {
                     args.Cancel = true;
 
+                    viewModel.SelectedUpdatePasswordAccount = null;
                     viewModel.StatusVisibility = Visibility.Visible;
                     viewModel.StatusMessage = "Password updated successfully.";
                 }
 
                 args.Cancel = false;
+            }
+        }
+
+        private void SetAdminDialog_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
+        {
+            if (DataContext is ManageAccountsViewModel viewModel)
+            {
+                if (viewModel.SetAccountToAdmin())
+                {
+                    viewModel.SelectedAdminAccount = null;
+                    viewModel.StatusVisibility = Visibility.Visible;
+                    viewModel.StatusMessage = "Admin status updated successfully.";
+                }
+                else
+                {
+                    viewModel.StatusVisibility = Visibility.Visible;
+                    viewModel.StatusMessage = "Admin status could not be updated."; ;
+                }
+            }
+        }
+
+        private void SetEmployeeDialog_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
+        {
+            if (DataContext is ManageAccountsViewModel viewModel)
+            {
+                if (viewModel.SetAccountEmployee())
+                {
+                    viewModel.SelectedSetEmployeeAccount = null;
+                    viewModel.StatusVisibility = Visibility.Visible;
+                    viewModel.StatusMessage = "Account's Employee updated successfully.";
+                }
+                else
+                {
+                    viewModel.StatusVisibility = Visibility.Visible;
+                    viewModel.StatusMessage = "Account's Employee could not be updated."; ;
+                }
+            }
+        }
+
+        private void DepartmentSelect_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (DataContext is ManageAccountsViewModel viewModel)
+            {
+                viewModel.LoadEmployees();
             }
         }
     }
