@@ -241,6 +241,11 @@ namespace ScottishGlenAssetTracking.Services
             return existingSoftwareAsset != null;
         }
 
+        /// <summary>
+        /// Helper method to link HardwareAssets to an existing SoftwareAsset in the database.
+        /// </summary>
+        /// <param name="softwareAsset">SoftwareAsset to link the HardwareAssets to.</param>
+        /// <returns>True if linked, false if not.</returns>
         private bool LinkHardwareAssetsToSoftwareAsset(SoftwareAsset softwareAsset)
         {
             // Get the existing SoftwareAsset from the database.
@@ -266,6 +271,12 @@ namespace ScottishGlenAssetTracking.Services
             return true;
         }
 
+        /// <summary>
+        /// Helper method to link an Employee's HardwareAssets to an existing SoftwareAsset in the database.
+        /// </summary>
+        /// <param name="softwareAsset">SoftwareAsset to link the HardwareAssets to.</param>
+        /// <param name="employee">Employee to get the HardwareAssets from.</param>
+        /// <returns>True if linked, false if not.</returns>
         private bool LinkHardwareAssetsToSoftwareAsset(SoftwareAsset softwareAsset, Employee employee)
         {
             // Get the existing SoftwareAsset from the database.
