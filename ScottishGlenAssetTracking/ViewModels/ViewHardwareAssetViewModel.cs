@@ -451,9 +451,7 @@ namespace ScottishGlenAssetTracking.ViewModels
         {
             if (SelectedHardwareAsset == null)
             {
-                // Set the status message and make it visible.
-                StatusMessage = "Please select a Hardware Asset.";
-                StatusVisibility = Visibility.Visible;
+                SetStatusMessage("Please select a Hardware Asset.");
                 return false;
             }
             else
