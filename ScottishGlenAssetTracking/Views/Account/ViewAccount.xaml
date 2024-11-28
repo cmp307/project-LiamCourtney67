@@ -60,15 +60,13 @@
                     <Button x:Name="DeleteAccountButton" Content="Delete Account" Command="{Binding DeleteAccountCommand}" Margin="10" Background="Red" Foreground="White"/>
                 </StackPanel>
 
-                <!--Status Message-->
-                <TextBlock x:Name="StatusMessage" Text="{Binding StatusMessage}" Visibility="{Binding StatusVisibility}" Margin="10" HorizontalAlignment="Center"/>
             </StackPanel>
 
             <!--Edit Account View-->
             <StackPanel x:Name="EditAccountView" Visibility="{Binding EditAccountViewVisibility}">
 
                 <!--Account Details-->
-                <TextBox Header="Email" Text="{Binding SelectedAccount.Email, Mode=TwoWay}" Margin="10"/>
+                <TextBox Header="Email" Text="{Binding Email, Mode=TwoWay}" Margin="10"/>
 
                 <!--Buttons-->
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
@@ -78,6 +76,9 @@
                 </StackPanel>
 
             </StackPanel>
+
+            <!--Status Message-->
+            <TextBlock x:Name="StatusMessage" Text="{Binding StatusMessage}" Visibility="{Binding StatusVisibility}" Margin="10" HorizontalAlignment="Center"/>
         </StackPanel>
 
         <ContentDialog x:Name="UpdatePasswordDialog" Title="Update Password" PrimaryButtonText="Update" CloseButtonText="Cancel"

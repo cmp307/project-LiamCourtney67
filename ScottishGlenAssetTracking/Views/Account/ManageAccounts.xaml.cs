@@ -21,10 +21,13 @@ using ScottishGlenAssetTracking.ViewModels;
 namespace ScottishGlenAssetTracking.Views.Account
 {
     /// <summary>
-    /// An empty page that can be used on its own or navigated to within a Frame.
+    /// Page for managing user accounts.
     /// </summary>
     public sealed partial class ManageAccounts : Page
     {
+        /// <summary>
+        /// Constructor for the ManageAccounts class.
+        /// </summary>
         public ManageAccounts()
         {
             this.InitializeComponent();
@@ -41,29 +44,45 @@ namespace ScottishGlenAssetTracking.Views.Account
             }
         }
 
+        /// <summary>
+        /// Event handler for the primary button click event of the UpdatePasswordDialog.
+        /// </summary>
+        /// <param name="sender">The control that triggered the event.</param>
+        /// <param name="args">Event data that provides information about the primary button click event.</param>
         private void UpdatePasswordDialog_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
         {
+            // Check if the DataContext is a ManageAccountsViewModel and execute the UpdatePassword method.
             if (DataContext is ManageAccountsViewModel viewModel)
             {
                 bool isSuccess = viewModel.UpdatePassword();
 
+                // If the password was updated successfully, close the dialog, deselect the account, and show a status message.
                 if (isSuccess)
                 {
-                    args.Cancel = true;
+                    args.Cancel = false;
 
                     viewModel.SelectedUpdatePasswordAccount = null;
                     viewModel.StatusVisibility = Visibility.Visible;
                     viewModel.StatusMessage = "Password updated successfully.";
                 }
-
-                args.Cancel = false;
+                else
+                {
+                    args.Cancel = true;
+                }
             }
         }
 
+        /// <summary>
+        /// Event handler for the primary button click event of the SetAdminDialog.
+        /// </summary>
+        /// <param name="sender">The control that triggered the event.</param>
+        /// <param name="args">Event data that provides information about the primary button click event.</param>
         private void SetAdminDialog_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
         {
+            // Check if the DataContext is a ManageAccountsViewModel and execute the SetAccountToAdmin method.
             if (DataContext is ManageAccountsViewModel viewModel)
             {
+                // If the account was set to an admin successfully, deselect the account, and show a status message.
                 if (viewModel.SetAccountToAdmin())
                 {
                     viewModel.SelectedAdminAccount = null;
@@ -73,31 +92,47 @@ namespace ScottishGlenAssetTracking.Views.Account
                 else
                 {
                     viewModel.StatusVisibility = Visibility.Visible;
-                    viewModel.StatusMessage = "Admin status could not be updated."; ;
+                    viewModel.StatusMessage = "Admin status could not be updated.";
                 }
             }
         }
 
+        /// <summary>
+        /// Event handler for the primary button click event of the SetEmployeeDialog.
+        /// </summary>
+        /// <param name="sender">The control that triggered the event.</param>
+        /// <param name="args">Event data that provides information about the primary button click event.</param>
         private void SetEmployeeDialog_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
         {
+            // Check if the DataContext is a ManageAccountsViewModel and execute the SetAccountEmployee method.
             if (DataContext is ManageAccountsViewModel viewModel)
             {
-                if (viewModel.SetAccountEmployee())
+                bool isSuccess = viewModel.SetAccountEmployee();
+
+                // If the account's employee was updated successfully, deselect the account, and show a status message.
+                if (isSuccess)
                 {
+                    args.Cancel = false;
+
                     viewModel.SelectedSetEmployeeAccount = null;
                     viewModel.StatusVisibility = Visibility.Visible;
                     viewModel.StatusMessage = "Account's Employee updated successfully.";
                 }
                 else
                 {
-                    viewModel.StatusVisibility = Visibility.Visible;
-                    viewModel.StatusMessage = "Account's Employee could not be updated."; ;
+                    args.Cancel = true;
                 }
             }
         }
 
+        /// <summary>
+        /// Event handler for the selection changed event of the DepartmentSelect ComboBox.
+        /// </summary>
+        /// <param name="sender">The control that triggered the event.</param>
+        /// <param name="e">Event data that provides information about the selection changed event.</param>
         private void DepartmentSelect_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            // Check if the DataContext is a ManageAccountsViewModel and execute the LoadEmployees method.
             if (DataContext is ManageAccountsViewModel viewModel)
             {
                 viewModel.LoadEmployees();
