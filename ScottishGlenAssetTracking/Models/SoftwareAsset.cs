@@ -42,7 +42,7 @@ namespace ScottishGlenAssetTracking.Models
                 }
                 else
                 {
-                    throw new ArgumentException("Name must be between 1 and 64 characters and contain only letters, spaces, periods, and hyphens.");
+                    throw new ArgumentException("Name must be between 1 and 64 characters and contain only letters, digits, spaces, periods, and hyphens.");
                 }
             }
         }
@@ -97,7 +97,7 @@ namespace ScottishGlenAssetTracking.Models
         }
 
         /// <summary>
-        /// Validation method for the Name property of the SoftwareAsset entity, must be between 1 and 64 characters and contain only letters, spaces, periods, and hyphens.
+        /// Validation method for the Name property of the SoftwareAsset entity, must be between 1 and 64 characters and contain only letters, digits, spaces, periods, and hyphens.
         /// </summary>
         /// <param name="name">Name to be validated.</param>
         /// <returns>True if valid, false if not.</returns>
@@ -105,7 +105,7 @@ namespace ScottishGlenAssetTracking.Models
         {
             bool isNullOrWhitespace = string.IsNullOrWhiteSpace(name);
             bool isTooLong = name.Length > 64;
-            bool hasInvalidCharacters = name.Any(c => !char.IsLetter(c) && !char.IsWhiteSpace(c) && c != '.' && c != '-');
+            bool hasInvalidCharacters = name.Any(c => !char.IsLetterOrDigit(c) && !char.IsWhiteSpace(c) && c != '.' && c != '-');
 
             return !isNullOrWhitespace && !isTooLong && !hasInvalidCharacters;
         }

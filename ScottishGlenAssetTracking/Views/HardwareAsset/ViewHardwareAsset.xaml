@@ -145,25 +145,25 @@
                     <Button x:Name="EditHardwareAssetButton" Content="Edit Hardware Asset" Command="{Binding ChangeViewToEditCommand}" Margin="10" Background="Blue" Foreground="White"/>
                     <Button x:Name="DeleteHardwareAssetButton" Content="Delete Hardware Asset" Command="{Binding DeleteHardwareAssetCommand}" Margin="10" Background="Red" Foreground="White"/>
                 </StackPanel>
-
-                <!--Status Message-->
-                <TextBlock x:Name="StatusMessage" Text="{Binding StatusMessage}" Visibility="{Binding StatusVisibility}" Margin="10" HorizontalAlignment="Center"/>
             </StackPanel>
 
             <!--Edit HardwareAsset View-->
             <StackPanel x:Name="EditHardwareAssetView" Visibility="{Binding EditHardwareAssetViewVisibility}">
 
-                <!--HardwareAsset Details-->
-                <TextBox x:Name="HardwareAssetNameInput" Header="Name" Text="{Binding SelectedHardwareAsset.Name, Mode=TwoWay}" Margin="10"/>
-                <TextBox x:Name="HardwareAssetModelInput" Header="Model" Text="{Binding SelectedHardwareAsset.Model, Mode=TwoWay}" Margin="10"/>
-                <TextBox x:Name="HardwareAssetManufacturerInput" Header="Manufacturer" Text="{Binding SelectedHardwareAsset.Manufacturer, Mode=TwoWay}" Margin="10"/>
-                <TextBox x:Name="HardwareAssetTypeInput" Header="Type" Text="{Binding SelectedHardwareAsset.Type, Mode=TwoWay}" Margin="10"/>
-                <TextBox x:Name="HardwareAssetIpAddressInput" Header="IP Address" Text="{Binding SelectedHardwareAsset.IpAddress, Mode=TwoWay}" Margin="10"/>
+                <!--HardwareAsset Details
+                <TextBox x:Name="HardwareAssetNameInput" Header="Name" Text="{Binding SelectedHardwareAsset.Name, Mode=TwoWay}" Margin="10" MaxLength="15"/>
+                <TextBox x:Name="HardwareAssetModelInput" Header="Model" Text="{Binding SelectedHardwareAsset.Model, Mode=TwoWay}" Margin="10" MaxLength="64"/>
+                <TextBox x:Name="HardwareAssetManufacturerInput" Header="Manufacturer" Text="{Binding SelectedHardwareAsset.Manufacturer, Mode=TwoWay}" Margin="10" MaxLength="64"/>
+                <TextBox x:Name="HardwareAssetTypeInput" Header="Type" Text="{Binding SelectedHardwareAsset.Type, Mode=TwoWay}" Margin="10" MaxLength="64"/>
+                <TextBox x:Name="HardwareAssetIpAddressInput" Header="IP Address" Text="{Binding SelectedHardwareAsset.IpAddress, Mode=TwoWay}" Margin="10" MaxLength="45"/>
+                Max Length of IP Address - https://stackoverflow.com/questions/166132/maximum-length-of-the-textual-representation-of-an-ipv6-address#166157-->
+                
                 <StackPanel Orientation="Horizontal">
-                    <DatePicker x:Name="HardwareAssetPurchaseDateInput" Header="Purchase Date" Date="{Binding PurchaseDate, Mode=TwoWay}" Margin="10"/>
+                    <DatePicker x:Name="HardwareAssetPurchaseDateInput" Header="Purchase Date" Date="{Binding PurchaseDate, Mode=TwoWay}" Margin="10"
+                                MinYear="{Binding MinYear}" MaxYear="{Binding MaxYear}"/>
                     <Button x:Name="ClearPurchaseDateButton" Content="Clear" Command="{Binding ClearPurchaseDateCommand}" Margin="10, 30, 10, 10"/>
                 </StackPanel>
-                <TextBox x:Name="HardwareAssetNotesInput" Header="Notes" Text="{Binding SelectedHardwareAsset.Notes, Mode=TwoWay}" Margin="10"/>
+                <TextBox x:Name="HardwareAssetNotesInput" Header="Notes" Text="{Binding Notes, Mode=TwoWay}" Margin="10" MaxLength="256"/>
 
                 <!--Department and Employee Selects-->
                 <ComboBox x:Name="HardwareAssetDepartmentSelect" Header="Department" HorizontalAlignment="Stretch" PlaceholderText="Select Department" Margin="10" 
@@ -180,6 +180,9 @@
                 </StackPanel>
                 
             </StackPanel>
+
+            <!--Status Message-->
+            <TextBlock x:Name="StatusMessage" Text="{Binding StatusMessage}" Visibility="{Binding StatusVisibility}" Margin="10" HorizontalAlignment="Center"/>
         </StackPanel>
     </Grid>
 </Page>

@@ -36,9 +36,9 @@ namespace ScottishGlenAssetTracking.ViewModels
         /// <param name="employeeService">EmployeeService from dependency injection.</param>
         /// <param name="hardwareAssetService">HardwareAssetService from dependency injection.</param>
         /// <param name="softwareAssetService">SoftwareAssetService from dependency injection.</param>
-        public AddHardwareAssetViewModel(DepartmentService departmentService, 
-                                         EmployeeService employeeService, 
-                                         HardwareAssetService hardwareAssetService, 
+        public AddHardwareAssetViewModel(DepartmentService departmentService,
+                                         EmployeeService employeeService,
+                                         HardwareAssetService hardwareAssetService,
                                          SoftwareAssetService softwareAssetService)
         {
             // Get the current account from the AccountManager.
@@ -88,10 +88,16 @@ namespace ScottishGlenAssetTracking.ViewModels
         private DateTimeOffset? purchaseDate;
 
         [ObservableProperty]
-        private Department selectedDepartment;
+        private DateTimeOffset minYear = new DateTimeOffset(new DateTime(1990, 1, 1));
 
         [ObservableProperty]
-        private Employee selectedEmployee;
+        private DateTimeOffset maxYear = DateTimeOffset.Now;
+
+        [ObservableProperty]
+        private string? notes;
+
+        [ObservableProperty]
+        private Department selectedDepartment;
 
         [ObservableProperty]
         private string statusMessage;
@@ -115,25 +121,54 @@ namespace ScottishGlenAssetTracking.ViewModels
         [RelayCommand]
         private void AddHardwareAsset()
         {
-            // Set the PurchaseDate property of the new asset to the DateTime value of the PurchaseDate property.
-            NewHardwareAsset.PurchaseDate = PurchaseDate?.DateTime;
+            // Check if the selected department and employee are not null.
+            if (SelectedDepartment == null)
+            {
+                StatusMessage = "Please select a department.";
+                StatusVisibility = Visibility.Visible;
+                return;
+            }
 
-            // Add the new hardware asset to the database.
-            _hardwareAssetService.AddHardwareAsset(NewHardwareAsset);
+            if (NewHardwareAsset.Employee == null) {
+                StatusMessage = "Please select an employee.";
+                StatusVisibility = Visibility.Visible;
+                return;
+            }
 
-            // Get a new SoftwareAsset with system info and set the SoftwareLinkDate property to the current date.
-            NewHardwareAsset.SoftwareAsset = _softwareAssetService.GetSoftwareAssetWithSystemInfo();
-            NewHardwareAsset.SoftwareLinkDate = DateTime.Now;
+            try
+            {
+                // Set the PurchaseDate property of the new asset to the DateTime value of the PurchaseDate property.
+                NewHardwareAsset.PurchaseDate = PurchaseDate?.DateTime;
 
-            // Add the new hardware asset to the SoftwareAsset's HardwareAssets collection.
-            NewHardwareAsset.SoftwareAsset.HardwareAssets = new List<HardwareAsset> { NewHardwareAsset };
+                // Set the Notes property of the new asset to the Notes property.
+                NewHardwareAsset.Notes = Notes;
 
-            // Add the new software asset to the database, if it already exists the HardwareAsset will be linked to it.
-            _softwareAssetService.AddSoftwareAsset(NewHardwareAsset.SoftwareAsset);
+                // Try to add the software asset to the database.
+                if (!AddSoftwareAsset())
+                {
+                    return;
+                }
 
-            // Set the status message and make it visible.
-            StatusMessage = "Hardware Asset Added";
-            StatusVisibility = Visibility.Visible;
+                // Add the new hardware asset to the database.
+                if (_hardwareAssetService.AddHardwareAsset(NewHardwareAsset))
+                { 
+                    // Set the status message and make it visible.
+                    StatusMessage = "Hardware asset added.";
+                    StatusVisibility = Visibility.Visible;
+                    ResetSelectionsAndProperties();
+                }
+                else
+                {
+                    // Set the status message and make it visible.
+                    StatusMessage = "Failed to add hardware asset.";
+                    StatusVisibility = Visibility.Visible;
+                }
+            }
+            catch (ArgumentException ex)
+            {
+                StatusMessage = ex.Message;
+                StatusVisibility = Visibility.Visible;
+            }
         }
 
         /// <summary>
@@ -179,6 +214,58 @@ namespace ScottishGlenAssetTracking.ViewModels
                 DepartmentSelectIsEnabled = false;
                 EmployeeSelectIsEnabled = false;
             }
+        }
+
+        /// <summary>
+        /// Helper method to add a software asset to the database linked to the new hardware asset.
+        /// </summary>
+        /// <returns>True if added to the database, false if not.</returns>
+        private bool AddSoftwareAsset()
+        {
+            try
+            {
+                // Get a new SoftwareAsset with system info and set the SoftwareLinkDate property to the current date.
+                NewHardwareAsset.SoftwareAsset = _softwareAssetService.GetSoftwareAssetWithSystemInfo();
+                NewHardwareAsset.SoftwareLinkDate = DateTime.Now;
+
+                // Add the new hardware asset to the SoftwareAsset's HardwareAssets collection.
+                NewHardwareAsset.SoftwareAsset.HardwareAssets = new List<HardwareAsset> { NewHardwareAsset };
+
+                // Add the new software asset to the database, if it already exists the HardwareAsset will be linked to it.
+                if (_softwareAssetService.AddSoftwareAsset(NewHardwareAsset.SoftwareAsset))
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            catch (ArgumentException ex)
+            {
+                StatusMessage = ex.Message;
+                StatusVisibility = Visibility.Visible;
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Helper method to reset the selections and properties.
+        /// </summary>
+        private void ResetSelectionsAndProperties()
+        {
+            // Reset the NewHardwareAsset.
+            NewHardwareAsset = null;
+
+            if (_account.IsAdmin)
+            {
+                // Reset the selected department and employee.
+                SelectedDepartment = null;
+            }
+
+            // Reset the purchase date and notes.
+            PurchaseDate = null;
+            Notes = null;
         }
     }
 }

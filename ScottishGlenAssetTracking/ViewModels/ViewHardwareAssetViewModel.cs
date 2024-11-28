@@ -36,8 +36,8 @@ namespace ScottishGlenAssetTracking.ViewModels
         /// <param name="employeeService">EmployeeService from dependency injection.</param>
         /// <param name="hardwareAssetService">HardwareAssetService from dependency injection.</param>
         /// <param name="softwareAssetService">SoftwareAssetService from dependency injection.</param>
-        public ViewHardwareAssetViewModel(DepartmentService departmentService, 
-                                          EmployeeService employeeService, 
+        public ViewHardwareAssetViewModel(DepartmentService departmentService,
+                                          EmployeeService employeeService,
                                           HardwareAssetService hardwareAssetService,
                                           SoftwareAssetService softwareAssetService)
         {
@@ -106,6 +106,15 @@ namespace ScottishGlenAssetTracking.ViewModels
         private string softwareLinkDateFormatted;
 
         [ObservableProperty]
+        private DateTimeOffset minYear = new DateTimeOffset(new DateTime(1990, 1, 1));
+
+        [ObservableProperty]
+        private DateTimeOffset maxYear = DateTimeOffset.Now;
+
+        [ObservableProperty]
+        private string? notes;
+
+        [ObservableProperty]
         private string statusMessage;
 
         // Visibility properties.
@@ -113,7 +122,7 @@ namespace ScottishGlenAssetTracking.ViewModels
         private Visibility selectsVisibility = Visibility.Visible;
 
         [ObservableProperty]
-        private Visibility statusVisibility = Visibility.Collapsed;
+        private Visibility statusVisibility = Visibility.Visible;
 
         [ObservableProperty]
         private Visibility viewHardwareAssetViewVisibility = Visibility.Collapsed;
@@ -143,15 +152,19 @@ namespace ScottishGlenAssetTracking.ViewModels
         private void LoadEmployees()
         {
             // Only load employees if a department is selected.
-            if (SelectedDepartment != null)
+            if (SelectedDepartment == null)
             {
-                // Get employees based on the selected department.
-                var employees = _employeeService.GetEmployees(SelectedDepartment.Id);
-                Employees = new ObservableCollection<Employee>(employees);
-
-                // Notify the view that the Employees collection has changed.
-                OnPropertyChanged(nameof(Employees));
+                StatusMessage = "Please select a Department.";
+                StatusVisibility = Visibility.Visible;
+                return;
             }
+
+            // Get employees based on the selected department.
+            var employees = _employeeService.GetEmployees(SelectedDepartment.Id);
+            Employees = new ObservableCollection<Employee>(employees);
+
+            // Notify the view that the Employees collection has changed.
+            OnPropertyChanged(nameof(Employees));
         }
 
         /// <summary>
@@ -161,15 +174,19 @@ namespace ScottishGlenAssetTracking.ViewModels
         private void LoadHardwareAssets()
         {
             // Only load HardwareAssets if an employee is selected.
-            if (SelectedEmployee != null)
+            if (SelectedEmployee == null)
             {
-                // Get assets based on the selected employee.
-                var assets = _hardwareAssetService.GetHardwareAssets(SelectedEmployee.Id);
-                HardwareAssets = new ObservableCollection<HardwareAsset>(assets);
-
-                // Notify the view that the HardwareAssets collection has changed.
-                OnPropertyChanged(nameof(HardwareAssets));
+                StatusMessage = "Please select an Employee.";
+                StatusVisibility = Visibility.Visible;
+                return;
             }
+
+            // Get assets based on the selected employee.
+            var assets = _hardwareAssetService.GetHardwareAssets(SelectedEmployee.Id);
+            HardwareAssets = new ObservableCollection<HardwareAsset>(assets);
+
+            // Notify the view that the HardwareAssets collection has changed.
+            OnPropertyChanged(nameof(HardwareAssets));
         }
 
         /// <summary>
@@ -179,43 +196,45 @@ namespace ScottishGlenAssetTracking.ViewModels
         private void PopulateHardwareAssetDetails()
         {
             // Only populate the asset details if an asset is selected.
-            if (SelectedHardwareAsset != null)
+            if (!IsHardwareSelected()) { return; }
+
+            // Set the PurchaseDate property to the DateTimeOffset value of the PurchaseDate property and format it.
+            if (SelectedHardwareAsset.PurchaseDate != null)
             {
-                // Set the PurchaseDate property to the DateTimeOffset value of the PurchaseDate property and format it.
-                if (SelectedHardwareAsset.PurchaseDate != null)
-                {
-                    PurchaseDate = (DateTimeOffset)SelectedHardwareAsset.PurchaseDate;
-                    PurchaseDateFormatted = PurchaseDate?.ToString("MM/dd/yyyy");
-                }
-                // If the PurchaseDate is null, set the PurchaseDate property to null and the PurchaseDateFormatted property to an empty string.
-                else if (SelectedHardwareAsset.PurchaseDate == null)
-                {
-                    PurchaseDate = null;
-                    PurchaseDateFormatted = string.Empty;
-                }
-
-                // Set the selected employee, department, and software asset to the employee, department, and software asset from the Employees, Departments, and SoftwareAssets collections.
-                SelectedHardwareAsset.Employee = Employees.FirstOrDefault(e => e.Id == SelectedEmployee.Id);
-                SelectedHardwareAsset.Employee.Department = Departments.FirstOrDefault(d => d.Id == SelectedDepartment.Id);
-
-                if (SelectedHardwareAsset.SoftwareAsset != null)
-                {
-                    SelectedHardwareAsset.SoftwareAsset = SoftwareAssets.FirstOrDefault(s => s.Id == SelectedHardwareAsset.SoftwareAsset.Id);
-
-                    // Set the SoftwareLinkDateFormatted property to the DateTimeOffset value of the SoftwareLinkDate property and format it or an empty string.
-                    SoftwareLinkDateFormatted = SelectedHardwareAsset.SoftwareLinkDate.ToString("MM/dd/yyyy") ?? string.Empty;
-                }
-
-                // Notify the view that the SelectedHardwareAsset property has changed.
-                OnPropertyChanged(nameof(SelectedHardwareAsset));
-
-                // Clear the status message and make it hidden.
-                StatusVisibility = Visibility.Collapsed;
-                StatusMessage = string.Empty;
-
-                // Change the view to the view mode.
-                ChangeViewToView();
+                PurchaseDate = (DateTimeOffset)SelectedHardwareAsset.PurchaseDate;
+                PurchaseDateFormatted = PurchaseDate?.ToString("MM/dd/yyyy");
             }
+            // If the PurchaseDate is null, set the PurchaseDate property to null and the PurchaseDateFormatted property to an empty string.
+            else if (SelectedHardwareAsset.PurchaseDate == null)
+            {
+                PurchaseDate = null;
+                PurchaseDateFormatted = string.Empty;
+            }
+
+            // Set the Notes property to the Notes property of the selected HardwareAsset.
+            Notes = SelectedHardwareAsset.Notes;
+
+            // Set the selected employee, department, and software asset to the employee, department, and software asset from the Employees, Departments, and SoftwareAssets collections.
+            SelectedHardwareAsset.Employee = Employees.FirstOrDefault(e => e.Id == SelectedEmployee.Id);
+            SelectedHardwareAsset.Employee.Department = Departments.FirstOrDefault(d => d.Id == SelectedDepartment.Id);
+
+            if (SelectedHardwareAsset.SoftwareAsset != null)
+            {
+                SelectedHardwareAsset.SoftwareAsset = SoftwareAssets.FirstOrDefault(s => s.Id == SelectedHardwareAsset.SoftwareAsset.Id);
+
+                // Set the SoftwareLinkDateFormatted property to the DateTimeOffset value of the SoftwareLinkDate property and format it or an empty string.
+                SoftwareLinkDateFormatted = SelectedHardwareAsset.SoftwareLinkDate.ToString("MM/dd/yyyy") ?? string.Empty;
+            }
+
+            // Notify the view that the SelectedHardwareAsset property has changed.
+            OnPropertyChanged(nameof(SelectedHardwareAsset));
+
+            // Clear the status message and make it hidden.
+            StatusVisibility = Visibility.Collapsed;
+            StatusMessage = string.Empty;
+
+            // Change the view to the view mode.
+            ChangeViewToView();
         }
 
         /// <summary>
@@ -225,7 +244,9 @@ namespace ScottishGlenAssetTracking.ViewModels
         private void DeleteHardwareAsset()
         {
             // Only delete a HardwareAsset if a HardwareAsset is selected.
-            if (SelectedHardwareAsset != null)
+            if (!IsHardwareSelected()) { return; }
+
+            try
             {
                 // Delete the selected HardwareAsset from the database.
                 _hardwareAssetService.DeleteHardwareAsset(SelectedHardwareAsset.Id);
@@ -233,12 +254,11 @@ namespace ScottishGlenAssetTracking.ViewModels
                 // Clear the PurchaseDate field so it doesn't show in the view.
                 ClearPurchaseDate();
 
+                // Clear the Notes.
+                Notes = string.Empty;
+
                 // Clear the SoftwareLinkDateFormatted field so it doesn't show in the view.
                 SoftwareLinkDateFormatted = string.Empty;
-
-                // Set the status message and make it visible.
-                StatusVisibility = Visibility.Visible;
-                StatusMessage = "Hardware Asset Deleted";
 
                 // Reload the HardwareAssets.
                 LoadHardwareAssets();
@@ -248,11 +268,17 @@ namespace ScottishGlenAssetTracking.ViewModels
 
                 // Hide the view for the HardwareAsset.
                 ViewHardwareAssetViewVisibility = Visibility.Collapsed;
-            }
-            else
-            {
+
+                // Reset the selections and properties.
+                ResetSelectionsAndProperties();
+
                 // Set the status message and make it visible.
-                StatusMessage = "No Hardware Asset Selected";
+                StatusVisibility = Visibility.Visible;
+                StatusMessage = "Hardware Asset Deleted";
+            }
+            catch (ArgumentException ex)
+            {
+                StatusMessage = ex.Message;
                 StatusVisibility = Visibility.Visible;
             }
         }
@@ -264,10 +290,20 @@ namespace ScottishGlenAssetTracking.ViewModels
         private void UpdateHardwareAsset()
         {
             // Only update a HardwareAsset if a HardwareAsset is selected.
-            if (SelectedHardwareAsset != null)
+            if (!IsHardwareSelected()) { return; }
+
+            HardwareAsset newSystemData = _hardwareAssetService.GetHardwareAssetWithSystemInfo();
+
+            try
             {
-                // Set the PurchaseDate property of the selected HardwareAsset to the DateTime value of the PurchaseDate property.
+                // Set the SelectedHardwareAsset properties to the properties of the new system data and user input.
+                SelectedHardwareAsset.Name = newSystemData.Name;
+                SelectedHardwareAsset.Model = newSystemData.Model;
+                SelectedHardwareAsset.Manufacturer = newSystemData.Manufacturer;
+                SelectedHardwareAsset.Type = newSystemData.Type;
+                SelectedHardwareAsset.IpAddress = newSystemData.IpAddress;
                 SelectedHardwareAsset.PurchaseDate = PurchaseDate?.DateTime;
+                SelectedHardwareAsset.Notes = Notes;
 
                 // Update the selected HardwareAsset in the database and notify the view.
                 _hardwareAssetService.UpdateHardwareAsset(SelectedHardwareAsset);
@@ -296,6 +332,11 @@ namespace ScottishGlenAssetTracking.ViewModels
                 // Change the view to the view mode.
                 ChangeViewToView();
             }
+            catch (ArgumentException ex)
+            {
+                StatusMessage = ex.Message;
+                StatusVisibility = Visibility.Visible;
+            }
         }
 
         /// <summary>
@@ -305,24 +346,23 @@ namespace ScottishGlenAssetTracking.ViewModels
         private void ChangeViewToEdit()
         {
             // Only change the view to the edit mode if an HardwareAsset is selected.
-            if (SelectedHardwareAsset != null)
-            {
-                // Set the PurchaseDate property to the DateTimeOffset value of the PurchaseDate property.
-                if (SelectedHardwareAsset.PurchaseDate != null)
-                {
-                    PurchaseDate = (DateTimeOffset)SelectedHardwareAsset.PurchaseDate;
-                }
-                // If the PurchaseDate is null, set the PurchaseDate property to null.
-                else if (SelectedHardwareAsset.PurchaseDate == null)
-                {
-                    PurchaseDate = null;
-                }
+            if (!IsHardwareSelected()) { return; }
 
-                // Set the visibility properties for the view.
-                SelectsVisibility = Visibility.Collapsed;
-                ViewHardwareAssetViewVisibility = Visibility.Collapsed;
-                EditHardwareAssetViewVisibility = Visibility.Visible;
+            // Set the PurchaseDate property to the DateTimeOffset value of the PurchaseDate property.
+            if (SelectedHardwareAsset.PurchaseDate != null)
+            {
+                PurchaseDate = (DateTimeOffset)SelectedHardwareAsset.PurchaseDate;
             }
+            // If the PurchaseDate is null, set the PurchaseDate property to null.
+            else if (SelectedHardwareAsset.PurchaseDate == null)
+            {
+                PurchaseDate = null;
+            }
+
+            // Set the visibility properties for the view.
+            SelectsVisibility = Visibility.Collapsed;
+            ViewHardwareAssetViewVisibility = Visibility.Collapsed;
+            EditHardwareAssetViewVisibility = Visibility.Visible;
         }
 
         /// <summary>
@@ -363,10 +403,78 @@ namespace ScottishGlenAssetTracking.ViewModels
                 SelectedEmployee = Employees.FirstOrDefault(e => e.Id == _account.Employee.Id);
 
                 // Disable the selects.
-                DepartmentSelectIsEnabled = false;
-                EmployeeSelectIsEnabled = false;
+                DisableSelects();
                 HardwareAssetDepartmentSelectIsEnabled = false;
                 HardwareAssetEmployeeSelectIsEnabled = false;
+            }
+        }
+
+        /// <summary>
+        /// Helper method to reset the selections and properties.
+        /// </summary>
+        private void ResetSelectionsAndProperties()
+        {
+            // Reset the NewHardwareAsset.
+            SelectedHardwareAsset = null;
+
+            if (_account.IsAdmin)
+            {
+                // Reset the employees and hardware assets.
+                Employees = null;
+                HardwareAssets = null;
+
+                // Notify the view that the Employees and HardwareAssets collections have changed.
+                OnPropertyChanged(nameof(Employees));
+                OnPropertyChanged(nameof(HardwareAssets));
+
+                // Reset the selected department and employee.
+                SelectedDepartment = null;
+                SelectedEmployee = null;
+            }
+
+            // Reset the purchase date and notes.
+            ClearPurchaseDate();
+        }
+
+        /// <summary>
+        /// Helper method to disable the selects.
+        /// </summary>
+        private void DisableSelects()
+        {
+            // Disable the selects.
+            DepartmentSelectIsEnabled = false;
+            EmployeeSelectIsEnabled = false;
+        }
+
+        /// <summary>
+        /// Helper method to enable the selects.
+        /// </summary>
+        private void EnableSelects()
+        {
+            // Enable the selects.
+            if (_account.IsAdmin)
+            {
+                DepartmentSelectIsEnabled = true;
+                EmployeeSelectIsEnabled = true;
+            }
+        }
+
+        /// <summary>
+        /// Helper method to check if a hardware asset is selected.
+        /// </summary>
+        /// <returns>True if a hardware asset is selected, false if not.</returns>
+        private bool IsHardwareSelected()
+        {
+            if (SelectedHardwareAsset == null)
+            {
+                // Set the status message and make it visible.
+                StatusMessage = "Please select a Hardware Asset.";
+                StatusVisibility = Visibility.Visible;
+                return false;
+            }
+            else
+            {
+                return true;
             }
         }
     }
