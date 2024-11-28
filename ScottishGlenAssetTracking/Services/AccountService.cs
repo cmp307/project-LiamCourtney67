@@ -200,7 +200,7 @@ namespace ScottishGlenAssetTracking.Services
         /// </summary>
         /// <param name="email">Email of the Account for the Employee to be set.</param>
         /// <param name="employee">Employee for the Account.</param>
-        /// <returns></returns>
+        /// <returns>True if Employee set, false if not.</returns>
         public bool SetAccountEmployee(string email, Employee employee)
         {
             // Retrieve account and update employee
@@ -218,6 +218,9 @@ namespace ScottishGlenAssetTracking.Services
                 // Set the new navigational properties.
                 account.Employee = existingEmployee;
                 existingEmployee.Account = account;
+
+                // Change the email to the account email.
+                existingEmployee.Email = account.Email;
 
                 _context.Accounts.Update(account);
                 _context.SaveChanges();
