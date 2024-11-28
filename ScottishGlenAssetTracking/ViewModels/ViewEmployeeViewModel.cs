@@ -6,7 +6,6 @@ using MySqlConnector;
 using ScottishGlenAssetTracking.Models;
 using ScottishGlenAssetTracking.Services;
 using ScottishGlenAssetTracking.Views.Account;
-using ScottishGlenAssetTracking.Views.Portals;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -204,10 +203,11 @@ namespace ScottishGlenAssetTracking.ViewModels
                 _employeeService.DeleteEmployee(SelectedEmployee.Id);
                 SelectedEmployee = null;
 
-                // If the employee is the current account, navigate to New User Portal.
+                // If the employee is the current account, log out the account and navigate to the login page.
                 if (isCurrentAccount)
                 {
-                    MainWindow.Frame.Navigate(typeof(NewUserPortal));
+                    App.AppHost.Services.GetRequiredService<AccountManager>().Logout();
+                    MainWindow.Frame.Navigate(typeof(Login));
                     return;
                 }
 
