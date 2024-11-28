@@ -169,6 +169,9 @@ namespace ScottishGlenAssetTracking.ViewModels
             // Only change the view to the edit mode if an account is selected.
             if (SelectedAccount != null)
             {
+                // Set the Email property.
+                Email = SelectedAccount.Email;
+
                 // Set the visibility properties for the view.
                 ViewAccountViewVisibility = Visibility.Collapsed;
                 EditAccountViewVisibility = Visibility.Visible;
