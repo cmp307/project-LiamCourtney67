@@ -230,5 +230,19 @@ namespace ScottishGlenAssetTracking.Services
 
             return false;
         }
+
+        /// <summary>
+        /// Method to check if an Employee has an Account.
+        /// </summary>
+        /// <param name="employeeId">Employee Id to be checked.</param>
+        /// <returns></returns>
+        public bool EmployeeHasAccount(int employeeId) => _context.Accounts.Any(a => a.Employee.Id == employeeId);
+
+        /// <summary>
+        /// Method to get the Account Id for an Employee.
+        /// </summary>
+        /// <param name="employeeId">Employee Id to get the Account Id for.</param>
+        /// <returns>Id of the Account.</returns>
+        public int GetAccountIdForEmployee(int employeeId) => _context.Accounts.FirstOrDefault(a => a.Employee.Id == employeeId).Id;
     }
 }

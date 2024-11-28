@@ -20,9 +20,9 @@
                       ItemsSource="{Binding Departments}" SelectedItem="{Binding NewEmployee.Department, Mode=TwoWay}" DisplayMemberPath="Name"/>
             
             <!--Employee Details-->
-            <TextBox x:Name="EmployeeFirstName" Header="First Name" PlaceholderText="Enter First Name" Margin="10" Text="{Binding NewEmployee.FirstName, Mode=TwoWay}"/>
-            <TextBox x:Name="EmployeeLastName" Header="Last Name" PlaceholderText="Enter Last Name" Margin="10" Text="{Binding NewEmployee.LastName, Mode=TwoWay}"/>
-            <TextBox x:Name="EmployeeEmail" Header="Email" PlaceholderText="Enter Email" Margin="10" Text="{Binding NewEmployee.Email, Mode=TwoWay}"/>
+            <TextBox x:Name="EmployeeFirstName" Header="First Name" PlaceholderText="Enter First Name" Margin="10" Text="{Binding FirstName, Mode=TwoWay}"/>
+            <TextBox x:Name="EmployeeLastName" Header="Last Name" PlaceholderText="Enter Last Name" Margin="10" Text="{Binding LastName, Mode=TwoWay}"/>
+            <TextBox x:Name="EmployeeEmail" Header="Email" PlaceholderText="Enter Email" Margin="10" Text="{Binding Email, Mode=TwoWay}"/>
             
             <!--Add Employee Button-->
             <Button x:Name="AddEmployeeButton" Content="Add Employee" Command="{Binding AddEmployeeCommand}" Margin="10" Background="Green" Foreground="White" HorizontalAlignment="Right"/>
