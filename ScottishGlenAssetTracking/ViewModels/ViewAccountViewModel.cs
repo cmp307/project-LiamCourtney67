@@ -232,7 +232,7 @@ namespace ScottishGlenAssetTracking.ViewModels
                 NewPassword == null || NewPassword == string.Empty ||
                 ConfirmNewPassword == null || ConfirmNewPassword == string.Empty)
             {
-                SetDialogStatusMessage("Please fill out all fields.");
+                SetDialogStatusMessage("Please fill in all fields.");
                 ResetPasswords();
                 return false;
             }
