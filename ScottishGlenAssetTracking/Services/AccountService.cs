@@ -4,6 +4,7 @@ using ScottishGlenAssetTracking.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Authentication;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -96,6 +97,12 @@ namespace ScottishGlenAssetTracking.Services
             // Check if the account exists
             if (_context.Accounts.Any(a => a.Id == account.Id))
             {
+                // Check if the email is already in use by another account
+                if (_context.Accounts.Any(a => a.Email == account.Email && a.Id != account.Id))
+                {
+                    return false;
+                }
+
                 // Update the account and save the changes
                 _context.Accounts.Update(account);
                 _context.SaveChanges();
@@ -139,12 +146,8 @@ namespace ScottishGlenAssetTracking.Services
             // Retrieve account and verify password
             Account account = GetAccount(email);
 
-            if (account != null && account.VerifyPassword(password))
-            {
-                return account;
-            }
-
-            return null;
+            if (account != null && account.VerifyPassword(password)) { return account; }
+            else { throw new AuthenticationException("Invalid email or password."); }
         }
 
         /// <summary>
