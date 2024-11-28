@@ -59,7 +59,6 @@ namespace ScottishGlenAssetTracking.ViewModels
             // Load software assets.
             SoftwareAssets = new ObservableCollection<SoftwareAsset>(_softwareAssetService.GetSoftwareAssets());
 
-            // Load selections for the account type.
             LoadSelectionsForAccountType();
         }
 
@@ -233,7 +232,6 @@ namespace ScottishGlenAssetTracking.ViewModels
             StatusVisibility = Visibility.Collapsed;
             StatusMessage = string.Empty;
 
-            // Change the view to the view mode.
             ChangeViewToView();
         }
 
@@ -251,35 +249,25 @@ namespace ScottishGlenAssetTracking.ViewModels
                 // Delete the selected HardwareAsset from the database.
                 _hardwareAssetService.DeleteHardwareAsset(SelectedHardwareAsset.Id);
 
-                // Clear the PurchaseDate field so it doesn't show in the view.
+                // Clear the fields.
                 ClearPurchaseDate();
-
-                // Clear the Notes.
                 Notes = string.Empty;
-
-                // Clear the SoftwareLinkDateFormatted field so it doesn't show in the view.
                 SoftwareLinkDateFormatted = string.Empty;
 
                 // Reload the HardwareAssets.
                 LoadHardwareAssets();
 
-                // Change the view to the view mode.
                 ChangeViewToView();
 
                 // Hide the view for the HardwareAsset.
                 ViewHardwareAssetViewVisibility = Visibility.Collapsed;
 
-                // Reset the selections and properties.
                 ResetSelectionsAndProperties();
-
-                // Set the status message and make it visible.
-                StatusVisibility = Visibility.Visible;
-                StatusMessage = "Hardware Asset Deleted";
+                SetStatusMessage("Hardware Asset Deleted");
             }
             catch (ArgumentException ex)
             {
-                StatusMessage = ex.Message;
-                StatusVisibility = Visibility.Visible;
+                SetStatusMessage(ex.Message);
             }
         }
 
@@ -292,6 +280,7 @@ namespace ScottishGlenAssetTracking.ViewModels
             // Only update a HardwareAsset if a HardwareAsset is selected.
             if (!IsHardwareSelected()) { return; }
 
+            // Get the new system data.
             HardwareAsset newSystemData = _hardwareAssetService.GetHardwareAssetWithSystemInfo();
 
             try
@@ -325,17 +314,12 @@ namespace ScottishGlenAssetTracking.ViewModels
                 // Set the selected HardwareAsset to the HardwareAsset in the HardwareAssets collection with the selectedHardwareAssetId.
                 SelectedHardwareAsset = HardwareAssets.FirstOrDefault(a => a.Id == selectedHardwareAssetId);
 
-                // Set the status message and make it visible.
-                StatusVisibility = Visibility.Visible;
-                StatusMessage = "Hardware Asset Updated";
-
-                // Change the view to the view mode.
+                SetStatusMessage("Hardware Asset Updated");
                 ChangeViewToView();
             }
             catch (ArgumentException ex)
             {
-                StatusMessage = ex.Message;
-                StatusVisibility = Visibility.Visible;
+                SetStatusMessage(ex.Message);
             }
         }
 
@@ -476,6 +460,17 @@ namespace ScottishGlenAssetTracking.ViewModels
             {
                 return true;
             }
+        }
+
+        /// <summary>
+        /// Helper method to set the status message and make the status message visible.
+        /// </summary>
+        /// <param name="message">Message to be displayed.</param>
+        private void SetStatusMessage(string message)
+        {
+            // Set the status message and make the status message visible.
+            StatusMessage = message;
+            StatusVisibility = Visibility.Visible;
         }
     }
 }

@@ -124,14 +124,13 @@ namespace ScottishGlenAssetTracking.ViewModels
             // Check if the selected department and employee are not null.
             if (SelectedDepartment == null)
             {
-                StatusMessage = "Please select a department.";
-                StatusVisibility = Visibility.Visible;
+                SetStatusMessage("Please select a department.");
                 return;
             }
 
-            if (NewHardwareAsset.Employee == null) {
-                StatusMessage = "Please select an employee.";
-                StatusVisibility = Visibility.Visible;
+            if (NewHardwareAsset.Employee == null)
+            {
+                SetStatusMessage("Please select an employee.");
                 return;
             }
 
@@ -151,23 +150,18 @@ namespace ScottishGlenAssetTracking.ViewModels
 
                 // Add the new hardware asset to the database.
                 if (_hardwareAssetService.AddHardwareAsset(NewHardwareAsset))
-                { 
-                    // Set the status message and make it visible.
-                    StatusMessage = "Hardware asset added.";
-                    StatusVisibility = Visibility.Visible;
+                {
+                    SetStatusMessage("Hardware asset added successfully.");
                     ResetSelectionsAndProperties();
                 }
                 else
                 {
-                    // Set the status message and make it visible.
-                    StatusMessage = "Failed to add hardware asset.";
-                    StatusVisibility = Visibility.Visible;
+                    SetStatusMessage("Failed to add hardware asset.");
                 }
             }
             catch (ArgumentException ex)
             {
-                StatusMessage = ex.Message;
-                StatusVisibility = Visibility.Visible;
+                SetStatusMessage(ex.Message);
             }
         }
 
@@ -243,8 +237,7 @@ namespace ScottishGlenAssetTracking.ViewModels
             }
             catch (ArgumentException ex)
             {
-                StatusMessage = ex.Message;
-                StatusVisibility = Visibility.Visible;
+                SetStatusMessage(ex.Message);
                 return false;
             }
         }
@@ -266,6 +259,17 @@ namespace ScottishGlenAssetTracking.ViewModels
             // Reset the purchase date and notes.
             PurchaseDate = null;
             Notes = null;
+        }
+
+        /// <summary>
+        /// Helper method to set the status message and make the status message visible.
+        /// </summary>
+        /// <param name="message">Message to be displayed.</param>
+        private void SetStatusMessage(string message)
+        {
+            // Set the status message and make the status message visible.
+            StatusMessage = message;
+            StatusVisibility = Visibility.Visible;
         }
     }
 }
