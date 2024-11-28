@@ -91,19 +91,36 @@ namespace ScottishGlenAssetTracking.Services
         {
             // Find the employee in the database.
             var employee = _context.Employees.Include(e => e.HardwareAssets).FirstOrDefault(e => e.Id == employeeId);
-            
+
+            // Find accounts with the employee record in the database.
+            var account = _context.Accounts.FirstOrDefault(a => a.EmployeeId == employeeId);
+
             // Find the HardwareAssets without Employee record in the database.
             var assetEmployee = _context.Employees.Find(1);
 
             // Reassign assets to the employee for assets without an employee
             foreach (var asset in employee.HardwareAssets)
             {
-                asset.Employee = assetEmployee;
-                _context.HardwareAssets.Update(asset);
+                if (asset != null)
+                {
+                    asset.Employee = assetEmployee;
+                    _context.HardwareAssets.Update(asset);
+                }
             }
 
             // Clear the assets from the employee
             employee.HardwareAssets.Clear();
+
+            // Remove the employee from the account and set the account to not be an admin.
+            if (account != null)
+            {
+                account.IsAdmin = false;
+                account.Employee = null;
+                _context.Accounts.Update(account);
+            }
+
+            // Remove the account from the employee.
+            employee.Account = null;
 
             // Remove the employee from the database and save the changes.
             _context.Employees.Remove(employee);
