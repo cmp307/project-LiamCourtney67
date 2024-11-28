@@ -204,10 +204,9 @@ namespace ScottishGlenAssetTracking.ViewModels
                 _employeeService.DeleteEmployee(SelectedEmployee.Id);
                 SelectedEmployee = null;
 
-                // If the employee is the current account, log out the account and navigate to the login page.
+                // If the employee is the current account, navigate to New User Portal.
                 if (isCurrentAccount)
                 {
-                    //App.AppHost.Services.GetRequiredService<AccountManager>().Logout();
                     MainWindow.Frame.Navigate(typeof(NewUserPortal));
                     return;
                 }
