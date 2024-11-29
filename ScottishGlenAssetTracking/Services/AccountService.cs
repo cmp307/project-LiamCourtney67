@@ -141,6 +141,7 @@ namespace ScottishGlenAssetTracking.Services
         /// <param name="email">Email of the Account to be authenticated.</param>
         /// <param name="password">Password of the Account to be authenticated.</param>
         /// <returns>Authenticated Account if successful, null if not.</returns>
+        /// <exception cref="AuthenticationException">Thrown if the email or password is incorrect.</exception>
         public Account AuthenticateAccount(string email, string password)
         {
             // Retrieve account and verify password
