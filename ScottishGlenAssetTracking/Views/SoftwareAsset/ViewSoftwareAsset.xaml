@@ -5,7 +5,8 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:ScottishGlenAssetTracking.Views.SoftwareAsset"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    xmlns:controls="using:CommunityToolkit.WinUI.UI.Controls"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
@@ -45,7 +46,7 @@
 
                     <!--SoftwareAsset Version-->
                     <Border BorderBrush="LightGray" Background="Gray" BorderThickness="1" Grid.Row="1" Grid.Column="0">
-                        <TextBlock Text="Model" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Center" TextWrapping="Wrap" FontSize="20"/>
+                        <TextBlock Text="Version" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Center" TextWrapping="Wrap" FontSize="20"/>
                     </Border>
                     <Border BorderBrush="LightGray" Background="DarkGray" BorderThickness="1" Grid.Row="1" Grid.Column="1">
                         <TextBlock Text="{Binding SelectedSoftwareAsset.Version, Mode=TwoWay}" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Center" TextWrapping="Wrap" FontSize="20"/>
@@ -61,10 +62,91 @@
                 </Grid>
 
                 <!--SoftwareAsset's HardwareAssets-->
-                <ListView x:Name="HardwareAssets" Header="Hardware Assets: " ItemsSource="{Binding SoftwareAssetHardwareAssets}" Visibility="{Binding SoftwareAssetHardwareAssetsVisibility}" DisplayMemberPath="Name" Margin="10" FontSize="32"/>
+                <ListView x:Name="HardwareAssets" Header="Hardware Assets: " ItemsSource="{Binding SoftwareAssetHardwareAssets}" Visibility="{Binding SoftwareAssetHardwareAssetsVisibility}" 
+                          DisplayMemberPath="Name" Margin="10" FontSize="32"/>
+
+                <!--Header-->
+                <TextBlock x:Name="VulnerabilitiesHeader" Text="Vulnerabilities:" Visibility="{Binding SoftwareAssetVulnerabilitiesVisibility}" Margin="10" FontSize="32" Grid.Row="0"/>
+
+                <!--SoftwareAsset's Vulnerabilities-->
+                <ScrollView Visibility="{Binding SoftwareAssetVulnerabilitiesVisibility}" Height="400">
+                    <Grid>
+                        <!--DataGrid-->
+                        <controls:DataGrid x:Name="Vulnerabilities" ItemsSource="{Binding SoftwareAssetVulnerabilities}" Grid.Row="1"
+                                   AutoGenerateColumns="False" Margin="10" IsEnabled="False" CanUserReorderColumns="False" CanUserResizeColumns="False" FontSize="20">
+                            <controls:DataGrid.Columns>
+
+                                <!--CVE ID-->
+                                <controls:DataGridTemplateColumn Header="CVE ID" Width="*">
+                                    <controls:DataGridTemplateColumn.HeaderStyle>
+                                        <Style TargetType="ContentControl">
+                                            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                                            <Setter Property="Background" Value="Gray"/>
+                                            <Setter Property="FontSize" Value="20"/>
+                                            <Setter Property="FontWeight" Value="Bold"/>
+                                            <Setter Property="Foreground" Value="White"/>
+                                        </Style>
+                                    </controls:DataGridTemplateColumn.HeaderStyle>
+
+                                    <controls:DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Border BorderBrush="DarkGray" Background="#5C5C5C" BorderThickness="1">
+                                                <TextBlock Text="{Binding CveId}" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="10" FontSize="20" FontWeight="Bold" Foreground="White"/>
+                                            </Border>
+                                        </DataTemplate>
+                                    </controls:DataGridTemplateColumn.CellTemplate>
+                                </controls:DataGridTemplateColumn>
+
+                                <!--Description-->
+                                <controls:DataGridTemplateColumn Header="Description" Width="4*">
+                                    <controls:DataGridTemplateColumn.HeaderStyle>
+                                        <Style TargetType="ContentControl">
+                                            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                                            <Setter Property="Background" Value="Gray"/>
+                                            <Setter Property="FontSize" Value="20"/>
+                                            <Setter Property="FontWeight" Value="Bold"/>
+                                            <Setter Property="Foreground" Value="White"/>
+                                        </Style>
+                                    </controls:DataGridTemplateColumn.HeaderStyle>
+
+                                    <controls:DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Border BorderBrush="DarkGray" Background="#5C5C5C" BorderThickness="1">
+                                                <TextBlock Text="{Binding Description}" TextWrapping="Wrap" Margin="10" FontSize="20" FontWeight="Bold" Foreground="White"/>
+                                            </Border>
+                                        </DataTemplate>
+                                    </controls:DataGridTemplateColumn.CellTemplate>
+                                </controls:DataGridTemplateColumn>
+
+                                <!--Severity-->
+                                <controls:DataGridTemplateColumn Header="Severity" Width="*">
+                                    <controls:DataGridTemplateColumn.HeaderStyle>
+                                        <Style TargetType="ContentControl">
+                                            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                                            <Setter Property="Background" Value="Gray"/>
+                                            <Setter Property="FontSize" Value="20"/>
+                                            <Setter Property="FontWeight" Value="Bold"/>
+                                            <Setter Property="Foreground" Value="White"/>
+                                        </Style>
+                                    </controls:DataGridTemplateColumn.HeaderStyle>
+
+                                    <controls:DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Border BorderBrush="DarkGray" Background="#5C5C5C" BorderThickness="1">
+                                                <TextBlock Text="{Binding Severity}" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="10" FontSize="20" FontWeight="Bold" Foreground="White"/>
+                                            </Border>
+                                        </DataTemplate>
+                                    </controls:DataGridTemplateColumn.CellTemplate>
+                                </controls:DataGridTemplateColumn>
+
+                            </controls:DataGrid.Columns>
+                        </controls:DataGrid>
+                    </Grid>
+                </ScrollView>
 
                 <!--Buttons-->
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Visibility="{Binding ButtonsVisibility}">
+                    <Button x:Name="CheckVulnerabilitiesButton" Content="Check Vulnerabilities" Command="{Binding CheckVulnerabilitiesCommand}" Margin="10" Background="Orange" Foreground="White"/>
                     <Button x:Name="EditSoftwareAssetButton" Content="Edit Software Asset" Command="{Binding ChangeViewToEditCommand}" Margin="10" Background="Blue" Foreground="White"/>
                     <Button x:Name="DeleteSoftwareAssetButton" Content="Delete Software Asset" Command="{Binding DeleteSoftwareAssetCommand}" Margin="10" Background="Red" Foreground="White"/>
                 </StackPanel>
@@ -73,11 +155,6 @@
 
             <!--Edit SoftwareAsset View-->
             <StackPanel x:Name="EditSoftwareAssetView" Visibility="{Binding EditSoftwareAssetViewVisibility}">
-
-                <!--SoftwareAsset Details
-                <TextBox x:Name="SoftwareAssetNameInput" Header="Name" Text="{Binding UpdatedSoftwareAsset.Name, Mode=TwoWay}" Margin="10"/>
-                <TextBox x:Name="SoftwareAssetVersionInput" Header="Version" Text="{Binding UpdatedSoftwareAsset.Version, Mode=TwoWay}" Margin="10"/>
-                <TextBox x:Name="SoftwareAssetManufacturerInput" Header="Manufacturer" Text="{Binding UpdatedSoftwareAsset.Manufacturer, Mode=TwoWay}" Margin="10"/>-->
 
                 <!--Buttons-->
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
@@ -89,6 +166,9 @@
 
             <!--Status Message-->
             <TextBlock x:Name="StatusMessage" Text="{Binding StatusMessage}" Visibility="{Binding StatusVisibility}" Margin="10" HorizontalAlignment="Center"/>
+
+            <!--Progress Ring-->
+            <ProgressRing x:Name="ProgressRing" IsActive="{Binding ProgressRingIsActive}" Visibility="{Binding ProgressRingVisibility}" Margin="10" HorizontalAlignment="Center"/>
         </StackPanel>
     </Grid>
 </Page>
