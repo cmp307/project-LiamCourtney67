@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Xaml;
+using MySqlConnector;
 using ScottishGlenAssetTracking.Models;
 using ScottishGlenAssetTracking.Services;
 using System;
@@ -34,9 +35,9 @@ namespace ScottishGlenAssetTracking.ViewModels
         /// <param name="employeeService">EmployeeService from dependency injection.</param>
         /// <param name="hardwareAssetService">HardwareAssetService from dependency injection.</param>
         /// <param name="softwareAssetService">SoftwareAssetService from dependency injection.</param>
-        public ViewSoftwareAssetViewModel(DepartmentService departmentService, 
-                                          EmployeeService employeeService, 
-                                          HardwareAssetService hardwareAssetService, 
+        public ViewSoftwareAssetViewModel(DepartmentService departmentService,
+                                          EmployeeService employeeService,
+                                          HardwareAssetService hardwareAssetService,
                                           SoftwareAssetService softwareAssetService)
         {
             // Get the current account from the AccountManager.
@@ -50,9 +51,6 @@ namespace ScottishGlenAssetTracking.ViewModels
 
             // Load SoftwareAssets.
             LoadSoftwareAssets();
-
-            // Initialize the UpdatedSoftwareAsset property.
-            UpdatedSoftwareAsset = new SoftwareAsset();
         }
 
         // Collections
@@ -94,12 +92,16 @@ namespace ScottishGlenAssetTracking.ViewModels
         [ObservableProperty]
         private Visibility softwareAssetHardwareAssetsVisibility = Visibility.Collapsed;
 
+        [ObservableProperty]
+        private Visibility buttonsVisibility = Visibility.Collapsed;
+
         // Commands
 
         /// <summary>
         /// Helper method to load the SoftwareAssets.
         /// </summary>
-        private void LoadSoftwareAssets() {
+        private void LoadSoftwareAssets()
+        {
             // Load SoftwareAssets.
             SoftwareAssets = new ObservableCollection<SoftwareAsset>(_softwareAssetService.GetSoftwareAssets());
             OnPropertyChanged(nameof(SoftwareAssets));
@@ -112,19 +114,16 @@ namespace ScottishGlenAssetTracking.ViewModels
         private void PopulateSoftwareAssetDetails()
         {
             // Only populate the asset details if an asset is selected.
-            if (SelectedSoftwareAsset != null)
+            if (SelectedSoftwareAsset == null)
             {
-                // Create a new SoftwareAsset with the selected SoftwareAsset properties.
-                UpdatedSoftwareAsset = new SoftwareAsset
-                {
-                    Name = SelectedSoftwareAsset.Name,
-                    Version = SelectedSoftwareAsset.Version,
-                    Manufacturer = SelectedSoftwareAsset.Manufacturer,
-                    HardwareAssets = new List<HardwareAsset>(SelectedSoftwareAsset.HardwareAssets)
-                };
+                return;
+            }
 
-                // Notify the view that the SelectedSoftwareAsset property has changed.
-                OnPropertyChanged(nameof(SelectedSoftwareAsset));
+            // Try to get the SoftwareAsset with the SystemInfo and handle any exceptions.
+            try
+            {
+                // Get the SoftwareAsset with the SystemInfo and set the HardwareAssets.
+                UpdatedSoftwareAsset = _softwareAssetService.GetSoftwareAssetWithSystemInfo();
 
                 // Clear the status message and make it hidden.
                 StatusVisibility = Visibility.Collapsed;
@@ -140,21 +139,27 @@ namespace ScottishGlenAssetTracking.ViewModels
                 }
                 else if (SelectedSoftwareAsset.HardwareAssets.Count > 0)
                 {
-                    // Set the SoftwareAssetHardwareAssets collection to the HardwareAssets of the selected SoftwareAsset or only the HardwareAssets linked to the Employee.
+                    // Set the SoftwareAssetHardwareAssets collection to the HardwareAssets of the selected SoftwareAsset.
                     if (_account.IsAdmin)
                     {
                         SoftwareAssetHardwareAssets = new ObservableCollection<HardwareAsset>(SelectedSoftwareAsset.HardwareAssets);
                         OnPropertyChanged(nameof(SoftwareAssetHardwareAssets));
                     }
-                    else if (_account.Employee != null)
-                    {
-                        SoftwareAssetHardwareAssets = new ObservableCollection<HardwareAsset>(SelectedSoftwareAsset.HardwareAssets
-                            .Where(h => h.Employee != null && h.Employee.Id == _account.Employee.Id));
-                        OnPropertyChanged(nameof(SoftwareAssetHardwareAssets));
-                    }
 
                     SoftwareAssetHardwareAssetsVisibility = Visibility.Visible;
                 }
+            }
+            catch (ArgumentException ex)
+            {
+                SetStatusMessage(ex.Message);
+            }
+            catch (MySqlException)
+            {
+                SetStatusMessage("There was an issue connecting to the database. Please try again later.");
+            }
+            catch (Exception)
+            {
+                SetStatusMessage("An unexpected error occurred. Please try again later.");
             }
         }
 
@@ -165,26 +170,41 @@ namespace ScottishGlenAssetTracking.ViewModels
         private void DeleteSoftwareAsset()
         {
             // Only delete a SoftwareAsset if a SoftwareAsset is selected.
-            if (SelectedSoftwareAsset != null)
+            if (SelectedSoftwareAsset == null)
             {
-                // Delete the selected SoftwareAsset from the database.
+                SetStatusMessage("Please select a Software Asset");
+                return;
+            }
+
+            if (!_account.IsAdmin)
+            {
+                return;
+            }
+
+            // Try to delete the SoftwareAsset from the database and handle any exceptions.
+            try
+            {
                 _softwareAssetService.DeleteSoftwareAsset(SelectedSoftwareAsset.Id);
 
-                // Set the status message and make it visible.
-                StatusVisibility = Visibility.Visible;
-                StatusMessage = "Software Asset Deleted";
+                SetStatusMessage("Software Asset Deleted");
 
                 // Reload the SoftwareAssets.
                 LoadSoftwareAssets();
 
-                // Change the view to the view mode.
                 ChangeViewToView();
+                ViewSoftwareAssetViewVisibility = Visibility.Collapsed;
             }
-            else
+            catch (ArgumentException ex)
             {
-                // Set the status message and make it visible.
-                StatusMessage = "No Software Asset Selected";
-                StatusVisibility = Visibility.Visible;
+                SetStatusMessage(ex.Message);
+            }
+            catch (MySqlException)
+            {
+                SetStatusMessage("There was an issue connecting to the database. Please try again later.");
+            }
+            catch (Exception)
+            {
+                SetStatusMessage("An unexpected error occurred. Please try again later.");
             }
         }
 
@@ -195,16 +215,29 @@ namespace ScottishGlenAssetTracking.ViewModels
         private void UpdateSoftwareAsset()
         {
             // Only update a SoftwareAsset if a SoftwareAsset is selected.
-            if (SelectedSoftwareAsset != null)
+            if (SelectedSoftwareAsset == null)
             {
-                Employee employee = _employeeService.GetEmployee(28);
+                SetStatusMessage("Please select a Software Asset");
+                return;
+            }
 
+            if (!_account.IsAdmin)
+            {
+                return;
+            }
+
+            try
+            {
                 // Update the selected SoftwareAsset in the database and notify the view.
-                _softwareAssetService.UpdateSoftwareAsset(UpdatedSoftwareAsset, employee);
-                // TODO for admin copy properties to selected asset
+                SelectedSoftwareAsset.Name = UpdatedSoftwareAsset.Name;
+                SelectedSoftwareAsset.Version = UpdatedSoftwareAsset.Version;
+                SelectedSoftwareAsset.Manufacturer = UpdatedSoftwareAsset.Manufacturer;
+                _softwareAssetService.UpdateSoftwareAsset(SelectedSoftwareAsset);
 
                 SelectedSoftwareAsset = _softwareAssetService.GetExistingSoftwareAsset(UpdatedSoftwareAsset.Name, UpdatedSoftwareAsset.Version);
+                SoftwareAssetHardwareAssets = new ObservableCollection<HardwareAsset>(SelectedSoftwareAsset.HardwareAssets);
                 OnPropertyChanged(nameof(SelectedSoftwareAsset));
+                OnPropertyChanged(nameof(SoftwareAssetHardwareAssets));
 
                 // Keep a reference to the selected SoftwareAsset Ids.
                 int selectedSoftwareAssetId = SelectedSoftwareAsset.Id;
@@ -215,12 +248,21 @@ namespace ScottishGlenAssetTracking.ViewModels
                 // Set the selected SoftwareAsset to the SoftwareAsset in the SoftwareAssets collection with the selectedSoftwareAssetId.
                 SelectedSoftwareAsset = SoftwareAssets.FirstOrDefault(a => a.Id == selectedSoftwareAssetId);
 
-                // Set the status message and make it visible.
-                StatusVisibility = Visibility.Visible;
-                StatusMessage = "Software Asset Updated";
-
-                // Change the view to the view mode.
+                PopulateSoftwareAssetDetails();
                 ChangeViewToView();
+                SetStatusMessage("Software asset updated successfully.");
+            }
+            catch (ArgumentException ex)
+            {
+                SetStatusMessage(ex.Message);
+            }
+            catch (MySqlException)
+            {
+                SetStatusMessage("There was an issue connecting to the database. Please try again later.");
+            }
+            catch (Exception)
+            {
+                SetStatusMessage("An unexpected error occurred. Please try again later.");
             }
         }
 
@@ -250,6 +292,25 @@ namespace ScottishGlenAssetTracking.ViewModels
             EditSoftwareAssetViewVisibility = Visibility.Collapsed;
             SelectsVisibility = Visibility.Visible;
             ViewSoftwareAssetViewVisibility = Visibility.Visible;
+
+            if (_account.IsAdmin)
+            {
+                ButtonsVisibility = Visibility.Visible;
+            }
+            else
+            {
+                ButtonsVisibility = Visibility.Collapsed;
+            }
+        }
+
+        /// <summary>
+        /// Helper method to set the status message and make it visible.
+        /// </summary>
+        /// <param name="message">Message to be displayed.</param>
+        private void SetStatusMessage(string message)
+        {
+            StatusMessage = message;
+            StatusVisibility = Visibility.Visible;
         }
     }
 }

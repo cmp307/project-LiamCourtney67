@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.UI.Xaml;
+using MySqlConnector;
 using ScottishGlenAssetTracking.Models;
 using ScottishGlenAssetTracking.Services;
 using System;
@@ -79,18 +80,40 @@ namespace ScottishGlenAssetTracking.ViewModels
         [RelayCommand]
         private void AddSoftwareAsset()
         {
-            NewSoftwareAsset.Version = "TEST";
-            
+            // Set the hardware asset.
             if (SelectedHardwareAsset != null)
             {
                 NewSoftwareAsset.HardwareAssets.Add(SelectedHardwareAsset);
             }
 
-            // Add the new software asset to the database.
-            _softwareAssetService.AddSoftwareAsset(NewSoftwareAsset);
+            // Try to add the new software asset to the database and handle any exceptions.
+            try
+            {
+                _softwareAssetService.AddSoftwareAsset(NewSoftwareAsset);
 
-            // Set the status message and make it visible.
-            StatusMessage = "Software Asset Added";
+                SetStatusMessage("Software asset added successfully.");
+            }
+            catch (ArgumentException ex)
+            {
+                SetStatusMessage(ex.Message);
+            }
+            catch (MySqlException)
+            {
+                SetStatusMessage("There was an issue connecting to the database. Please try again later.");
+            }
+            catch (Exception)
+            {
+                SetStatusMessage("An unexpected error occurred. Please try again later.");
+            }
+        }
+
+        /// <summary>
+        /// Helper method to set the status message and make it visible.
+        /// </summary>
+        /// <param name="message">Message to be displayed.</param>
+        private void SetStatusMessage(string message)
+        {
+            StatusMessage = message;
             StatusVisibility = Visibility.Visible;
         }
     }
