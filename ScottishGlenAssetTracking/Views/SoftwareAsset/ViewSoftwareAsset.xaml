@@ -18,7 +18,7 @@
             <!--Selects-->
             <StackPanel Visibility="{Binding SelectsVisibility}">
                 <ComboBox x:Name="AssetSelect" Header="Asset" HorizontalAlignment="Stretch" PlaceholderText="Select Software Asset" Margin="10" 
-                  ItemsSource="{Binding SoftwareAssets}" SelectedItem="{Binding SelectedSoftwareAsset, Mode=TwoWay}" DisplayMemberPath="Name" SelectionChanged="SoftwareAssetSelect_SelectionChanged"/>
+                  ItemsSource="{Binding SoftwareAssets}" SelectedItem="{Binding SelectedSoftwareAsset, Mode=TwoWay}" DisplayMemberPath="DisplayName" SelectionChanged="SoftwareAssetSelect_SelectionChanged"/>
             </StackPanel>
 
             <!--View SoftwareAsset View-->

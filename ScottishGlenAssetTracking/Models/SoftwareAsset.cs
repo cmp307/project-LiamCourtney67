@@ -97,6 +97,14 @@ namespace ScottishGlenAssetTracking.Models
         }
 
         /// <summary>
+        /// DisplayName property for the SoftwareAsset entity, returns the Name and Version properties concatenated together.
+        /// </summary>
+        public string DisplayName
+        {
+            get { return $"{Name} {Version}"; }
+        }
+
+        /// <summary>
         /// Validation method for the Name property of the SoftwareAsset entity, must be between 1 and 64 characters and contain only letters, digits, spaces, periods, and hyphens.
         /// </summary>
         /// <param name="name">Name to be validated.</param>
