@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 using MySqlConnector;
 using ScottishGlenAssetTracking.Models;
 using ScottishGlenAssetTracking.Services;
@@ -9,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -65,6 +67,11 @@ namespace ScottishGlenAssetTracking.ViewModels
         /// </summary>
         public ObservableCollection<HardwareAsset> SoftwareAssetHardwareAssets { get; private set; }
 
+        /// <summary>
+        /// ObservableCollection of Vulnerability objects used in the view.
+        /// </summary>
+        public ObservableCollection<Vulnerability> SoftwareAssetVulnerabilities { get; private set; }
+
 
         // Properties.
         [ObservableProperty]
@@ -84,6 +91,9 @@ namespace ScottishGlenAssetTracking.ViewModels
         private Visibility statusVisibility = Visibility.Collapsed;
 
         [ObservableProperty]
+        private Visibility progressRingVisibility = Visibility.Collapsed;
+
+        [ObservableProperty]
         private Visibility viewSoftwareAssetViewVisibility = Visibility.Collapsed;
 
         [ObservableProperty]
@@ -93,7 +103,14 @@ namespace ScottishGlenAssetTracking.ViewModels
         private Visibility softwareAssetHardwareAssetsVisibility = Visibility.Collapsed;
 
         [ObservableProperty]
+        private Visibility softwareAssetVulnerabilitiesVisibility = Visibility.Collapsed;
+
+        [ObservableProperty]
         private Visibility buttonsVisibility = Visibility.Collapsed;
+
+        // IsActive properties.
+        [ObservableProperty]
+        private bool progressRingIsActive;
 
         // Commands
 
@@ -267,6 +284,77 @@ namespace ScottishGlenAssetTracking.ViewModels
         }
 
         /// <summary>
+        /// Command to check the vulnerabilities for the selected SoftwareAsset.
+        /// </summary>
+        [RelayCommand]
+        private async Task CheckVulnerabilities()
+        {
+            //SoftwareAssetVulnerabilities = new ObservableCollection<Vulnerability> { new Vulnerability { CveId = "CVE-2021-1234", Description = "This is a test vulnerability.wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww1", Severity = "HIGH" } };
+            //SoftwareAssetVulnerabilitiesVisibility = Visibility.Visible;
+            //OnPropertyChanged(nameof(SoftwareAssetVulnerabilities));
+            //return;
+
+
+            if (SelectedSoftwareAsset == null)
+            {
+                return;
+            }
+
+            if (!_account.IsAdmin)
+            {
+                return;
+            }
+
+            // Try to get the vulnerabilities for the selected SoftwareAsset and handle any exceptions.
+            try
+            {
+                // Alert the user that the vulnerabilities are being checked.
+                SetStatusMessage("Checking for vulnerabilities, please wait, this may take up to 60 seconds.");
+                ProgressRingIsActive = true;
+                ProgressRingVisibility = Visibility.Visible;
+
+                // Get the vulnerabilities for the selected SoftwareAsset and set the Vulnerabilities collection.
+                var vulnerabilitiesList = await _softwareAssetService.GetVulnerabilitiesAsync(SelectedSoftwareAsset.Version);
+                SoftwareAssetVulnerabilities = new ObservableCollection<Vulnerability>(vulnerabilitiesList);
+                OnPropertyChanged(nameof(SoftwareAssetVulnerabilities));
+
+                // Set the visibility of the SoftwareAssetVulnerabilitiesVisibility property based on the number of vulnerabilities.
+                if (SoftwareAssetVulnerabilities != null && SoftwareAssetVulnerabilities.Count > 0)
+                {
+                    SoftwareAssetVulnerabilitiesVisibility = Visibility.Visible;
+                    SetStatusMessage(string.Empty);
+                    OnPropertyChanged(nameof(SoftwareAssetVulnerabilities));
+                }
+                else
+                {
+                    SoftwareAssetVulnerabilitiesVisibility = Visibility.Collapsed;
+                    SetStatusMessage("No vulnerabilities found.");
+                }
+
+            }
+            catch (HttpRequestException ex)
+            {
+                SoftwareAssetVulnerabilitiesVisibility = Visibility.Collapsed;
+                SetStatusMessage(ex.Message);
+            }
+            catch (TaskCanceledException)
+            {
+                SoftwareAssetVulnerabilitiesVisibility = Visibility.Collapsed;
+                SetStatusMessage("The request timed out. Please try again later.");
+            }
+            catch (Exception)
+            {
+                SoftwareAssetVulnerabilitiesVisibility = Visibility.Collapsed;
+                SetStatusMessage("An unexpected error occurred. Please try again later.");
+            }
+            finally
+            {
+                ProgressRingIsActive = false;
+                ProgressRingVisibility = Visibility.Collapsed;
+            }
+        }
+
+        /// <summary>
         /// Command to change the view to the edit mode.
         /// </summary>
         [RelayCommand]
@@ -277,6 +365,7 @@ namespace ScottishGlenAssetTracking.ViewModels
             {
                 // Set the visibility properties for the view.
                 SelectsVisibility = Visibility.Collapsed;
+                SoftwareAssetVulnerabilitiesVisibility = Visibility.Collapsed;
                 ViewSoftwareAssetViewVisibility = Visibility.Collapsed;
                 EditSoftwareAssetViewVisibility = Visibility.Visible;
             }
@@ -291,6 +380,7 @@ namespace ScottishGlenAssetTracking.ViewModels
             // Set the visibility properties for the view.
             EditSoftwareAssetViewVisibility = Visibility.Collapsed;
             SelectsVisibility = Visibility.Visible;
+            SoftwareAssetVulnerabilitiesVisibility = Visibility.Collapsed;
             ViewSoftwareAssetViewVisibility = Visibility.Visible;
 
             if (_account.IsAdmin)
