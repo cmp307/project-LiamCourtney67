@@ -187,6 +187,7 @@ namespace ScottishGlenAssetTracking.ViewModels
             if (SelectedEmployee == null)
             {
                 SetStatusMessage("Please select an employee.");
+                return;
             }
 
             // Attempt to delete the employee, catching any exceptions that may occur.
@@ -245,6 +246,7 @@ namespace ScottishGlenAssetTracking.ViewModels
             if (SelectedEmployee == null)
             {
                 SetStatusMessage("Please select an employee.");
+                return;
             }
 
             // Attempt to update the employee, catching any exceptions that may occur.
