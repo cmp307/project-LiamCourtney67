@@ -128,7 +128,7 @@
                         <TextBlock Text="Software Asset" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Center" TextWrapping="Wrap" FontSize="20"/>
                     </Border>
                     <Border BorderBrush="LightGray" Background="DarkGray" BorderThickness="1" Grid.Row="9" Grid.Column="1">
-                        <TextBlock Text="{Binding SelectedHardwareAsset.SoftwareAsset.Name, Mode=TwoWay}" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Center" TextWrapping="Wrap" FontSize="20"/>
+                        <TextBlock Text="{Binding SelectedHardwareAsset.SoftwareAsset.DisplayName, Mode=TwoWay}" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Center" TextWrapping="Wrap" FontSize="20"/>
                     </Border>
 
                     <!--HardwareAsset SoftwareLinkDate-->
@@ -150,14 +150,6 @@
             <!--Edit HardwareAsset View-->
             <StackPanel x:Name="EditHardwareAssetView" Visibility="{Binding EditHardwareAssetViewVisibility}">
 
-                <!--HardwareAsset Details
-                <TextBox x:Name="HardwareAssetNameInput" Header="Name" Text="{Binding SelectedHardwareAsset.Name, Mode=TwoWay}" Margin="10" MaxLength="15"/>
-                <TextBox x:Name="HardwareAssetModelInput" Header="Model" Text="{Binding SelectedHardwareAsset.Model, Mode=TwoWay}" Margin="10" MaxLength="64"/>
-                <TextBox x:Name="HardwareAssetManufacturerInput" Header="Manufacturer" Text="{Binding SelectedHardwareAsset.Manufacturer, Mode=TwoWay}" Margin="10" MaxLength="64"/>
-                <TextBox x:Name="HardwareAssetTypeInput" Header="Type" Text="{Binding SelectedHardwareAsset.Type, Mode=TwoWay}" Margin="10" MaxLength="64"/>
-                <TextBox x:Name="HardwareAssetIpAddressInput" Header="IP Address" Text="{Binding SelectedHardwareAsset.IpAddress, Mode=TwoWay}" Margin="10" MaxLength="45"/>
-                Max Length of IP Address - https://stackoverflow.com/questions/166132/maximum-length-of-the-textual-representation-of-an-ipv6-address#166157-->
-                
                 <StackPanel Orientation="Horizontal">
                     <DatePicker x:Name="HardwareAssetPurchaseDateInput" Header="Purchase Date" Date="{Binding PurchaseDate, Mode=TwoWay}" Margin="10"
                                 MinYear="{Binding MinYear}" MaxYear="{Binding MaxYear}"/>
@@ -171,7 +163,7 @@
                 <ComboBox x:Name="HardwareAssetEmployeeSelect" Header="Employee" HorizontalAlignment="Stretch" PlaceholderText="Select Employee" Margin="10" 
                           ItemsSource="{Binding Employees}" SelectedItem="{Binding SelectedHardwareAsset.Employee, Mode=TwoWay}" IsEnabled="{Binding HardwareAssetEmployeeSelectIsEnabled}" DisplayMemberPath="Name" SelectionChanged="HardwareAssetEmployeeSelect_SelectionChanged"/>
                 <ComboBox x:Name="HardwareAssetSoftwareAssetSelect" Header="Software Asset" HorizontalAlignment="Stretch" PlaceholderText="Select Software Asset" Margin="10" 
-                          ItemsSource="{Binding SoftwareAssets}" SelectedItem="{Binding SelectedHardwareAsset.SoftwareAsset, Mode=TwoWay}" DisplayMemberPath="Name" SelectionChanged="HardwareAssetSoftwareAssetSelect_SelectionChanged"/>
+                          ItemsSource="{Binding SoftwareAssets}" SelectedItem="{Binding SelectedHardwareAsset.SoftwareAsset, Mode=TwoWay}" DisplayMemberPath="DisplayName" SelectionChanged="HardwareAssetSoftwareAssetSelect_SelectionChanged"/>
 
                 <!--Buttons-->
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
