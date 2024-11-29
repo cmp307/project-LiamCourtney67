@@ -64,22 +64,20 @@
                 <ListView x:Name="HardwareAssets" Header="Hardware Assets: " ItemsSource="{Binding SoftwareAssetHardwareAssets}" Visibility="{Binding SoftwareAssetHardwareAssetsVisibility}" DisplayMemberPath="Name" Margin="10" FontSize="32"/>
 
                 <!--Buttons-->
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Visibility="{Binding ButtonsVisibility}">
                     <Button x:Name="EditSoftwareAssetButton" Content="Edit Software Asset" Command="{Binding ChangeViewToEditCommand}" Margin="10" Background="Blue" Foreground="White"/>
                     <Button x:Name="DeleteSoftwareAssetButton" Content="Delete Software Asset" Command="{Binding DeleteSoftwareAssetCommand}" Margin="10" Background="Red" Foreground="White"/>
                 </StackPanel>
 
-                <!--Status Message-->
-                <TextBlock x:Name="StatusMessage" Text="{Binding StatusMessage}" Visibility="{Binding StatusVisibility}" Margin="10" HorizontalAlignment="Center"/>
             </StackPanel>
 
             <!--Edit SoftwareAsset View-->
             <StackPanel x:Name="EditSoftwareAssetView" Visibility="{Binding EditSoftwareAssetViewVisibility}">
 
-                <!--SoftwareAsset Details-->
+                <!--SoftwareAsset Details
                 <TextBox x:Name="SoftwareAssetNameInput" Header="Name" Text="{Binding UpdatedSoftwareAsset.Name, Mode=TwoWay}" Margin="10"/>
                 <TextBox x:Name="SoftwareAssetVersionInput" Header="Version" Text="{Binding UpdatedSoftwareAsset.Version, Mode=TwoWay}" Margin="10"/>
-                <TextBox x:Name="SoftwareAssetManufacturerInput" Header="Manufacturer" Text="{Binding UpdatedSoftwareAsset.Manufacturer, Mode=TwoWay}" Margin="10"/>
+                <TextBox x:Name="SoftwareAssetManufacturerInput" Header="Manufacturer" Text="{Binding UpdatedSoftwareAsset.Manufacturer, Mode=TwoWay}" Margin="10"/>-->
 
                 <!--Buttons-->
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
@@ -88,6 +86,9 @@
                 </StackPanel>
 
             </StackPanel>
+
+            <!--Status Message-->
+            <TextBlock x:Name="StatusMessage" Text="{Binding StatusMessage}" Visibility="{Binding StatusVisibility}" Margin="10" HorizontalAlignment="Center"/>
         </StackPanel>
     </Grid>
 </Page>

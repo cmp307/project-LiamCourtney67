@@ -21,10 +21,13 @@ using Windows.Foundation.Collections;
 namespace ScottishGlenAssetTracking.Views.Account
 {
     /// <summary>
-    /// An empty page that can be used on its own or navigated to within a Frame.
+    /// Page for viewing an account.
     /// </summary>
     public sealed partial class ViewAccount : Page
     {
+        /// <summary>
+        /// Constructor for the ViewAccount class.
+        /// </summary>
         public ViewAccount()
         {
             this.InitializeComponent();
@@ -39,23 +42,32 @@ namespace ScottishGlenAssetTracking.Views.Account
             }
         }
 
+        /// <summary>
+        /// Event handler for the primary button click event of the UpdatePasswordDialog.
+        /// </summary>
+        /// <param name="sender">The control that triggered the event.</param>
+        /// <param name="args">Event data that provides information about the primary button click event.</param>
         private void UpdatePasswordDialog_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
         {
+            // Check if the DataContext is a ViewAccountViewModel and execute the UpdatePassword method.
             if (DataContext is ViewAccountViewModel viewModel)
             {
                 bool isSuccess = viewModel.UpdatePassword();
 
+                // If the password was updated successfully, close the dialog and show a status message.
                 if (isSuccess)
                 {
-                    args.Cancel = true;
+                    args.Cancel = false;
 
                     viewModel.ChangeViewToViewCommand.Execute(null);
 
                     viewModel.StatusVisibility = Visibility.Visible;
                     viewModel.StatusMessage = "Password updated successfully.";
                 }
-
-                args.Cancel = false;
+                else
+                {
+                    args.Cancel = true;
+                }
             }
         }
     }

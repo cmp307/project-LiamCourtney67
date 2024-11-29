@@ -2,8 +2,10 @@
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Xaml;
+using MySqlConnector;
 using ScottishGlenAssetTracking.Models;
 using ScottishGlenAssetTracking.Services;
+using ScottishGlenAssetTracking.Views.Account;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -21,6 +23,7 @@ namespace ScottishGlenAssetTracking.ViewModels
         // Private fields for the DepartmentService and EmployeeService.
         private readonly DepartmentService _departmentService;
         private readonly EmployeeService _employeeService;
+        private readonly AccountService _accountService;
 
         // Private field for the Account.
         private readonly Account _account;
@@ -30,7 +33,8 @@ namespace ScottishGlenAssetTracking.ViewModels
         /// </summary>
         /// <param name="departmentService">DepartmentService from dependency injection.</param>
         /// <param name="employeeService">EmployeeService from dependency injection.</param>
-        public ViewEmployeeViewModel(DepartmentService departmentService, EmployeeService employeeService)
+        /// <param name="accountService">AccountService from dependency injection.</param>
+        public ViewEmployeeViewModel(DepartmentService departmentService, EmployeeService employeeService, AccountService accountService)
         {
             // Get the current account from the AccountManager.
             _account = App.AppHost.Services.GetRequiredService<AccountManager>().CurrentAccount;
@@ -38,6 +42,7 @@ namespace ScottishGlenAssetTracking.ViewModels
             // Initialize services.
             _departmentService = departmentService;
             _employeeService = employeeService;
+            _accountService = accountService;
 
             // Load departments and remove any unwanted items.
             Departments = new ObservableCollection<Department>(_departmentService.GetDepartments()
@@ -70,6 +75,15 @@ namespace ScottishGlenAssetTracking.ViewModels
         private Employee selectedEmployee;
 
         [ObservableProperty]
+        private string firstName;
+
+        [ObservableProperty]
+        private string lastName;
+
+        [ObservableProperty]
+        private string email;
+
+        [ObservableProperty]
         private string statusMessage;
 
         // Visibility properties.
@@ -99,6 +113,10 @@ namespace ScottishGlenAssetTracking.ViewModels
         private bool employeeDepartmentSelectIsEnabled = true;
 
 
+        // IsEnabled properties.
+        [ObservableProperty]
+        private bool emailIsEnabled = true;
+
         //Commands
 
         /// <summary>
@@ -125,9 +143,17 @@ namespace ScottishGlenAssetTracking.ViewModels
         [RelayCommand]
         private void PopulateEmployeeDetails()
         {
+            // Hide the Employees Hardware Assets visibility.
+            EmployeeHardwareAssetsVisibility = Visibility.Collapsed;
+
             // Only populate the employee details if an employee is selected.
             if (SelectedEmployee != null)
             {
+                // Set the properties to the Employee's properties.
+                FirstName = SelectedEmployee.FirstName;
+                LastName = SelectedEmployee.LastName;
+                Email = SelectedEmployee.Email;
+
                 // Set the selected employee's department to the department from the Departments collection and notify the view.
                 SelectedEmployee.Department = Departments.FirstOrDefault(d => d.Id == SelectedEmployee.Department.Id);
                 OnPropertyChanged(nameof(SelectedEmployee));
@@ -158,26 +184,55 @@ namespace ScottishGlenAssetTracking.ViewModels
         private void DeleteEmployee()
         {
             // Only delete an employee if an employee is selected.
-            if (SelectedEmployee != null)
+            if (SelectedEmployee == null)
             {
-                // Delete the selected employee from the database.
-                _employeeService.DeleteEmployee(SelectedEmployee.Id);
+                SetStatusMessage("Please select an employee.");
+                return;
+            }
 
-                // Set the status message and make it visible.
-                StatusVisibility = Visibility.Visible;
-                StatusMessage = "Employee Deleted";
+            // Attempt to delete the employee, catching any exceptions that may occur.
+            try
+            {
+                // Check if the employee is the current account.
+                bool isCurrentAccount = false;
+
+                if (_account.Employee != null)
+                {
+                    isCurrentAccount = SelectedEmployee.Id == _account.Employee.Id;
+                }
+
+                _employeeService.DeleteEmployee(SelectedEmployee.Id);
+                SelectedEmployee = null;
+
+                // If the employee is the current account, log out the account and navigate to the login page.
+                if (isCurrentAccount)
+                {
+                    App.AppHost.Services.GetRequiredService<AccountManager>().Logout();
+                    MainWindow.Frame.Navigate(typeof(Login));
+                    return;
+                }
 
                 // Reload the employees.
                 LoadEmployees();
 
-                // Change the view to the view mode.
                 ChangeViewToView();
+                SetStatusMessage("Employee deleted successfully.");
+
+                // Hide the view for the employee.
+                ViewEmployeeViewVisibility = Visibility.Collapsed;
             }
-            else
+            catch (ArgumentException ex)
             {
-                // Set the status message if no employee is selected.
-                StatusVisibility = Visibility.Visible;
-                StatusMessage = "No Employee Selected";
+                SetStatusMessage(ex.Message);
+            }
+            catch (MySqlException)
+            {
+                SetStatusMessage("There was an issue connecting to the database. Please try again later.");
+            }
+            catch (Exception ex)
+            {
+                SetStatusMessage("An unexpected error occurred. Please try again later.");
+                SetStatusMessage(ex.Message);
             }
         }
 
@@ -188,9 +243,20 @@ namespace ScottishGlenAssetTracking.ViewModels
         private void UpdateEmployee()
         {
             // Only update an employee if an employee is selected.
-            if (SelectedEmployee != null)
+            if (SelectedEmployee == null)
             {
-                // Update the selected employee in the database and notify the view.
+                SetStatusMessage("Please select an employee.");
+                return;
+            }
+
+            // Attempt to update the employee, catching any exceptions that may occur.
+            try
+            {
+                // Set the selected employee's properties.
+                SelectedEmployee.FirstName = FirstName;
+                SelectedEmployee.LastName = LastName;
+                SelectedEmployee.Email = Email;
+
                 _employeeService.UpdateEmployee(SelectedEmployee);
                 OnPropertyChanged(nameof(SelectedEmployee));
 
@@ -204,12 +270,22 @@ namespace ScottishGlenAssetTracking.ViewModels
                 // Set the selected employee to the employee with the selectedEmployeeId.
                 SelectedEmployee = Employees.FirstOrDefault(e => e.Id == selectedEmployeeId);
 
-                // Set the status message and make it visible.
-                StatusVisibility = Visibility.Visible;
-                StatusMessage = "Employee Updated";
-
-                // Change the view to the view mode.
                 ChangeViewToView();
+                ResetProperties();
+                PopulateEmployeeDetails();
+                SetStatusMessage("Employee updated successfully.");
+            }
+            catch (ArgumentException ex)
+            {
+                SetStatusMessage(ex.Message);
+            }
+            catch (MySqlException)
+            {
+                SetStatusMessage("There was an issue connecting to the database. Please try again later.");
+            }
+            catch (Exception)
+            {
+                SetStatusMessage("An unexpected error occurred. Please try again later.");
             }
         }
 
@@ -226,6 +302,26 @@ namespace ScottishGlenAssetTracking.ViewModels
                 SelectsVisibility = Visibility.Collapsed;
                 ViewEmployeeViewVisibility = Visibility.Collapsed;
                 EditEmployeeViewVisibility = Visibility.Visible;
+
+                EmailIsEnabled = !_accountService.EmployeeHasAccount(SelectedEmployee.Id);
+
+                // If the email is not enabled, set the status message.
+                if (!EmailIsEnabled)
+                {
+                    SetStatusMessage("Cannot update employee's email.");
+                }
+
+                // Check if the employee is the current account.
+                if (_account.Employee != null)
+                {
+                    bool isCurrentAccount = SelectedEmployee.Id == _account.Employee.Id;
+
+                    // If the employee is the current account, enable the email field.
+                    if (isCurrentAccount)
+                    {
+                        SetStatusMessage("Please navigate to Account to update email.");
+                    }
+                }
             }
         }
 
@@ -239,6 +335,7 @@ namespace ScottishGlenAssetTracking.ViewModels
             EditEmployeeViewVisibility = Visibility.Collapsed;
             SelectsVisibility = Visibility.Visible;
             ViewEmployeeViewVisibility = Visibility.Visible;
+            StatusMessage = string.Empty;
         }
 
         /// <summary>
@@ -264,6 +361,28 @@ namespace ScottishGlenAssetTracking.ViewModels
                 EmployeeSelectIsEnabled = false;
                 EmployeeDepartmentSelectIsEnabled = false;
             }
+        }
+
+        /// <summary>
+        /// Helper method to set the status message and make the status message visible.
+        /// </summary>
+        /// <param name="message">Message to be displayed.</param>
+        private void SetStatusMessage(string message)
+        {
+            // Set the status message and make the status message visible.
+            StatusMessage = message;
+            StatusVisibility = Visibility.Visible;
+        }
+
+        /// <summary>
+        /// Helper method to reset the properties of the view model.
+        /// </summary>
+        private void ResetProperties()
+        {
+            // Reset the properties of the view model.
+            FirstName = string.Empty;
+            LastName = string.Empty;
+            Email = string.Empty;
         }
     }
 }
