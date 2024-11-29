@@ -1,4 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.VisualBasic;
+using Newtonsoft.Json.Linq;
 using ScottishGlenAssetTracking.Data;
 using ScottishGlenAssetTracking.Models;
 using System;
@@ -6,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Management;
 using System.Net;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -160,25 +164,90 @@ namespace ScottishGlenAssetTracking.Services
         /// <returns>SoftwareAsset with the system information.</returns>
         public SoftwareAsset GetSoftwareAssetWithSystemInfo()
         {
-            // Create a new SoftwareAsset.
-            var softwareAsset = new SoftwareAsset();
+            // Initialize the name, version, and manufacturer of the system with "Unknown" in case of failure.
+            string name = "Unknown";
+            string version = "Unknown";
+            string manufacturer = "Unknown";
 
-            // Get the system information for the SoftwareAsset.
-            softwareAsset.Name = Environment.OSVersion.Platform.ToString();
-            softwareAsset.Version = Environment.OSVersion.Version.ToString();
-
-            // Set the manufacturer based on the OS, since this is only on Windows, Microsoft should be the only manufacturer, but add a check for unknown in case.
-            if (Environment.OSVersion.VersionString.Contains("Microsoft"))
+            using (var searcher = new ManagementObjectSearcher("SELECT * FROM Win32_OperatingSystem"))
             {
-                softwareAsset.Manufacturer = "Microsoft";
-            }
-            else
-            {
-                softwareAsset.Manufacturer = "Unknown";
+                // Iterate through the ManagementObjectSearcher to retrieve the system information.
+                foreach (ManagementObject obj in searcher.Get())
+                {
+                    name = obj["Caption"]?.ToString() ?? "Unknown";
+                    version = obj["Version"]?.ToString() ?? "Unknown";
+                    manufacturer = obj["Manufacturer"]?.ToString() ?? "Unknown";
+                }
             }
 
             // Return the SoftwareAsset with the system information.
-            return softwareAsset;
+            return new SoftwareAsset
+            {
+                Name = name,
+                Version = version,
+                Manufacturer = manufacturer
+            };
+        }
+
+        /// <summary>
+        /// Method to get vulnerabilities for a specific version of Windows 10 from the NIST NVD API.
+        /// </summary>
+        /// <param name="version">Version to be checked.</param>
+        /// <returns>List of Vulnerabilities for the specific version of Windows 10, or null if there are no vulnerabilities.</returns>
+        /// <exception cref="HttpRequestException">Thrown when the request to the NIST NVD API fails.</exception>
+        public async Task<List<Vulnerability>> GetVulnerabilitiesAsync(string version)
+        {
+            // Create a list to store the vulnerabilities.
+            List<Vulnerability> vulnerabilitiesList = new List<Vulnerability>();
+
+            // Get the NIST API key from the configuration.
+            string apiKey = App.Configuration["ApiKeys:NistApiKey"];
+
+            // Create a new HttpClient with a timeout of 60 seconds.
+            HttpClient client = new HttpClient
+            {
+                Timeout = TimeSpan.FromSeconds(60)
+            };
+
+            // Add the API key to the request headers and create the query.
+            client.DefaultRequestHeaders.Add("apiKey", apiKey);
+            client.DefaultRequestHeaders.Add("Accept", "application/json");
+            client.DefaultRequestHeaders.Add("User-Agent", "Scottish Glen");
+            string query = "https://services.nvd.nist.gov/rest/json/cves/2.0?cpeName=cpe:2.3:o:microsoft:windows_10:" + version + "&cvssV3Severity=CRITICAL";
+
+            // Send the request to the NIST NVD API and store the status code and reason phrase.
+            HttpResponseMessage response = await client.GetAsync(query);
+            var statusCode = (int)response.StatusCode;
+            var reasonPhrase = response.ReasonPhrase;
+
+            // Check if the request was successful and parse the JSON response, adding the vulnerabilities to the list, or return null if there are no vulnerabilities.
+            if (response.IsSuccessStatusCode)
+            {
+                string jsonResponse = await response.Content.ReadAsStringAsync();
+                JObject json = JObject.Parse(jsonResponse);
+
+                var vulnerabilities = json["vulnerabilities"];
+                if (vulnerabilities == null || !vulnerabilities.HasValues)
+                {
+                    return null;
+                }
+
+                foreach (var vulnerability in vulnerabilities)
+                {
+                    vulnerabilitiesList.Add(new Vulnerability
+                    {
+                        CveId = vulnerability["cve"]["id"]?.ToString(),
+                        Description = vulnerability["cve"]["descriptions"]?[0]?["value"]?.ToString(),
+                        Severity = vulnerability["cve"]["metrics"]?["cvssMetricV2"]?[0]?["baseSeverity"]?.ToString()
+                    });
+                }
+
+                return vulnerabilitiesList;
+            }
+            else
+            {
+                throw new HttpRequestException($"Failed to retrieve vulnerabilities: Error {statusCode} {reasonPhrase}.");
+            }
         }
 
         /// <summary>
