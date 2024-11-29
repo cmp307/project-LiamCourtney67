@@ -15,16 +15,18 @@
             <TextBlock x:Name="Title" Text="Scottish Glen Asset Tracking" FontSize="36" Margin="10"/>
             
             <!--Header-->
-            <TextBlock x:Name="RegisterHeader" Text="Register" FontSize="24" Margin="10"/>
+            <TextBlock x:Name="RegisterHeader" Text="Register" FontSize="24" Margin="10" HorizontalAlignment="Center"/>
             
             <!--Email-->
-            <TextBox x:Name="Email" Header="Email" PlaceholderText="Enter Email" Margin="10" Text="{Binding NewAccount.Email, Mode=TwoWay}"/>
+            <TextBox x:Name="Email" Header="Email" PlaceholderText="Enter Email" Margin="10" Text="{Binding Email, Mode=TwoWay}"/>
             
             <!--Password-->
-            <PasswordBox x:Name="Password" Header="Password" PlaceholderText="Enter Password" Margin="10" Password="{Binding NewAccount.Password, Mode=TwoWay}"/>
+            <PasswordBox x:Name="Password" Header="Password" PlaceholderText="Enter Password" Margin="10" Password="{Binding Password, Mode=TwoWay}" IsPasswordRevealButtonEnabled="True"/>
             
             <!--Confirm Password-->
-            <PasswordBox x:Name="ConfirmPassword" Header="Confirm Password" PlaceholderText="Confirm Password" Margin="10" Password="{Binding ConfirmPassword, Mode=TwoWay}"/>
+            <PasswordBox x:Name="ConfirmPassword" Header="Confirm Password" PlaceholderText="Confirm Password" Margin="10" Password="{Binding ConfirmPassword, Mode=TwoWay}" IsPasswordRevealButtonEnabled="True"/>
+            
+            <!--Don't set a min length for password as users might put one too long and think it was accepted-->
 
             <!--Buttons-->
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">

@@ -141,7 +141,11 @@ namespace ScottishGlenAssetTracking.Models
             get { return _purchaseDate; }
             set
             {
-                if (IsValidPurchaseDate(value))
+                if (value == null)
+                {
+                    _purchaseDate = null;
+                }
+                else if (IsValidPurchaseDate(value))
                 {
                     _purchaseDate = value;
                 }
@@ -160,14 +164,22 @@ namespace ScottishGlenAssetTracking.Models
             get { return _notes; }
             set
             {
-                if (IsValidNotes(value.Trim()))
+                if (value == null || value == string.Empty)
                 {
-                    // Trim the value to remove leading and trailing whitespace.
-                    _notes = value.Trim();
+                    _notes = null;
                 }
                 else
                 {
-                    throw new ArgumentException("Notes must be 256 characters or less.");
+                    // Check if the notes are valid (256 characters or less
+                    if (IsValidNotes(value.Trim()))
+                    {
+                        // Trim the value to remove leading and trailing whitespace.
+                        _notes = value.Trim();
+                    }
+                    else
+                    {
+                        throw new ArgumentException("Notes must be 256 characters or less.");
+                    }
                 }
             }
         }
@@ -267,7 +279,7 @@ namespace ScottishGlenAssetTracking.Models
         /// </summary>
         /// <param name="purchaseDate">PurchaseDate to be validated.</param>
         /// <returns>True if valid, false if not.</returns>
-        private bool IsValidPurchaseDate(DateTime? purchaseDate) 
+        private bool IsValidPurchaseDate(DateTime? purchaseDate)
         {
             DateTime minDate = new DateTime(1990, 1, 1);        // TODO - Set to a reasonable minimum date
             DateTime maxDate = DateTime.Now;

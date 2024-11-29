@@ -23,11 +23,12 @@
 
             <!--HardwareAsset Details-->
             <StackPanel Orientation="Horizontal">
-                <DatePicker x:Name="HardwareAssetPurchaseDateInput" Header="Purchase Date" Date="{Binding PurchaseDate, Mode=TwoWay}" Margin="10"/>
+                <DatePicker x:Name="HardwareAssetPurchaseDateInput" Header="Purchase Date" Date="{Binding PurchaseDate, Mode=TwoWay}" Margin="10"
+                            MinYear="{Binding MinYear}" MaxYear="{Binding MaxYear}"/>
                 <Button x:Name="ClearPurchaseDateButton" Content="Clear" Command="{Binding ClearPurchaseDateCommand}" Margin="10, 30, 10, 10"/>
             </StackPanel>
 
-            <TextBox x:Name="HardwareAssetNotes" Header="Notes" PlaceholderText="Enter Notes" Margin="10" Text="{Binding NewHardwareAsset.Notes, Mode=TwoWay}"/>
+            <TextBox x:Name="HardwareAssetNotes" Header="Notes" PlaceholderText="Enter Notes" Margin="10" Text="{Binding Notes, Mode=TwoWay}" MaxLength="256"/>
 
             <!--Add HardwareAsset Button-->
             <Button x:Name="AddHardwareAssetButton" Content="Add Hardware Asset" Command="{Binding AddHardwareAssetCommand}" Margin="10" 

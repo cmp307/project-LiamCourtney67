@@ -16,7 +16,8 @@ namespace ScottishGlenAssetTracking.Models
         private int _id;                            // Set by the database, so no validation needed.
         private string _email;
         private string _password;
-        private Employee _employee;                 // No validation needed, handled by Employee entity.
+        private Employee? _employee;                 // No validation needed, handled by Employee entity.
+        private int? _employeeId;                    // Reference property for the EmployeeId of the Employee entity.
         private bool _isAdmin;
 
         /// <summary>
@@ -70,7 +71,7 @@ namespace ScottishGlenAssetTracking.Models
         /// <summary>
         /// Navigational property for the Employee entity within the Account entity.
         /// </summary>
-        public Employee Employee
+        public Employee? Employee
         {
             get { return _employee; }
             set { _employee = value; }
@@ -79,12 +80,38 @@ namespace ScottishGlenAssetTracking.Models
         /// <summary>
         /// Reference property for the EmployeeId of the Employee entity within the Account entity.
         /// </summary>
-        public int? EmployeeId => Employee.Id;
+        public int? EmployeeId
+        {
+            get
+            {
+                if (Employee != null)
+                {
+                    return Employee.Id;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
 
         /// <summary>
         /// Used to display the full name of the Employee entity within the Account entity.
         /// </summary>
-        public string EmployeeName => Employee.Name;
+        public string? EmployeeName
+        {
+            get
+            {
+                if (Employee != null)
+                {
+                    return Employee.Name;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
 
         /// <summary>
         /// IsAdmin property for the Account entity, used to determine if the account is an administrator.
@@ -94,12 +121,17 @@ namespace ScottishGlenAssetTracking.Models
             get { return _isAdmin; }
             set
             {
-                if (CanBeAdmin())
+                if (value == false)
                 {
-                    _isAdmin = value;
+                    _isAdmin = false;
+                }
+                else if (CanBeAdmin())
+                {
+                    _isAdmin = true;
                 }
                 else
                 {
+                    _isAdmin = false;
                     throw new ArgumentException("Only IT department employees can be administrators.");
                 }
             }

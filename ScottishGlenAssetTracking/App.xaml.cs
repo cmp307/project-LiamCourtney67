@@ -140,7 +140,7 @@ namespace ScottishGlenAssetTracking
 
             services.AddSingleton<RegisterViewModel>();
             services.AddSingleton<LoginViewModel>();
-            services.AddSingleton<ViewAccountViewModel>();
+            services.AddTransient<ViewAccountViewModel>();
             services.AddTransient<ManageAccountsViewModel>();
 
             // Add views to the services collection.
