@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.VisualBasic;
 using ScottishGlenAssetTracking.Data;
 using ScottishGlenAssetTracking.Models;
 using System;
@@ -160,25 +161,29 @@ namespace ScottishGlenAssetTracking.Services
         /// <returns>SoftwareAsset with the system information.</returns>
         public SoftwareAsset GetSoftwareAssetWithSystemInfo()
         {
-            // Create a new SoftwareAsset.
-            var softwareAsset = new SoftwareAsset();
+            // Initialize the name, version, and manufacturer of the system with "Unknown" in case of failure.
+            string name = "Unknown";
+            string version = "Unknown";
+            string manufacturer = "Unknown";
 
-            // Get the system information for the SoftwareAsset.
-            softwareAsset.Name = Environment.OSVersion.Platform.ToString();
-            softwareAsset.Version = Environment.OSVersion.Version.ToString();
-
-            // Set the manufacturer based on the OS, since this is only on Windows, Microsoft should be the only manufacturer, but add a check for unknown in case.
-            if (Environment.OSVersion.VersionString.Contains("Microsoft"))
+            using (var searcher = new ManagementObjectSearcher("SELECT * FROM Win32_OperatingSystem"))
             {
-                softwareAsset.Manufacturer = "Microsoft";
-            }
-            else
-            {
-                softwareAsset.Manufacturer = "Unknown";
+                // Iterate through the ManagementObjectSearcher to retrieve the system information.
+                foreach (ManagementObject obj in searcher.Get())
+                {
+                    name = obj["Caption"]?.ToString() ?? "Unknown";
+                    version = obj["Version"]?.ToString() ?? "Unknown";
+                    manufacturer = obj["Manufacturer"]?.ToString() ?? "Unknown";
+                }
             }
 
             // Return the SoftwareAsset with the system information.
-            return softwareAsset;
+            return new SoftwareAsset
+            {
+                Name = name,
+                Version = version,
+                Manufacturer = manufacturer
+            };
         }
 
         /// <summary>
