@@ -11,9 +11,7 @@
 
     <Grid Background="Gray">
         <!--Navigation-->
-        <NavigationView x:Name="Navigation"
-        ItemInvoked="Nav_ItemInvoked" PaneDisplayMode="Top"
-        IsBackButtonVisible="Collapsed" IsSettingsVisible="False">
+        <NavigationView x:Name="Navigation" ItemInvoked="Nav_ItemInvoked" PaneDisplayMode="Top" IsBackButtonVisible="Collapsed" IsSettingsVisible="False">
 
             <NavigationView.MenuItems>
 
@@ -57,11 +55,10 @@
             <!--Account and Logout-->
             <NavigationView.FooterMenuItems>
                 <NavigationViewItem Tag="ViewAccount" Content="Account" Background="Gray"/>
-                <!--{Binding Username, Mode=TwoWay}-->
                 <NavigationViewItem Tag="Logout" Content="Logout" Background="Gray"/>
             </NavigationView.FooterMenuItems>
 
-            <!--Main Frame-->
+            <!--Admin Frame-->
             <ScrollViewer>
                 <Frame x:Name="AdminFrame">
 

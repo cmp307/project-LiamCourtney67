@@ -25,15 +25,17 @@ using Windows.Foundation.Collections;
 namespace ScottishGlenAssetTracking.Views.Portals
 {
     /// <summary>
-    /// An empty page that can be used on its own or navigated to within a Frame.
+    /// Page for the employee portal.
     /// </summary>
     public sealed partial class EmployeePortal : Page
     {
+        /// <summary>
+        /// Constructor for the EmployeePortal class.
+        /// </summary>
         public EmployeePortal()
         {
             this.InitializeComponent();
         }
-
 
         /// <summary>
         /// Event handler for the item invoked event of the navigation view.
