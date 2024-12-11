@@ -25,10 +25,13 @@ using Windows.Foundation.Collections;
 namespace ScottishGlenAssetTracking.Views.Portals
 {
     /// <summary>
-    /// An empty page that can be used on its own or navigated to within a Frame.
+    /// Page for the admin portal.
     /// </summary>
     public sealed partial class AdminPortal : Page
     {
+        /// <summary>
+        /// Constructor for the AdminPortal class.
+        /// </summary>
         public AdminPortal()
         {
             this.InitializeComponent();
