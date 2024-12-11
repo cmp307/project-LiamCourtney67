@@ -213,41 +213,48 @@ namespace ScottishGlenAssetTracking.Services
             client.DefaultRequestHeaders.Add("apiKey", apiKey);
             client.DefaultRequestHeaders.Add("Accept", "application/json");
             client.DefaultRequestHeaders.Add("User-Agent", "Scottish Glen");
-            string query = "https://services.nvd.nist.gov/rest/json/cves/2.0?cpeName=cpe:2.3:o:microsoft:windows_10:" + version + "&cvssV3Severity=CRITICAL";
 
-            // Send the request to the NIST NVD API and store the status code and reason phrase.
-            HttpResponseMessage response = await client.GetAsync(query);
-            var statusCode = (int)response.StatusCode;
-            var reasonPhrase = response.ReasonPhrase;
+            string[] severities = { "CRITICAL", "HIGH" };
 
-            // Check if the request was successful and parse the JSON response, adding the vulnerabilities to the list, or return null if there are no vulnerabilities.
-            if (response.IsSuccessStatusCode)
+            foreach (var severity in severities)
             {
-                string jsonResponse = await response.Content.ReadAsStringAsync();
-                JObject json = JObject.Parse(jsonResponse);
 
-                var vulnerabilities = json["vulnerabilities"];
-                if (vulnerabilities == null || !vulnerabilities.HasValues)
-                {
-                    return null;
-                }
+                string query = "https://services.nvd.nist.gov/rest/json/cves/2.0?cpeName=cpe:2.3:o:microsoft:windows_10:" + version + $"&cvssV3Severity={severity}";
 
-                foreach (var vulnerability in vulnerabilities)
+                // Send the request to the NIST NVD API and store the status code and reason phrase.
+                HttpResponseMessage response = await client.GetAsync(query);
+                var statusCode = (int)response.StatusCode;
+                var reasonPhrase = response.ReasonPhrase;
+
+                // Check if the request was successful and parse the JSON response, adding the vulnerabilities to the list, or return null if there are no vulnerabilities.
+                if (response.IsSuccessStatusCode)
                 {
-                    vulnerabilitiesList.Add(new Vulnerability
+                    string jsonResponse = await response.Content.ReadAsStringAsync();
+                    JObject json = JObject.Parse(jsonResponse);
+
+                    var vulnerabilities = json["vulnerabilities"];
+                    if (vulnerabilities == null || !vulnerabilities.HasValues)
                     {
-                        CveId = vulnerability["cve"]["id"]?.ToString(),
-                        Description = vulnerability["cve"]["descriptions"]?[0]?["value"]?.ToString(),
-                        Severity = vulnerability["cve"]["metrics"]?["cvssMetricV2"]?[0]?["baseSeverity"]?.ToString()
-                    });
-                }
+                        return null;
+                    }
 
-                return vulnerabilitiesList;
+                    foreach (var vulnerability in vulnerabilities)
+                    {
+                        vulnerabilitiesList.Add(new Vulnerability
+                        {
+                            CveId = vulnerability["cve"]["id"]?.ToString(),
+                            Description = vulnerability["cve"]["descriptions"]?[0]?["value"]?.ToString(),
+                            Severity = vulnerability["cve"]["metrics"]?["cvssMetricV30"]?[0]?["cvssData"]?["baseSeverity"]?.ToString() ?? vulnerability["cve"]["metrics"]?["cvssMetricV31"]?[0]?["cvssData"]?["baseSeverity"]?.ToString()
+                        });
+                    }
+                }
+                else
+                {
+                    throw new HttpRequestException($"Failed to retrieve vulnerabilities: Error {statusCode} {reasonPhrase}.");
+                }
             }
-            else
-            {
-                throw new HttpRequestException($"Failed to retrieve vulnerabilities: Error {statusCode} {reasonPhrase}.");
-            }
+
+            return vulnerabilitiesList;
         }
 
         /// <summary>
