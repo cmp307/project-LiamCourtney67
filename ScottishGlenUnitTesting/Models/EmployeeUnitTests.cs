@@ -108,14 +108,13 @@ namespace ScottishGlenUnitTesting.Models
         [TestMethod]
         public void InvalidEmployeeUnitTest()
         {
-            // Arrange, Act, Assert
-            Assert.ThrowsException<ArgumentException>(() => new Employee
-            {
-                FirstName = "_J_@_£",
-                LastName = "Doe",
-                Email = "email"
-            }
-            );
+            // Arrange, 
+            Employee employee = new Employee();
+
+            // Act, Assert
+            Assert.ThrowsException<ArgumentException>(() => employee.FirstName = "~");
+            Assert.ThrowsException<ArgumentException>(() => employee.LastName = "~");
+            Assert.ThrowsException<ArgumentException>(() => employee.Email = "testemail");
         }
 
         /// <summary>
