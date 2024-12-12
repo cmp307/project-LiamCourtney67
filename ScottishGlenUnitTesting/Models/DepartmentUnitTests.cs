@@ -73,10 +73,10 @@ namespace ScottishGlenUnitTesting.Models
         }
 
         /// <summary>
-        /// Unit test for a Department with invalid Employees.
+        /// Unit test for a valid Department with invalid Employees.
         /// </summary>
         [TestMethod]
-        public void DepartmentWithInvalidEmployeesUnitTest()
+        public void ValidDepartmentWithInvalidEmployeesUnitTest()
         {
             // Arrange
             Department department = new Department
