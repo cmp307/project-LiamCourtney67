@@ -118,10 +118,10 @@ namespace ScottishGlenUnitTesting.Models
         }
 
         /// <summary>
-        /// Unit test for an Employee with an invalid HardwareAsset.
+        /// Unit test for a valid Employee with an invalid HardwareAsset.
         /// </summary>
         [TestMethod]
-        public void EmployeeWithInvalidHardwareAssetUnitTest()
+        public void ValidEmployeeWithInvalidHardwareAssetUnitTest()
         {
             // Arrange
             Employee employee = new Employee
