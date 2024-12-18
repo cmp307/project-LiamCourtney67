@@ -87,8 +87,8 @@
             <StackPanel x:Name="EditEmployeeView" Visibility="{Binding EditEmployeeViewVisibility}">
 
                 <!--Employee Details-->
-                <TextBox Header="First Name" Text="{Binding FirstName, Mode=TwoWay}" Margin="10"/>
-                <TextBox Header="Last Name" Text="{Binding LastName, Mode=TwoWay}" Margin="10"/>
+                <TextBox Header="First Name" Text="{Binding FirstName, Mode=TwoWay}" Margin="10" MaxLength="64"/>
+                <TextBox Header="Last Name" Text="{Binding LastName, Mode=TwoWay}" Margin="10" MaxLength="64"/>
                 <TextBox Header="Email" Text="{Binding Email, Mode=TwoWay}" Margin="10" IsEnabled="{Binding EmailIsEnabled}"/>
 
                 <!--Employee Department Select-->
