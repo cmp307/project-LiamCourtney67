@@ -142,15 +142,15 @@ namespace ScottishGlenAssetTracking.ViewModels
                 // Set the Notes property of the new asset to the Notes property.
                 NewHardwareAsset.Notes = Notes;
 
-                // Try to add the software asset to the database.
-                if (!AddSoftwareAsset())
-                {
-                    return;
-                }
-
                 // Add the new hardware asset to the database.
                 if (_hardwareAssetService.AddHardwareAsset(NewHardwareAsset))
                 {
+                    // Try to add the software asset to the database.
+                    if (!AddSoftwareAsset())
+                    {
+                        return;
+                    }
+
                     SetStatusMessage("Hardware asset added successfully.");
                     ResetSelectionsAndProperties();
                 }
@@ -203,6 +203,7 @@ namespace ScottishGlenAssetTracking.ViewModels
                 // Load employees based on the selected department and set the HardwareAssets's employee to the employee from the Employees collection.
                 LoadEmployees();
                 NewHardwareAsset.Employee = Employees.FirstOrDefault(e => e.Id == _account.Employee.Id);
+                OnPropertyChanged(nameof(NewHardwareAsset));
 
                 // Disable the selects.
                 DepartmentSelectIsEnabled = false;
@@ -248,12 +249,17 @@ namespace ScottishGlenAssetTracking.ViewModels
         private void ResetSelectionsAndProperties()
         {
             // Reset the NewHardwareAsset.
-            NewHardwareAsset = null;
+            NewHardwareAsset = _hardwareAssetService.GetHardwareAssetWithSystemInfo();
 
             if (_account.IsAdmin)
             {
                 // Reset the selected department and employee.
                 SelectedDepartment = null;
+            }
+            else
+            {
+                // Load the department and employee, since the hardware asset has been reset.
+                LoadSelectionsForAccountType();
             }
 
             // Reset the purchase date and notes.
