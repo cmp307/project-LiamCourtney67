@@ -155,6 +155,9 @@
 
             <!--Edit SoftwareAsset View-->
             <StackPanel x:Name="EditSoftwareAssetView" Visibility="{Binding EditSoftwareAssetViewVisibility}">
+                
+                <!--Info-->
+                <TextBlock x:Name="Info" Text="The details for the software asset will be automatically retrieved." FontSize="16" Margin="10" TextWrapping="Wrap"/>
 
                 <!--Buttons-->
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
