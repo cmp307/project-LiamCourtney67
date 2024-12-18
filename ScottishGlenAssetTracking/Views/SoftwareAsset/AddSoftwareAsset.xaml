@@ -14,11 +14,17 @@
         <StackPanel>
             <!--Header-->
             <TextBlock x:Name="AddSoftwareAssetHeader" Text="Add Software Asset" FontSize="24" Margin="10"/>
+            
+            <!--Info-->
+            <TextBlock x:Name="Info" Text="It is optional to select a hardware asset for the new software asset to be linked to." FontSize="16" Margin="10" TextWrapping="Wrap"/>
 
             <!--Selects-->
-            <ComboBox x:Name="HardwareAssetSelect" Header="Hardware Asset" HorizontalAlignment="Stretch" PlaceholderText="Select Hardware Asset" Margin="10"
+            <ComboBox x:Name="HardwareAssetSelect" Header="Optional: Hardware Asset" HorizontalAlignment="Stretch" PlaceholderText="Optional: Select Hardware Asset" Margin="10"
                       ItemsSource="{Binding HardwareAssets}" SelectedItem="{Binding SelectedHardwareAsset, Mode=TwoWay}" DisplayMemberPath="Name"/>
 
+            <!--More Info-->
+            <TextBlock x:Name="MoreInfo" Text="The details for the software asset will be automatically retrieved." FontSize="16" Margin="10" TextWrapping="Wrap"/>
+            
             <!--Add SoftwareAsset Button-->
             <Button x:Name="AddSoftwareAssetButton" Content="Add Software Asset" Command="{Binding AddSoftwareAssetCommand}" Margin="10" 
                     Background="Green" Foreground="White" HorizontalAlignment="Right"/>

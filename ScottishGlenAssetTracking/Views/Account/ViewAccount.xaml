@@ -70,8 +70,8 @@
 
                 <!--Buttons-->
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                    <Button x:Name="CancelButton" Content="Cancel" Command="{Binding ChangeViewToViewCommand}" Margin="10" Background="Red" Foreground="White"/>
                     <Button x:Name="UpdatePasswordButton" Content="Update Password" Command="{Binding ShowDialogCommand}" Margin="10" Background="Blue" Foreground="White"/>
+                    <Button x:Name="CancelButton" Content="Cancel" Command="{Binding ChangeViewToViewCommand}" Margin="10" Background="Red" Foreground="White"/>
                     <Button x:Name="UpdateAccountButton" Content="Update Account" Command="{Binding UpdateAccountCommand}" Margin="10" Background="Green" Foreground="White"/>
                 </StackPanel>
 
