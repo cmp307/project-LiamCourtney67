@@ -168,7 +168,7 @@
             </StackPanel>
 
             <!--Status Message-->
-            <TextBlock x:Name="StatusMessage" Text="{Binding StatusMessage}" Visibility="{Binding StatusVisibility}" Margin="10" HorizontalAlignment="Center"/>
+            <TextBlock x:Name="StatusMessage" Text="{Binding StatusMessage}" Visibility="{Binding StatusVisibility}" Margin="10" HorizontalAlignment="Center" TextWrapping="Wrap"/>
 
             <!--Progress Ring-->
             <ProgressRing x:Name="ProgressRing" IsActive="{Binding ProgressRingIsActive}" Visibility="{Binding ProgressRingVisibility}" Margin="10" HorizontalAlignment="Center"/>

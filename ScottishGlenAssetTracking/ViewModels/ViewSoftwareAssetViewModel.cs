@@ -289,12 +289,6 @@ namespace ScottishGlenAssetTracking.ViewModels
         [RelayCommand]
         private async Task CheckVulnerabilities()
         {
-            //SoftwareAssetVulnerabilities = new ObservableCollection<Vulnerability> { new Vulnerability { CveId = "CVE-2021-1234", Description = "This is a test vulnerability.wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww1", Severity = "HIGH" } };
-            //SoftwareAssetVulnerabilitiesVisibility = Visibility.Visible;
-            //OnPropertyChanged(nameof(SoftwareAssetVulnerabilities));
-            //return;
-
-
             if (SelectedSoftwareAsset == null)
             {
                 return;
@@ -341,6 +335,11 @@ namespace ScottishGlenAssetTracking.ViewModels
             {
                 SoftwareAssetVulnerabilitiesVisibility = Visibility.Collapsed;
                 SetStatusMessage("The request timed out. Please try again later.");
+            }
+            catch (ArgumentException ex)
+            {
+                SoftwareAssetVulnerabilitiesVisibility = Visibility.Collapsed;
+                SetStatusMessage(ex.Message);
             }
             catch (Exception)
             {
