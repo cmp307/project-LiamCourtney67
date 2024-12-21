@@ -11,6 +11,7 @@ using System.Management;
 using System.Net;
 using System.Net.Http;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace ScottishGlenAssetTracking.Services
@@ -190,12 +191,84 @@ namespace ScottishGlenAssetTracking.Services
         }
 
         /// <summary>
+        /// Method to get vulnerabilities for a specific version of Windows from the NIST NVD API.
+        /// </summary>
+        /// <param name="version">Version to be checked.</param>
+        /// <returns>List of Vulnerabilities for the specific version of Windows, or null if there are no vulnerabilities.</returns>
+        /// <exception cref="ArgumentException">The version is invalid, must be a valid Windows 10/11 version..</exception>
+        public async Task<List<Vulnerability>> GetVulnerabilitiesAsync(string version)
+        {
+            // Check if the version is null or empty.
+            if (string.IsNullOrEmpty(version)) { return null; }
+
+            // https://chatgpt.com/share/67670b36-f7f4-800c-aeb3-f42f0f497c09
+            if (!Regex.IsMatch(version, @"^(?:\d{4}|\d{2}H\d)$"))
+            {
+                // Get the version name from the version number.
+                version = GetVersionNameFromVersionNumber(version);
+            }
+
+            // Check if the version is for Windows 10.
+            if (Int32.Parse(version.Substring(0, 2)) < 23) { return await GetVulnerabilitiesForWindows10Async(version); }
+
+            // Check if the version is for Windows 11.
+            else if (Int32.Parse(version.Substring(0, 2)) > 22) { return await GetVulnerabilitiesForWindows11Async(version); }
+
+            // Return null if the version is not for Windows 10 or Windows 11.
+            else { return null; }
+        }
+
+        /// <summary>
+        /// Helper method to get the version name from the version number.
+        /// </summary>
+        /// <param name="versionNumber">Version</param>
+        /// <returns>The version name to be used with the NIST API.</returns>
+        /// <exception cref="ArgumentException">Thrown when the version number is not found.</exception>
+        private string GetVersionNameFromVersionNumber(string versionNumber)
+        {
+            // NIST API uses version names, so we need to map the version number to the version name.
+            // https://en.wikipedia.org/wiki/List_of_Microsoft_Windows_versions
+            // This will need to be updated as new versions are released.
+
+            // Create a dictionary to map Windows version numbers to version names.
+            var windowsVersionMap = new Dictionary<string, string>
+            {
+                // Windows 10 Versions
+                { "10.0.10240", "1507" },
+                { "10.0.10586", "1511" },
+                { "10.0.14393", "1607" },
+                { "10.0.15063", "1703" },
+                { "10.0.16299", "1709" },
+                { "10.0.17134", "1803" },
+                { "10.0.17763", "1809" },
+                { "10.0.18362", "1903" },
+                { "10.0.18363", "1909" },
+                { "10.0.19041", "2004" },
+                { "10.0.19042", "20H2" },
+                { "10.0.19043", "21H1" },
+                { "10.0.19044", "21H2" },
+                { "10.0.19045", "22H2" },
+
+                // Windows 11 Versions
+                { "10.0.22000", "21H2" },
+                { "10.0.22621", "22H2" },
+                { "10.0.22631", "23H2" },
+                { "10.0.26100", "24H2" }
+            };
+
+            // Check if the version number is in the dictionary and return the version name.
+            windowsVersionMap.TryGetValue(versionNumber, out string versionName);
+            return versionName ?? throw new ArgumentException("Version number not found, please try again later, if the issue persists, contact an administrator.");
+
+        }
+
+        /// <summary>
         /// Method to get vulnerabilities for a specific version of Windows 10 from the NIST NVD API.
         /// </summary>
         /// <param name="version">Version to be checked.</param>
         /// <returns>List of Vulnerabilities for the specific version of Windows 10, or null if there are no vulnerabilities.</returns>
         /// <exception cref="HttpRequestException">Thrown when the request to the NIST NVD API fails.</exception>
-        public async Task<List<Vulnerability>> GetVulnerabilitiesAsync(string version)
+        private async Task<List<Vulnerability>> GetVulnerabilitiesForWindows10Async(string version)
         {
             // Create a list to store the vulnerabilities.
             List<Vulnerability> vulnerabilitiesList = new List<Vulnerability>();
@@ -214,12 +287,14 @@ namespace ScottishGlenAssetTracking.Services
             client.DefaultRequestHeaders.Add("Accept", "application/json");
             client.DefaultRequestHeaders.Add("User-Agent", "Scottish Glen");
 
+            // Create an array of severities to check for.
             string[] severities = { "CRITICAL", "HIGH" };
 
+            // Iterate through the severities and create a query for each one.
             foreach (var severity in severities)
             {
-
-                string query = "https://services.nvd.nist.gov/rest/json/cves/2.0?cpeName=cpe:2.3:o:microsoft:windows_10:" + version + $"&cvssV3Severity={severity}";
+                // Create the query for the NIST NVD API.
+                string query = $"https://services.nvd.nist.gov/rest/json/cves/2.0?cpeName=cpe:2.3:o:microsoft:windows_10:{version}&cvssV3Severity={severity}";
 
                 // Send the request to the NIST NVD API and store the status code and reason phrase.
                 HttpResponseMessage response = await client.GetAsync(query);
@@ -238,6 +313,7 @@ namespace ScottishGlenAssetTracking.Services
                         return null;
                     }
 
+                    // Add the vulnerabilities to the list using the CveId, Description, and Severity.
                     foreach (var vulnerability in vulnerabilities)
                     {
                         vulnerabilitiesList.Add(new Vulnerability
@@ -252,6 +328,80 @@ namespace ScottishGlenAssetTracking.Services
                 {
                     throw new HttpRequestException($"Failed to retrieve vulnerabilities: Error {statusCode} {reasonPhrase}.");
                 }
+            }
+
+            return vulnerabilitiesList;
+        }
+
+        /// <summary>
+        /// Method to get vulnerabilities for a specific version of Windows 11 from the NIST NVD API.
+        /// </summary>
+        /// <param name="version">Version to be checked.</param>
+        /// <returns>List of Vulnerabilities for the specific version of Windows 11, or null if there are no vulnerabilities.</returns>
+        /// <exception cref="HttpRequestException">Thrown when the request to the NIST NVD API fails.</exception>
+        private async Task<List<Vulnerability>> GetVulnerabilitiesForWindows11Async(string version)
+        {
+            // Windows 11 currently has no CRITICAL vulnerabilities, so we just check for all vulnerabilities, and filter in the application.
+
+            // Create a list to store the vulnerabilities.
+            List<Vulnerability> vulnerabilitiesList = new List<Vulnerability>();
+
+            // Get the NIST API key from the configuration.
+            string apiKey = App.Configuration["ApiKeys:NistApiKey"];
+
+            // Create a new HttpClient with a timeout of 60 seconds.
+            HttpClient client = new HttpClient
+            {
+                Timeout = TimeSpan.FromSeconds(60)
+            };
+
+            // Add the API key to the request headers and create the query.
+            client.DefaultRequestHeaders.Add("apiKey", apiKey);
+            client.DefaultRequestHeaders.Add("Accept", "application/json");
+            client.DefaultRequestHeaders.Add("User-Agent", "Scottish Glen");
+
+            // Create the query for the NIST NVD API.
+            string query = $"https://services.nvd.nist.gov/rest/json/cves/2.0?cpeName=cpe:2.3:o:microsoft:windows_11:{version}";
+
+            // Send the request to the NIST NVD API and store the status code and reason phrase.
+            HttpResponseMessage response = await client.GetAsync(query);
+            var statusCode = (int)response.StatusCode;
+            var reasonPhrase = response.ReasonPhrase;
+
+            // Check if the request was successful and parse the JSON response, adding the vulnerabilities to the list, or return null if there are no vulnerabilities.
+            if (response.IsSuccessStatusCode)
+            {
+                string jsonResponse = await response.Content.ReadAsStringAsync();
+                JObject json = JObject.Parse(jsonResponse);
+
+                var vulnerabilities = json["vulnerabilities"];
+                if (vulnerabilities == null || !vulnerabilities.HasValues)
+                {
+                    return null;
+                }
+
+                // Add the vulnerabilities to the list using the CveId, Description, and Severity.
+                foreach (var vulnerability in vulnerabilities)
+                {
+                    // Get the severity from the cvssMetricV3.0 or cvssMetricV3.1 objects.
+                    string severity = vulnerability["cve"]["metrics"]?["cvssMetricV30"]?[0]?["cvssData"]?["baseSeverity"]?.ToString() ??
+                        vulnerability["cve"]["metrics"]?["cvssMetricV31"]?[0]?["cvssData"]?["baseSeverity"]?.ToString();
+
+                    // Add the vulnerability to the list if the severity is HIGH or CRITICAL.
+                    if (severity.Equals("HIGH") || severity.Equals("CRITICAL"))
+                    {
+                        vulnerabilitiesList.Add(new Vulnerability
+                        {
+                            CveId = vulnerability["cve"]["id"]?.ToString(),
+                            Description = vulnerability["cve"]["descriptions"]?[0]?["value"]?.ToString(),
+                            Severity = severity
+                        });
+                    }
+                }
+            }
+            else
+            {
+                throw new HttpRequestException($"Failed to retrieve vulnerabilities: Error {statusCode} {reasonPhrase}.");
             }
 
             return vulnerabilitiesList;
