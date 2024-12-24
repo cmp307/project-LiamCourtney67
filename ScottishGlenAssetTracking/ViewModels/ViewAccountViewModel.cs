@@ -219,6 +219,7 @@ namespace ScottishGlenAssetTracking.ViewModels
             // Set the dialog visibility properties.
             if (SelectedAccount != null)
             {
+                ResetPasswords();
                 await _updatePasswordDialog.ShowAsync();
                 DialogStatusVisibility = Visibility.Collapsed;
             }
