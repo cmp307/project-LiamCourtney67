@@ -60,6 +60,8 @@ namespace ScottishGlenAssetTracking.ViewModels
             SoftwareAssets = new ObservableCollection<SoftwareAsset>(_softwareAssetService.GetSoftwareAssets());
 
             LoadSelectionsForAccountType();
+
+            HasSoftwareAssetBeenUpdated = false;
         }
 
         // Collections
@@ -115,6 +117,13 @@ namespace ScottishGlenAssetTracking.ViewModels
 
         [ObservableProperty]
         private string statusMessage;
+
+        /// <summary>
+        /// Boolean property to determine if a SoftwareAsset has been updated.
+        /// </summary>
+        public bool HasSoftwareAssetBeenUpdated { get; set; }
+
+        private int _softwareAssetId;
 
         // Visibility properties.
         [ObservableProperty]
@@ -186,6 +195,11 @@ namespace ScottishGlenAssetTracking.ViewModels
 
             // Notify the view that the HardwareAssets collection has changed.
             OnPropertyChanged(nameof(HardwareAssets));
+
+            // Reset the dates and status message.
+            ClearPurchaseDate();
+            SoftwareLinkDateFormatted = string.Empty;
+            StatusMessage = string.Empty;
         }
 
         /// <summary>
@@ -222,11 +236,16 @@ namespace ScottishGlenAssetTracking.ViewModels
                 SelectedHardwareAsset.SoftwareAsset = SoftwareAssets.FirstOrDefault(s => s.Id == SelectedHardwareAsset.SoftwareAsset.Id);
 
                 // Set the SoftwareLinkDateFormatted property to the DateTimeOffset value of the SoftwareLinkDate property and format it or an empty string.
-                SoftwareLinkDateFormatted = SelectedHardwareAsset.SoftwareLinkDate.ToString("MM/dd/yyyy") ?? string.Empty;
+                SoftwareLinkDateFormatted = SelectedHardwareAsset.SoftwareLinkDate.ToString("dd/MM/yyyy") ?? string.Empty;
             }
 
             // Notify the view that the SelectedHardwareAsset property has changed.
             OnPropertyChanged(nameof(SelectedHardwareAsset));
+
+            // Set the private field for the SoftwareAssetId.
+            _softwareAssetId = SelectedHardwareAsset.SoftwareAsset.Id;
+
+            HasSoftwareAssetBeenUpdated = false;
 
             // Clear the status message and make it hidden.
             StatusVisibility = Visibility.Collapsed;
@@ -277,6 +296,19 @@ namespace ScottishGlenAssetTracking.ViewModels
         [RelayCommand]
         private void UpdateHardwareAsset()
         {
+            // Check if the selected department and employee are null.
+            if (SelectedDepartment == null)
+            {
+                SetStatusMessage("Please select a Department.");
+                return;
+            }
+
+            if (SelectedEmployee == null)
+            {
+                SetStatusMessage("Please select an Employee.");
+                return;
+            }
+
             // Only update a HardwareAsset if a HardwareAsset is selected.
             if (!IsHardwareSelected()) { return; }
 
@@ -293,6 +325,14 @@ namespace ScottishGlenAssetTracking.ViewModels
                 SelectedHardwareAsset.IpAddress = newSystemData.IpAddress;
                 SelectedHardwareAsset.PurchaseDate = PurchaseDate?.DateTime;
                 SelectedHardwareAsset.Notes = Notes;
+
+                // If the SoftwareAsset has been updated, set the SoftwareLinkDate property to today and reset the property.
+                if (HasSoftwareAssetBeenUpdated)
+                {
+                    SelectedHardwareAsset.SoftwareLinkDate = DateTime.Now;
+                    HasSoftwareAssetBeenUpdated = false;
+                    _softwareAssetId = SelectedHardwareAsset.SoftwareAsset.Id;
+                }
 
                 // Update the selected HardwareAsset in the database and notify the view.
                 _hardwareAssetService.UpdateHardwareAsset(SelectedHardwareAsset);
@@ -347,6 +387,9 @@ namespace ScottishGlenAssetTracking.ViewModels
             SelectsVisibility = Visibility.Collapsed;
             ViewHardwareAssetViewVisibility = Visibility.Collapsed;
             EditHardwareAssetViewVisibility = Visibility.Visible;
+
+            // Reset the status message.
+            StatusMessage = string.Empty;
         }
 
         /// <summary>
@@ -359,6 +402,9 @@ namespace ScottishGlenAssetTracking.ViewModels
             EditHardwareAssetViewVisibility = Visibility.Collapsed;
             SelectsVisibility = Visibility.Visible;
             ViewHardwareAssetViewVisibility = Visibility.Visible;
+
+            // Reset the status message.
+            StatusMessage = string.Empty;
         }
 
         /// <summary>
@@ -416,8 +462,9 @@ namespace ScottishGlenAssetTracking.ViewModels
                 SelectedEmployee = null;
             }
 
-            // Reset the purchase date and notes.
+            // Reset the dates
             ClearPurchaseDate();
+            SoftwareLinkDateFormatted = string.Empty;
         }
 
         /// <summary>
@@ -469,6 +516,22 @@ namespace ScottishGlenAssetTracking.ViewModels
             // Set the status message and make the status message visible.
             StatusMessage = message;
             StatusVisibility = Visibility.Visible;
+        }
+
+        /// <summary>
+        /// Helper method to set the HasSoftwareAssetBeenUpdated property to true if the SoftwareAsset has been updated.
+        /// </summary>
+        /// <param name="softwareAsset"></param>
+        public void SetHasSoftwareAssetBeenUpdated(int softwareAssetId)
+        {
+            if (_softwareAssetId != softwareAssetId)
+            {
+                HasSoftwareAssetBeenUpdated = true;
+            }
+            else
+            {
+                HasSoftwareAssetBeenUpdated = false;
+            }
         }
     }
 }

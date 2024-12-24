@@ -62,7 +62,8 @@ namespace ScottishGlenAssetTracking.Views.HardwareAsset
         {
             // Check if the DataContext is a ViewHardwareAssetViewModel and execute the LoadAssetsCommand.
             // Selection changed cannot be bound to a command, so it is done in the code-behind.
-            if (DataContext is ViewHardwareAssetViewModel viewModel) {
+            if (DataContext is ViewHardwareAssetViewModel viewModel)
+            {
                 viewModel.LoadHardwareAssetsCommand.Execute(null);
             }
         }
@@ -92,9 +93,21 @@ namespace ScottishGlenAssetTracking.Views.HardwareAsset
             // Not implemented
         }
 
+        /// <summary>
+        /// Event handler for the selection changed event of the HardwareAssetSoftwareAssetSelect ComboBox.
+        /// </summary>
+        /// <param name="sender">The control that triggered the event.</param>
+        /// <param name="e">Event data that provides information about the selection changed event.</param>
         private void HardwareAssetSoftwareAssetSelect_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            // Not implemented
+            // Check if the DataContext is a ViewHardwareAssetViewModel and set the HasSoftwareAssetBeenUpdated property to true.
+            if (DataContext is ViewHardwareAssetViewModel viewModel)
+            {
+                if (sender is ComboBox comboBox && comboBox.SelectedItem is Models.SoftwareAsset softwareAsset)
+                {
+                    viewModel.SetHasSoftwareAssetBeenUpdated(softwareAsset.Id);
+                }
+            }
         }
     }
 }
