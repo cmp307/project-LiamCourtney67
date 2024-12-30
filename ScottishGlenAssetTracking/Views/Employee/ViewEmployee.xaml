@@ -79,7 +79,7 @@
                 <!--Buttons-->
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
                     <Button x:Name="EditEmployeeButton" Content="Edit Employee" Command="{Binding ChangeViewToEditCommand}" Margin="10" Background="Blue" Foreground="White"/>
-                    <Button x:Name="DeleteEmployeeButton" Content="Delete Employee" Command="{Binding DeleteEmployeeCommand}" Margin="10" Background="Red" Foreground="White"/>
+                    <Button x:Name="DeleteEmployeeButton" Content="Delete Employee" Command="{Binding ShowDeleteEmployeeDialogCommand}" Margin="10" Background="Red" Foreground="White"/>
                 </StackPanel>
             </StackPanel>
 
@@ -87,8 +87,8 @@
             <StackPanel x:Name="EditEmployeeView" Visibility="{Binding EditEmployeeViewVisibility}">
 
                 <!--Employee Details-->
-                <TextBox Header="First Name" Text="{Binding FirstName, Mode=TwoWay}" Margin="10"/>
-                <TextBox Header="Last Name" Text="{Binding LastName, Mode=TwoWay}" Margin="10"/>
+                <TextBox Header="First Name" Text="{Binding FirstName, Mode=TwoWay}" Margin="10" MaxLength="64"/>
+                <TextBox Header="Last Name" Text="{Binding LastName, Mode=TwoWay}" Margin="10" MaxLength="64"/>
                 <TextBox Header="Email" Text="{Binding Email, Mode=TwoWay}" Margin="10" IsEnabled="{Binding EmailIsEnabled}"/>
 
                 <!--Employee Department Select-->
@@ -106,5 +106,16 @@
             <!--Status Message-->
             <TextBlock x:Name="StatusMessage" Text="{Binding StatusMessage}" Visibility="{Binding StatusVisibility}" Margin="10" HorizontalAlignment="Center"/>
         </StackPanel>
+
+        <!--Delete Employee Dialog-->
+        <ContentDialog x:Name="DeleteEmployeeDialog" Title="Delete Employee" PrimaryButtonText="Delete Employee" CloseButtonText="Cancel"
+                           PrimaryButtonClick="DeleteEmployeeDialog_PrimaryButtonClick" Background="#5C5C5C" Foreground="White" DefaultButton="Primary">
+            <StackPanel>
+                <!--Confirmation Message-->
+                <TextBlock Text="Are you sure you want to delete this employee? This cannot be undone." 
+                           TextWrapping="WrapWholeWords" Foreground="White" Width="300"/>
+            </StackPanel>
+        </ContentDialog>
+        
     </Grid>
 </Page>

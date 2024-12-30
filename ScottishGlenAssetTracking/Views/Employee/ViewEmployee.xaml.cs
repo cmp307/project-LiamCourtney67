@@ -36,6 +36,12 @@ namespace ScottishGlenAssetTracking.Views.Employee
 
             // Set the DataContext of the page to the ViewEmployeeViewModel with dependency injection.
             DataContext = App.AppHost.Services.GetRequiredService<ViewEmployeeViewModel>();
+
+            // Set the dialogs to the corresponding properties in the ViewModel.
+            if (DataContext is ViewEmployeeViewModel viewModel)
+            {
+                viewModel.SetDeleteEmployeeDialog(DeleteEmployeeDialog);
+            }
         }
 
         /// <summary>
@@ -65,6 +71,21 @@ namespace ScottishGlenAssetTracking.Views.Employee
             if (DataContext is ViewEmployeeViewModel viewModel)
             {
                 viewModel.PopulateEmployeeDetailsCommand.Execute(null);
+            }
+        }
+
+        /// <summary>
+        /// Event handler for the primary button click event of the DeleteEmployeeDialog.
+        /// </summary>
+        /// <param name="sender">The control that triggered the event.</param>
+        /// <param name="args">Event data that provides information about the primary button click event.</param>
+        private void DeleteEmployeeDialog_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
+        {
+            // Check if the DataContext is a ViewEmployeeViewModel and execute the DeleteEmployee method.
+            if (DataContext is ViewEmployeeViewModel viewModel)
+            {
+                args.Cancel = false;
+                viewModel.DeleteEmployeeCommand.Execute(null);
             }
         }
     }

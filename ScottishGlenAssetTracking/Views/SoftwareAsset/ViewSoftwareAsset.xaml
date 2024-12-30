@@ -148,13 +148,16 @@
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Visibility="{Binding ButtonsVisibility}">
                     <Button x:Name="CheckVulnerabilitiesButton" Content="Check Vulnerabilities" Command="{Binding CheckVulnerabilitiesCommand}" Margin="10" Background="Orange" Foreground="White"/>
                     <Button x:Name="EditSoftwareAssetButton" Content="Edit Software Asset" Command="{Binding ChangeViewToEditCommand}" Margin="10" Background="Blue" Foreground="White"/>
-                    <Button x:Name="DeleteSoftwareAssetButton" Content="Delete Software Asset" Command="{Binding DeleteSoftwareAssetCommand}" Margin="10" Background="Red" Foreground="White"/>
+                    <Button x:Name="DeleteSoftwareAssetButton" Content="Delete Software Asset" Command="{Binding ShowDeleteSoftwareAssetDialogCommand}" Margin="10" Background="Red" Foreground="White"/>
                 </StackPanel>
 
             </StackPanel>
 
             <!--Edit SoftwareAsset View-->
             <StackPanel x:Name="EditSoftwareAssetView" Visibility="{Binding EditSoftwareAssetViewVisibility}">
+                
+                <!--Info-->
+                <TextBlock x:Name="Info" Text="The details for the software asset will be automatically retrieved." FontSize="16" Margin="10" TextWrapping="Wrap"/>
 
                 <!--Buttons-->
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
@@ -165,10 +168,21 @@
             </StackPanel>
 
             <!--Status Message-->
-            <TextBlock x:Name="StatusMessage" Text="{Binding StatusMessage}" Visibility="{Binding StatusVisibility}" Margin="10" HorizontalAlignment="Center"/>
+            <TextBlock x:Name="StatusMessage" Text="{Binding StatusMessage}" Visibility="{Binding StatusVisibility}" Margin="10" HorizontalAlignment="Center" TextWrapping="Wrap"/>
 
             <!--Progress Ring-->
             <ProgressRing x:Name="ProgressRing" IsActive="{Binding ProgressRingIsActive}" Visibility="{Binding ProgressRingVisibility}" Margin="10" HorizontalAlignment="Center"/>
         </StackPanel>
+
+        <!--Delete SoftwareAsset Dialog-->
+        <ContentDialog x:Name="DeleteSoftwareAssetDialog" Title="Delete Software Asset" PrimaryButtonText="Delete Software Asset" CloseButtonText="Cancel"
+                           PrimaryButtonClick="DeleteSoftwareAssetDialog_PrimaryButtonClick" Background="#5C5C5C" Foreground="White" DefaultButton="Primary">
+            <StackPanel>
+                <!--Confirmation Message-->
+                <TextBlock Text="Are you sure you want to delete this software asset? This cannot be undone." 
+                           TextWrapping="WrapWholeWords" Foreground="White" Width="300"/>
+            </StackPanel>
+        </ContentDialog>
+
     </Grid>
 </Page>

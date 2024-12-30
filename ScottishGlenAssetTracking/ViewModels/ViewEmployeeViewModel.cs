@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 using MySqlConnector;
 using ScottishGlenAssetTracking.Models;
 using ScottishGlenAssetTracking.Services;
@@ -27,6 +28,9 @@ namespace ScottishGlenAssetTracking.ViewModels
 
         // Private field for the Account.
         private readonly Account _account;
+
+        // Private field for the dialog.
+        private ContentDialog _deleteEmployeeDialog;
 
         /// <summary>
         /// Constructor for the ViewEmployeeViewModel class using the DepartmentService and EmployeeService with dependency injection.
@@ -384,5 +388,17 @@ namespace ScottishGlenAssetTracking.ViewModels
             LastName = string.Empty;
             Email = string.Empty;
         }
+
+        /// <summary>
+        /// Set the delete employee dialog.
+        /// </summary>
+        /// <param name="dialog">Dialog to be used.</param>
+        public void SetDeleteEmployeeDialog(ContentDialog dialog) => _deleteEmployeeDialog = dialog;
+
+        /// <summary>
+        /// Command to show the delete employee dialog.
+        /// </summary>
+        [RelayCommand]
+        private async Task ShowDeleteEmployeeDialog() => await _deleteEmployeeDialog.ShowAsync();
     }
 }

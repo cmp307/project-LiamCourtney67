@@ -30,6 +30,10 @@ namespace ScottishGlenAssetTracking.ViewModels
         // Private field for the Account.
         private readonly Account _account;
 
+
+        // Private field for the dialog.
+        private ContentDialog _deleteSoftwareAssetDialog;
+
         /// <summary>
         /// Constructor for the ViewSoftwareAssetViewModel class using the DepartmentService, EmployeeService, and SoftwareAssetService with dependency injection.
         /// </summary>
@@ -289,12 +293,6 @@ namespace ScottishGlenAssetTracking.ViewModels
         [RelayCommand]
         private async Task CheckVulnerabilities()
         {
-            //SoftwareAssetVulnerabilities = new ObservableCollection<Vulnerability> { new Vulnerability { CveId = "CVE-2021-1234", Description = "This is a test vulnerability.wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww1", Severity = "HIGH" } };
-            //SoftwareAssetVulnerabilitiesVisibility = Visibility.Visible;
-            //OnPropertyChanged(nameof(SoftwareAssetVulnerabilities));
-            //return;
-
-
             if (SelectedSoftwareAsset == null)
             {
                 return;
@@ -341,6 +339,11 @@ namespace ScottishGlenAssetTracking.ViewModels
             {
                 SoftwareAssetVulnerabilitiesVisibility = Visibility.Collapsed;
                 SetStatusMessage("The request timed out. Please try again later.");
+            }
+            catch (ArgumentException ex)
+            {
+                SoftwareAssetVulnerabilitiesVisibility = Visibility.Collapsed;
+                SetStatusMessage(ex.Message);
             }
             catch (Exception)
             {
@@ -402,5 +405,17 @@ namespace ScottishGlenAssetTracking.ViewModels
             StatusMessage = message;
             StatusVisibility = Visibility.Visible;
         }
+
+        /// <summary>
+        /// Set the delete sofwate asset dialog.
+        /// </summary>
+        /// <param name="dialog">Dialog to be used.</param>
+        public void SetDeleteSoftwareAssetDialog(ContentDialog dialog) => _deleteSoftwareAssetDialog = dialog;
+
+        /// <summary>
+        /// Command to show the delete software asset dialog.
+        /// </summary>
+        [RelayCommand]
+        private async Task ShowDeleteSoftwareAssetDialog() => await _deleteSoftwareAssetDialog.ShowAsync();
     }
 }
