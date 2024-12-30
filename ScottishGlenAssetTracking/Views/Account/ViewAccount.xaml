@@ -57,7 +57,7 @@
                 <!--Buttons-->
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
                     <Button x:Name="EditAccountButton" Content="Edit Account" Command="{Binding ChangeViewToEditCommand}" Margin="10" Background="Blue" Foreground="White"/>
-                    <Button x:Name="DeleteAccountButton" Content="Delete Account" Command="{Binding DeleteAccountCommand}" Margin="10" Background="Red" Foreground="White"/>
+                    <Button x:Name="DeleteAccountButton" Content="Delete Account" Command="{Binding ShowDeleteAccountDialogCommand}" Margin="10" Background="Red" Foreground="White"/>
                 </StackPanel>
 
             </StackPanel>
@@ -70,7 +70,7 @@
 
                 <!--Buttons-->
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                    <Button x:Name="UpdatePasswordButton" Content="Update Password" Command="{Binding ShowDialogCommand}" Margin="10" Background="Blue" Foreground="White"/>
+                    <Button x:Name="UpdatePasswordButton" Content="Update Password" Command="{Binding ShowUpdatePasswordDialogCommand}" Margin="10" Background="Blue" Foreground="White"/>
                     <Button x:Name="CancelButton" Content="Cancel" Command="{Binding ChangeViewToViewCommand}" Margin="10" Background="Red" Foreground="White"/>
                     <Button x:Name="UpdateAccountButton" Content="Update Account" Command="{Binding UpdateAccountCommand}" Margin="10" Background="Green" Foreground="White"/>
                 </StackPanel>
@@ -92,6 +92,16 @@
                 <!--Status Message-->
                 <TextBlock Text="{Binding DialogStatusMessage, Mode=OneWay}" Visibility="{Binding DialogStatusVisibility}" 
                            Foreground="White" Margin="0, 10, 0, 0" HorizontalAlignment="Center"/>
+            </StackPanel>
+        </ContentDialog>
+
+        <!--Delete Account Dialog-->
+        <ContentDialog x:Name="DeleteAccountDialog" Title="Delete Account" PrimaryButtonText="Delete Account" CloseButtonText="Cancel"
+                           PrimaryButtonClick="DeleteAccountDialog_PrimaryButtonClick" Background="#5C5C5C" Foreground="White" DefaultButton="Primary">
+            <StackPanel>
+                <!--Confirmation Message-->
+                <TextBlock Text="Are you sure you want to delete this account? This cannot be undone." 
+                           TextWrapping="WrapWholeWords" Foreground="White" Width="300"/>
             </StackPanel>
         </ContentDialog>
 

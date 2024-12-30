@@ -35,10 +35,11 @@ namespace ScottishGlenAssetTracking.Views.Account
             // Set the DataContext of the page to the ViewAccountViewModel with dependency injection.
             DataContext = App.AppHost.Services.GetRequiredService<ViewAccountViewModel>();
 
-            // Set the dialog for the UpdatePasswordDialog to the UpdatePasswordDialog.
+            // Set the dialogs to the corresponding properties in the ViewModel.
             if (DataContext is ViewAccountViewModel viewModel)
             {
-                viewModel.SetDialog(UpdatePasswordDialog);
+                viewModel.SetUpdatePasswordDialog(UpdatePasswordDialog);
+                viewModel.SetDeleteAccountDialog(DeleteAccountDialog);
             }
         }
 
@@ -68,6 +69,21 @@ namespace ScottishGlenAssetTracking.Views.Account
                 {
                     args.Cancel = true;
                 }
+            }
+        }
+
+        /// <summary>
+        /// Event handler for the primary button click event of the DeleteAccountDialog.
+        /// </summary>
+        /// <param name="sender">The control that triggered the event.</param>
+        /// <param name="args">Event data that provides information about the primary button click event.</param>
+        private void DeleteAccountDialog_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
+        {
+            // Check if the DataContext is a ViewAccountViewModel and execute the DeleteAccount method.
+            if (DataContext is ViewAccountViewModel viewModel)
+            {
+                args.Cancel = false;
+                viewModel.DeleteAccountCommand.Execute(null);
             }
         }
     }
