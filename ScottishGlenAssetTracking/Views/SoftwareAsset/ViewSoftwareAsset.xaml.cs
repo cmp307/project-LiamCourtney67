@@ -34,6 +34,12 @@ namespace ScottishGlenAssetTracking.Views.SoftwareAsset
 
             // Set the DataContext of the page to the ViewSoftwareAssetViewModel with dependency injection.
             DataContext = App.AppHost.Services.GetRequiredService<ViewSoftwareAssetViewModel>();
+
+            // Set the dialogs to the corresponding properties in the ViewModel.
+            if (DataContext is ViewSoftwareAssetViewModel viewModel)
+            {
+                viewModel.SetDeleteSoftwareAssetDialog(DeleteSoftwareAssetDialog);
+            }
         }
 
         /// <summary>
@@ -48,6 +54,21 @@ namespace ScottishGlenAssetTracking.Views.SoftwareAsset
             if (DataContext is ViewSoftwareAssetViewModel viewModel)
             {
                 viewModel.PopulateSoftwareAssetDetailsCommand.Execute(null);
+            }
+        }
+
+        /// <summary>
+        /// Event handler for the primary button click event of the DeleteSoftwareAssetDialog.
+        /// </summary>
+        /// <param name="sender">The control that triggered the event.</param>
+        /// <param name="args">Event data that provides information about the primary button click event.</param>
+        private void DeleteSoftwareAssetDialog_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
+        {
+            // Check if the DataContext is a ViewSoftwareAssetViewModel and execute the DeleteSoftwareAsset method.
+            if (DataContext is ViewSoftwareAssetViewModel viewModel)
+            {
+                args.Cancel = false;
+                viewModel.DeleteSoftwareAssetCommand.Execute(null);
             }
         }
     }

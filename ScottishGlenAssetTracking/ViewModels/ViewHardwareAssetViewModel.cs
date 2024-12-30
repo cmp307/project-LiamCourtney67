@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 using ScottishGlenAssetTracking.Models;
 using ScottishGlenAssetTracking.Services;
 using ScottishGlenAssetTracking.Views.HardwareAsset;
@@ -28,6 +29,9 @@ namespace ScottishGlenAssetTracking.ViewModels
 
         // Private field for the Account.
         private readonly Account _account;
+
+        // Private field for the dialog.
+        private ContentDialog _deleteHardwareAssetDialog;
 
         /// <summary>
         /// Constructor for the ViewHardwareAssetViewModel class using the DepartmentService, EmployeeService, SoftwareAssetService, and HardwareAssetService with dependency injection.
@@ -533,5 +537,17 @@ namespace ScottishGlenAssetTracking.ViewModels
                 HasSoftwareAssetBeenUpdated = false;
             }
         }
+
+        /// <summary>
+        /// Set the delete hardware asset dialog.
+        /// </summary>
+        /// <param name="dialog">Dialog to be used.</param>
+        public void SetDeleteHardwareAssetDialog(ContentDialog dialog) => _deleteHardwareAssetDialog = dialog;
+
+        /// <summary>
+        /// Command to show the delete hardware asset dialog.
+        /// </summary>
+        [RelayCommand]
+        private async Task ShowDeleteHardwareAssetDialog() => await _deleteHardwareAssetDialog.ShowAsync();
     }
 }

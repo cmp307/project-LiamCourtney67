@@ -28,6 +28,7 @@ namespace ScottishGlenAssetTracking.ViewModels
 
         // Private field for the dialog.
         private ContentDialog _updatePasswordDialog;
+        private ContentDialog _deleteAccountDialog;
 
         /// <summary>
         /// Constructor for the ViewAccountViewModel class using the DepartmentService, EmployeeService, and AccountService with dependency injection.
@@ -205,16 +206,22 @@ namespace ScottishGlenAssetTracking.ViewModels
         // Dialog commands.
 
         /// <summary>
-        /// Set the set dialog.
+        /// Set the update password set dialog.
         /// </summary>
         /// <param name="dialog">Dialog to be used.</param>
-        public void SetDialog(ContentDialog dialog) => _updatePasswordDialog = dialog;
+        public void SetUpdatePasswordDialog(ContentDialog dialog) => _updatePasswordDialog = dialog;
 
         /// <summary>
-        /// Command to show the dialog.
+        /// Set the delete account dialog.
+        /// </summary>
+        /// <param name="dialog">Dialog to be used.</param>
+        public void SetDeleteAccountDialog(ContentDialog dialog) => _deleteAccountDialog = dialog;
+
+        /// <summary>
+        /// Command to show the update password dialog.
         /// </summary>
         [RelayCommand]
-        private async Task ShowDialog()
+        private async Task ShowUpdatePasswordDialog()
         {
             // Set the dialog visibility properties.
             if (SelectedAccount != null)
@@ -224,6 +231,12 @@ namespace ScottishGlenAssetTracking.ViewModels
                 DialogStatusVisibility = Visibility.Collapsed;
             }
         }
+
+        /// <summary>
+        /// Command to show the delete account dialog.
+        /// </summary>
+        [RelayCommand]
+        private async Task ShowDeleteAccountDialog() => await _deleteAccountDialog.ShowAsync();
 
         /// <summary>
         /// Method to update the password.

@@ -143,7 +143,7 @@
                 <!--Buttons-->
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
                     <Button x:Name="EditHardwareAssetButton" Content="Edit Hardware Asset" Command="{Binding ChangeViewToEditCommand}" Margin="10" Background="Blue" Foreground="White"/>
-                    <Button x:Name="DeleteHardwareAssetButton" Content="Delete Hardware Asset" Command="{Binding DeleteHardwareAssetCommand}" Margin="10" Background="Red" Foreground="White"/>
+                    <Button x:Name="DeleteHardwareAssetButton" Content="Delete Hardware Asset" Command="{Binding ShowDeleteHardwareAssetDialogCommand}" Margin="10" Background="Red" Foreground="White"/>
                 </StackPanel>
             </StackPanel>
 
@@ -159,9 +159,9 @@
 
                 <!--Department and Employee Selects-->
                 <ComboBox x:Name="HardwareAssetDepartmentSelect" Header="Department" HorizontalAlignment="Stretch" PlaceholderText="Select Department" Margin="10" 
-                          ItemsSource="{Binding Departments}" SelectedItem="{Binding SelectedDepartment, Mode=TwoWay}" IsEnabled="{Binding HardwareAssetDepartmentSelectIsEnabled}" DisplayMemberPath="Name" SelectionChanged="HardwareAssetDepartmentSelect_SelectionChanged"/>
+                          ItemsSource="{Binding Departments}" SelectedItem="{Binding SelectedDepartment, Mode=TwoWay}" IsEnabled="{Binding HardwareAssetDepartmentSelectIsEnabled}" DisplayMemberPath="Name"/>
                 <ComboBox x:Name="HardwareAssetEmployeeSelect" Header="Employee" HorizontalAlignment="Stretch" PlaceholderText="Select Employee" Margin="10" 
-                          ItemsSource="{Binding Employees}" SelectedItem="{Binding SelectedHardwareAsset.Employee, Mode=TwoWay}" IsEnabled="{Binding HardwareAssetEmployeeSelectIsEnabled}" DisplayMemberPath="Name" SelectionChanged="HardwareAssetEmployeeSelect_SelectionChanged"/>
+                          ItemsSource="{Binding Employees}" SelectedItem="{Binding SelectedHardwareAsset.Employee, Mode=TwoWay}" IsEnabled="{Binding HardwareAssetEmployeeSelectIsEnabled}" DisplayMemberPath="Name"/>
                 <ComboBox x:Name="HardwareAssetSoftwareAssetSelect" Header="Software Asset" HorizontalAlignment="Stretch" PlaceholderText="Select Software Asset" Margin="10" 
                           ItemsSource="{Binding SoftwareAssets}" SelectedItem="{Binding SelectedHardwareAsset.SoftwareAsset, Mode=TwoWay}" DisplayMemberPath="DisplayName" SelectionChanged="HardwareAssetSoftwareAssetSelect_SelectionChanged"/>
 
@@ -176,5 +176,16 @@
             <!--Status Message-->
             <TextBlock x:Name="StatusMessage" Text="{Binding StatusMessage}" Visibility="{Binding StatusVisibility}" Margin="10" HorizontalAlignment="Center"/>
         </StackPanel>
+
+        <!--Delete HardwareAsset Dialog-->
+        <ContentDialog x:Name="DeleteHardwareAssetDialog" Title="Delete Hardware Asset" PrimaryButtonText="Delete Hardware Asset" CloseButtonText="Cancel"
+                           PrimaryButtonClick="DeleteHardwareAssetDialog_PrimaryButtonClick" Background="#5C5C5C" Foreground="White" DefaultButton="Primary">
+            <StackPanel>
+                <!--Confirmation Message-->
+                <TextBlock Text="Are you sure you want to delete this hardware asset? This cannot be undone." 
+                           TextWrapping="WrapWholeWords" Foreground="White" Width="300"/>
+            </StackPanel>
+        </ContentDialog>
+        
     </Grid>
 </Page>
